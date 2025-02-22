@@ -1,0 +1,8 @@
+[package]
+name = "kand"
+version = "0.0.1"
+description = "Kand: A Pure Rust technical analysis library inspired by TA-Lib."
+license = "MIT"
+edition = "2021"
+
+[dependencies]
