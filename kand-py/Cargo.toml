@@ -1,0 +1,32 @@
+[package]
+name = "kand-py"
+version = "0.1.0"
+edition = "2021"
+authors = ["CtrlX <gitctrlx@gmail.com>"]
+description = "Kand: A Pure Rust technical analysis library inspired by TA-Lib."
+license = "MIT"
+repository = "https://github.com/rust-ta/kand"
+documentation = "https://docs.rs/kand"
+keywords = ["technical-analysis", "finance", "rust", "talib", "indicators"]
+categories = ["finance", "algorithms", "data-structures", "science", "mathematics"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[lib]
+name = "kand"
+crate-type = ["cdylib"]
+
+[dependencies]
+numpy = {workspace = true}
+pyo3 = {workspace = true}
+kand = { workspace = true}
+
+[features]
+default = ["float64", "int64", "check"]
+
+float32 = ["kand/float32"]
+float64 = ["kand/float64"]
+int32 = ["kand/int32"]
+int64 = ["kand/int64"]
+
+check = ["kand/check"]
+deep-check = ["check", "kand/deep-check"]
