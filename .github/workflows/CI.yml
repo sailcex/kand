@@ -23,6 +23,7 @@ jobs:
     runs-on: ${{ matrix.platform.runner }}
     strategy:
       matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
         platform:
           - runner: ubuntu-22.04
             target: x86_64
@@ -40,22 +41,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: 3.x
-      # https://github.com/PyO3/rust-numpy/issues/476
-      - name: Check Python version
-        id: check-python
-        run: |
-          python_version=$(python -c "import sys; print(sys.version_info[:2])")
-          echo "Python Version: $python_version"
-          if [[ "$python_version" == "(3, 13)" ]]; then
-            echo "Skipping build for Python 3.13 (numpy-rust does not support Python 3.13 yet)"
-            echo "skip_build=true" >> $GITHUB_OUTPUT
-          else
-            echo "skip_build=false" >> $GITHUB_OUTPUT
-          fi
+          python-version: ${{ matrix.python-version }}
       - name: Build wheels
         uses: PyO3/maturin-action@v1
-        if: steps.check-python.outputs.skip_build != 'true'
         with:
           target: ${{ matrix.platform.target }}
           args: --release --out dist --find-interpreter
@@ -71,6 +59,7 @@ jobs:
     runs-on: ${{ matrix.platform.runner }}
     strategy:
       matrix:
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
         platform:
           - runner: ubuntu-22.04
             target: x86_64
@@ -84,22 +73,9 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
-          python-version: 3.x
-      # https://github.com/PyO3/rust-numpy/issues/476
-      - name: Check Python version
-        id: check-python
-        run: |
-          python_version=$(python -c "import sys; print(sys.version_info[:2])")
-          echo "Python Version: $python_version"
-          if [[ "$python_version" == "(3, 13)" ]]; then
-            echo "Skipping build for Python 3.13 (numpy-rust does not support Python 3.13 yet)"
-            echo "skip_build=true" >> $GITHUB_OUTPUT
-          else
-            echo "skip_build=false" >> $GITHUB_OUTPUT
-          fi
+          python-version: ${{ matrix.python-version }}
       - name: Build wheels
         uses: PyO3/maturin-action@v1
-        if: steps.check-python.outputs.skip_build != 'true'
         with:
           target: ${{ matrix.platform.target }}
           args: --release --out dist --find-interpreter
