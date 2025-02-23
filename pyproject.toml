@@ -1,0 +1,47 @@
+[build-system]
+requires = ["maturin>=1.7,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "kand"
+description = ""
+authors = [{ name = "CtrlX", email = "gitctrlx@gmail.com" }]
+requires-python = ">=3.8"
+keywords = [
+  "ta", "ta-lib", "finance", "quant", "indicator", "technical-analysis"
+]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3 :: Only",
+]
+dynamic = ["version"]
+readme = "README.md"
+
+[project.urls]
+Repository = "https://github.com/rust-ta/kand"
+Documentation = "https://docs.rs/kand"
+Changelog = "https://github.com/rust-ta/kand/blob/main/CHANGELOG.md"
+Releases = "https://github.com/rust-ta/kand/releases"
+
+[tool.maturin]
+bindings = "pyo3"
+manifest-path = "kand-py/Cargo.toml"
+module-name = "kand"
+python-source = "python"
+features = ["pyo3/extension-module"]
+include = [
+    { path = "rust-toolchain.toml", format = ["sdist", "wheel"] },
+    { path = "LICENSE-APACHE", format = "sdist" },
+    { path = "LICENSE-MIT", format = "sdist" },
+]
