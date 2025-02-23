@@ -37,7 +37,7 @@ Releases = "https://github.com/rust-ta/kand/releases"
 [tool.maturin]
 bindings = "pyo3"
 manifest-path = "kand-py/Cargo.toml"
-module-name = "kand"
+module-name = "kand._kand"
 python-source = "python"
 features = ["pyo3/extension-module"]
 include = [

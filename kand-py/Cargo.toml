@@ -13,12 +13,12 @@ categories = ["finance", "algorithms", "data-structures", "science", "mathematic
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [lib]
-name = "kand"
+name = "_kand"
 crate-type = ["cdylib"]
 
 [dependencies]
 numpy = {workspace = true}
-pyo3 = {workspace = true}
+pyo3 = {workspace = true, features = ["extension-module"]}
 kand = { workspace = true}
 
 [features]

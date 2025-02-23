@@ -5,6 +5,7 @@ pub mod ta;
 /// A Python module implemented in Rust.
 #[rustfmt::skip]
 #[pymodule]
+#[pyo3(name = "_kand")]
 fn kand(m: &Bound<'_, PyModule>) -> PyResult<()> {
 
     // Add all OHLCV functions
