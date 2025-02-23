@@ -8,6 +8,8 @@ RUN apt-get update && \
     build-essential \
     curl \
     cmake \
+    gcc-aarch64-linux-gnu \
+    g++-aarch64-linux-gnu \
     patchelf && \
     rm -rf /var/lib/apt/lists/* && \
     python -m venv $HOME/.venv && \
@@ -39,6 +41,11 @@ RUN case "${TARGETPLATFORM}" in \
   "linux/arm64") export JEMALLOC_SYS_WITH_LG_PAGE=16;; \
   esac && \
   . $HOME/.cargo/env && \
+  if [ "${TARGETPLATFORM}" = "linux/arm64" ]; then \
+    export CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc \
+    export CC_aarch64_unknown_linux_gnu=aarch64-linux-gnu-gcc \
+    export CXX_aarch64_unknown_linux_gnu=aarch64-linux-gnu-g++ \
+  fi && \
   maturin build --release --target $(cat rust_target.txt) -i python3.12 && \
   mkdir -p /wheels && \
   cp target/wheels/*.whl /wheels/ && \
