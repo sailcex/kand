@@ -7,9 +7,9 @@ body:
     attributes:
       value: |
         Thanks for your interest in kand! Before submitting a question, please:
-        1. Check the [Documentation](https://github.com/qntx/kand/wiki)
-        2. Search [existing issues](https://github.com/qntx/kand/issues)
-        3. Look through [closed issues](https://github.com/qntx/kand/issues?q=is%3Aissue+is%3Aclosed)
+        1. Check the [Documentation](https://github.com/rust-ta/kand/wiki)
+        2. Search [existing issues](https://github.com/rust-ta/kand/issues)
+        3. Look through [closed issues](https://github.com/rust-ta/kand/issues?q=is%3Aissue+is%3Aclosed)
 
   - type: dropdown
     id: question_type

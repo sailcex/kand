@@ -42,14 +42,13 @@ jobs:
         with:
           python-version: 3.x
       # https://github.com/PyO3/rust-numpy/issues/476
-      - name: Check Python version and GIL status
+      - name: Check Python version
         id: check-python
         run: |
           python_version=$(python -c "import sys; print(sys.version_info[:2])")
-          gil_enabled=$(python -c "import sys; print(sys._is_gil_enabled() if hasattr(sys, '_is_gil_enabled') else True)")
-          echo "Python Version: $python_version, GIL Enabled: $gil_enabled"
-          if [[ "$python_version" == "(3, 13)" && "$gil_enabled" == "False" ]]; then
-            echo "Skipping build for free-threaded Python 3.13"
+          echo "Python Version: $python_version"
+          if [[ "$python_version" == "(3, 13)" ]]; then
+            echo "Skipping build for Python 3.13 (numpy-rust does not support Python 3.13 yet)"
             echo "skip_build=true" >> $GITHUB_OUTPUT
           else
             echo "skip_build=false" >> $GITHUB_OUTPUT
@@ -87,14 +86,13 @@ jobs:
         with:
           python-version: 3.x
       # https://github.com/PyO3/rust-numpy/issues/476
-      - name: Check Python version and GIL status
+      - name: Check Python version
         id: check-python
         run: |
           python_version=$(python -c "import sys; print(sys.version_info[:2])")
-          gil_enabled=$(python -c "import sys; print(sys._is_gil_enabled() if hasattr(sys, '_is_gil_enabled') else True)")
-          echo "Python Version: $python_version, GIL Enabled: $gil_enabled"
-          if [[ "$python_version" == "(3, 13)" && "$gil_enabled" == "False" ]]; then
-            echo "Skipping build for free-threaded Python 3.13"
+          echo "Python Version: $python_version"
+          if [[ "$python_version" == "(3, 13)" ]]; then
+            echo "Skipping build for Python 3.13 (numpy-rust does not support Python 3.13 yet)"
             echo "skip_build=true" >> $GITHUB_OUTPUT
           else
             echo "skip_build=false" >> $GITHUB_OUTPUT
