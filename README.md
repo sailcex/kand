@@ -1,12 +1,39 @@
-# Kand - Technical Analysis in Rust
-[![Crates.io](https://img.shields.io/crates/v/kand.svg)](https://crates.io/crates/kand)
-[![Docs.rs](https://docs.rs/kand/badge.svg)](https://docs.rs/kand)
-[![image](https://img.shields.io/pypi/v/kand.svg)](https://pypi.python.org/pypi/kand)
-[![image](https://img.shields.io/pypi/pyversions/kand.svg)](https://pypi.python.org/pypi/kand)
-[![Actions status](https://github.com/rust-ta/kand/actions/workflows/CI.yml/badge.svg)](https://github.com/rust-ta/kand/actions)
-[![License](https://img.shields.io/github/license/rust-ta/kand)](https://github.com/rust-ta/kand/blob/main/LICENSE)
+<h1 align="center">
+  <img src="docs/assets/logo.png" alt="Kand Logo" width="400">
+</h1>
 
-A high-performance Rust library for technical analysis of financial market data.
+<div align="center">
+  <a href="https://crates.io/crates/kand">
+    <img src="https://img.shields.io/crates/v/kand.svg" alt="Crates.io"/>
+  </a>
+  <a href="https://docs.rs/kand">
+    <img src="https://docs.rs/kand/badge.svg" alt="Docs.rs"/>
+  </a>
+  <a href="https://pypi.python.org/pypi/kand">
+    <img src="https://img.shields.io/pypi/v/kand.svg" alt="PyPI Version"/>
+  </a>
+  <a href="https://pypi.python.org/pypi/kand">
+    <img src="https://img.shields.io/pypi/pyversions/kand.svg" alt="Python Versions"/>
+  </a>
+  <a href="https://github.com/rust-ta/kand/actions/workflows/CI.yml">
+    <img src="https://github.com/rust-ta/kand/actions/workflows/CI.yml/badge.svg" alt="CI Status"/>
+  </a>
+  <a href="https://github.com/rust-ta/kand/blob/main/LICENSE">
+    <img src="https://img.shields.io/github/license/rust-ta/kand" alt="License"/>
+  </a>
+</div>
+<p align="center">
+  <b>Documentation</b>:
+  <a href="https://docs.rs/kand">Rust</a>
+  -
+  <a href="https://rust-ta.github.io/kand/">Python</a>
+  |
+  <b>Repository</b>:
+  <a href="https://github.com/rust-ta/kand">GitHub</a>
+</p>
+<h2 align="center">
+  <b>Kand: Blazingly Fast Technical Analysis Library in Rust, Python</b>
+</h2>
 
 
 ## Features
@@ -15,7 +42,30 @@ A high-performance Rust library for technical analysis of financial market data.
 - Comprehensive test coverage and documentation
 - Clean, ergonomic API with robust error handling
 
-## OHLCV Based Functions
+## Setup
+
+### Python
+
+Install the latest Kand version with:
+
+```bash
+pip install kand
+```
+
+### Rust
+
+You can take latest release from `crates.io`, or if you want to use the latest features / performance improvements point to the `main` branch of this repo.
+
+```toml
+[dependencies]
+kand = { git = "https://github.com/rust-ta/kand", rev = "<optional git tag>" }
+```
+
+Recommend Rust version `>=1.80`.
+
+## Functions List
+
+### OHLCV Based
 
 - [x] **AD** - Chaikin A/D Line
 - [x] **ADOSC** - Chaikin A/D Oscillator
@@ -98,7 +148,7 @@ A high-performance Rust library for technical analysis of financial market data.
 - [x] **WILLR** - Williams' %R
 - [x] **WMA** - Weighted Moving Average
 
-## Statistical Analysis Functions
+### Statistical Analysis
 
 - [ ] **ALPHA** - Alpha: Measures excess returns over market
 - [ ] **BETA** - Beta: Measures sensitivity to market volatility
@@ -115,6 +165,11 @@ A high-performance Rust library for technical analysis of financial market data.
 - [x] **VAR** - Variance
 - [ ] **WINRATE** - Win Rate: Strategy success probability
 
+## Contributing
+
+We are passionate about supporting contributors of all levels of experience and would love to see
+you get involved in the project. See the
+[contributing guide](https://github.com/rust-ta/kand/blob/main/CONTRIBUTING.md) to get started.
 
 
 ## License
