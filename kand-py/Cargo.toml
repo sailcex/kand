@@ -1,7 +1,8 @@
 [package]
 name = "kand-py"
-version = "0.0.2"
+version = "0.0.3"
 edition = "2021"
+readme = "../README.md"
 authors = ["CtrlX <gitctrlx@gmail.com>"]
 description = "Kand: A Pure Rust technical analysis library inspired by TA-Lib."
 license = "Apache-2.0 OR MIT"
