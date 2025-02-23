@@ -1,0 +1,98 @@
+# Project information
+site_name: Kand - Technical Analysis in Rust
+site_url: https://rust-ta.github.io/kand/
+site_author: CtrlX
+site_description: >-
+  kand - Pure Rust reimplementation of TA-Lib for fast financial analysis.
+
+# Repository
+repo_url: https://github.com/rust-ta/kand
+repo_name: rust-ta/kand
+
+# Copyright
+copyright: >
+  Copyright &copy; 2024 - 2025 CtrlX –
+  <a href="#__consent">Change cookie settings</a>
+
+# Configuration
+theme:
+  name: material
+  logo: assets/logo.png
+  favicon: assets/logo.png
+  language: en
+  palette:
+
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      primary: orange
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      primary: black
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
+
+  features:
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - search.share
+    - header.autohide
+    - announce.dismiss
+    - navigation.footer
+    - navigation.indexes
+    - content.code.select
+    - content.code.copy
+    - content.code.annotate
+
+# Additional configuration
+extra:
+  consent:
+    title: Cookie Usage Statement
+    description: >-
+      We use cookies to record your behavior and preferences across multiple visits, as well as to evaluate the effectiveness of our documentation and whether users can find the information they need.
+      With your consent, you will help us optimize our documentation content.
+    consent:
+    actions:
+      - accept
+      - reject
+      - manage
+
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/rust-ta
+    - icon: fontawesome/brands/x-twitter
+      link: https://x.com/GitCtrlX
+
+  generator: false
+
+# Plugins
+plugins:
+  - search
+  - mkdocstrings
+  - minify:
+      minify_html: true
+
+# Page tree
+nav:
+  - Home: "../README.md"
+  - API: "api.md"
