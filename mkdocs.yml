@@ -88,7 +88,15 @@ extra:
 # Plugins
 plugins:
   - search
-  - mkdocstrings
+  - mkdocstrings:
+      handlers:
+            python:
+              options:
+                show_root_heading: true    # 显示模块/类的顶层标题
+                show_source: false         # 是否显示源代码（默认折叠）
+                docstring_style: google    # 指定 docstring 样式（google、numpy、restructuredtext）
+                show_if_no_docstring: false # 如果没有 docstring，是否仍生成条目
+                merge_init_into_class: true # 将 __init__ 的文档合并到类中
   - minify:
       minify_html: true
       minify_js: true
@@ -96,6 +104,15 @@ plugins:
       htmlmin_opts:
           remove_comments: true
       cache_safe: true
+
+markdown_extensions:
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - admonition
+  - tables
 
 # Page tree
 nav:

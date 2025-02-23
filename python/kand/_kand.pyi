@@ -13,7 +13,6 @@ def ad(high, low, close, volume):
     is dominant.
 
     Args:
-        py: Python interpreter token required for GIL management.
         high: High prices as a 1-D NumPy array of type `f64`.
         low: Low prices as a 1-D NumPy array of type `f64`.
         close: Close prices as a 1-D NumPy array of type `f64`.
@@ -1248,50 +1247,43 @@ def dx(high, low, close, period):
 
 def dx_incremental(input_high, input_low, input_prev_high, input_prev_low, input_prev_close, input_prev_smoothed_plus_dm, input_prev_smoothed_minus_dm, input_prev_smoothed_tr, param_period):
     """
-    Calculate the latest DX value incrementally
+    Calculates the latest DX value incrementally.
 
-    # Description
-    Calculates only the most recent DX value using previous smoothed values.
-    This is optimized for real-time calculations where only the latest value is needed.
+    Computes only the most recent DX value using previous smoothed values.
+    Optimized for real-time calculations where only the latest value is needed.
 
-    # Formula
-    See the formula section in the [`dx`] function documentation.
+    For the formula, refer to the [`dx`] function documentation.
 
-    # Arguments
-    * `input_high` - Current high price
-    * `input_low` - Current low price
-    * `input_prev_high` - Previous period's high price
-    * `input_prev_low` - Previous period's low price
-    * `input_prev_close` - Previous period's close price
-    * `input_prev_smoothed_plus_dm` - Previous smoothed +DM value
-    * `input_prev_smoothed_minus_dm` - Previous smoothed -DM value
-    * `input_prev_smoothed_tr` - Previous smoothed TR value
-    * `param_period` - Period for DX calculation (typically 14)
+    Args:
+        input_high (float): Current high price.
+        input_low (float): Current low price.
+        input_prev_high (float): Previous period's high price.
+        input_prev_low (float): Previous period's low price.
+        input_prev_close (float): Previous period's close price.
+        input_prev_smoothed_plus_dm (float): Previous smoothed +DM value.
+        input_prev_smoothed_minus_dm (float): Previous smoothed -DM value.
+        input_prev_smoothed_tr (float): Previous smoothed TR value.
+        param_period (int): Period for DX calculation (typically 14).
 
-    # Returns
-    * `PyResult<(f32, f32, f32, f32)>` - Tuple containing:
-      - Latest DX value
-      - New smoothed +DM
-      - New smoothed -DM
-      - New smoothed TR
+    Returns:
+        tuple: A tuple containing:
+            - Latest DX value (float)
+            - New smoothed +DM (float)
+            - New smoothed -DM (float)
+            - New smoothed TR (float)
 
-    # Example
-    ```python
-    >>> import kand
-    >>> high = 24.20
-    >>> low = 23.85
-    >>> prev_high = 24.07
-    >>> prev_low = 23.72
-    >>> prev_close = 23.95
-    >>> prev_smoothed_plus_dm = 0.5
-    >>> prev_smoothed_minus_dm = 0.3
-    >>> prev_smoothed_tr = 1.2
-    >>> period = 14
-    >>> dx, plus_dm, minus_dm, tr = kand.dx_incremental(
-    ...     high, low, prev_high, prev_low, prev_close,
-    ...     prev_smoothed_plus_dm, prev_smoothed_minus_dm,
-    ...     prev_smoothed_tr, period)
-    ```
+    Example:
+        >>> import kand
+        >>> high, low = 24.20, 23.85
+        >>> prev_high, prev_low, prev_close = 24.07, 23.72, 23.95
+        >>> prev_smoothed_plus_dm = 0.5
+        >>> prev_smoothed_minus_dm = 0.3
+        >>> prev_smoothed_tr = 1.2
+        >>> period = 14
+        >>> dx, plus_dm, minus_dm, tr = kand.dx_incremental(
+        ...     high, low, prev_high, prev_low, prev_close,
+        ...     prev_smoothed_plus_dm, prev_smoothed_minus_dm,
+        ...     prev_smoothed_tr, period)
     """
     ...
 
