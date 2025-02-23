@@ -100,4 +100,5 @@ plugins:
 # Page tree
 nav:
   - Home: "index.md"
+  - Install: "install.md"
   - API: "api.md"
