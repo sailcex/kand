@@ -314,7 +314,7 @@ dependencies = [
 
 [[package]]
 name = "kand"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
  "approx",
  "criterion",
@@ -329,7 +329,7 @@ dependencies = [
 
 [[package]]
 name = "kand-py"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
  "kand",
  "numpy",

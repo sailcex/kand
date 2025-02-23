@@ -9,7 +9,6 @@ use pyo3::prelude::*;
 /// is dominant.
 ///
 /// Args:
-///     py: Python interpreter token required for GIL management.
 ///     high: High prices as a 1-D NumPy array of type `f64`.
 ///     low: Low prices as a 1-D NumPy array of type `f64`.
 ///     close: Close prices as a 1-D NumPy array of type `f64`.
