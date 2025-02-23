@@ -41,8 +41,22 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: 3.x
+      # https://github.com/PyO3/rust-numpy/issues/476
+      - name: Check Python version and GIL status
+        id: check-python
+        run: |
+          python_version=$(python -c "import sys; print(sys.version_info[:2])")
+          gil_enabled=$(python -c "import sys; print(sys._is_gil_enabled() if hasattr(sys, '_is_gil_enabled') else True)")
+          echo "Python Version: $python_version, GIL Enabled: $gil_enabled"
+          if [[ "$python_version" == "(3, 13)" && "$gil_enabled" == "False" ]]; then
+            echo "Skipping build for free-threaded Python 3.13"
+            echo "skip_build=true" >> $GITHUB_OUTPUT
+          else
+            echo "skip_build=false" >> $GITHUB_OUTPUT
+          fi
       - name: Build wheels
         uses: PyO3/maturin-action@v1
+        if: steps.check-python.outputs.skip_build != 'true'
         with:
           target: ${{ matrix.platform.target }}
           args: --release --out dist --find-interpreter
@@ -72,8 +86,22 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: 3.x
+      # https://github.com/PyO3/rust-numpy/issues/476
+      - name: Check Python version and GIL status
+        id: check-python
+        run: |
+          python_version=$(python -c "import sys; print(sys.version_info[:2])")
+          gil_enabled=$(python -c "import sys; print(sys._is_gil_enabled() if hasattr(sys, '_is_gil_enabled') else True)")
+          echo "Python Version: $python_version, GIL Enabled: $gil_enabled"
+          if [[ "$python_version" == "(3, 13)" && "$gil_enabled" == "False" ]]; then
+            echo "Skipping build for free-threaded Python 3.13"
+            echo "skip_build=true" >> $GITHUB_OUTPUT
+          else
+            echo "skip_build=false" >> $GITHUB_OUTPUT
+          fi
       - name: Build wheels
         uses: PyO3/maturin-action@v1
+        if: steps.check-python.outputs.skip_build != 'true'
         with:
           target: ${{ matrix.platform.target }}
           args: --release --out dist --find-interpreter
