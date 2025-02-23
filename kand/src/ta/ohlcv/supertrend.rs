@@ -85,13 +85,14 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 ///
 /// # Returns
 /// * `Ok(())` - Calculation successful
-/// * `Err(KandError)` - Error cases:
-///   - `InvalidData` - Empty input arrays
-///   - `LengthMismatch` - Input/output arrays have different lengths
-///   - `InvalidParameter` - Invalid `param_period` (<2)
-///   - `InsufficientData` - Input length less than required lookback
-///   - `NaNDetected` - NaN values in input (with `deep-check` feature)
-///   - `ConversionError` - Numeric conversion error
+///
+/// # Errors
+/// * `KandError::InvalidData` - Empty input arrays
+/// * `KandError::LengthMismatch` - Input/output arrays have different lengths
+/// * `KandError::InvalidParameter` - Invalid `param_period` (<2)
+/// * `KandError::InsufficientData` - Input length less than required lookback
+/// * `KandError::NaNDetected` - NaN values in input (with `deep-check` feature)
+/// * `KandError::ConversionError` - Numeric conversion error
 pub fn supertrend<T>(
     input_high: &[T],
     input_low: &[T],
@@ -214,7 +215,6 @@ where
 
     Ok(())
 }
-
 /// Calculates a single Supertrend value incrementally
 ///
 /// # Description
@@ -260,10 +260,11 @@ where
 ///   - Current ATR value
 ///   - Current upper band
 ///   - Current lower band
-/// * `Err(KandError)` - Error cases:
-///   - `InvalidParameter` - Invalid `param_period` (<2)
-///   - `NaNDetected` - NaN values in input (with `deep-check` feature)
-///   - `ConversionError` - Numeric conversion error
+///
+/// # Errors
+/// * `KandError::InvalidParameter` - Invalid `param_period` (<2)
+/// * `KandError::NaNDetected` - NaN values in input (with `deep-check` feature)
+/// * `KandError::ConversionError` - Numeric conversion error
 pub fn supertrend_incremental<T>(
     input_high: T,
     input_low: T,
@@ -281,7 +282,6 @@ where
 {
     #[cfg(feature = "check")]
     {
-        // Parameter range check
         if param_period < 2 {
             return Err(KandError::InvalidParameter);
         }
@@ -289,7 +289,6 @@ where
 
     #[cfg(feature = "deep-check")]
     {
-        // NaN check
         if input_high.is_nan()
             || input_low.is_nan()
             || input_close.is_nan()
@@ -303,7 +302,6 @@ where
         }
     }
 
-    // Calculate ATR
     let output_atr = atr::atr_incremental(
         input_high,
         input_low,
@@ -312,12 +310,10 @@ where
         param_period,
     )?;
 
-    // Calculate basic upper and lower bands
     let hl2 = (input_high + input_low) / T::from(2).ok_or(KandError::ConversionError)?;
     let basic_upper = hl2 + param_multiplier * output_atr;
     let basic_lower = hl2 - param_multiplier * output_atr;
 
-    // Calculate final upper and lower bands
     let output_upper = if input_prev_close <= input_prev_upper {
         basic_upper.min(input_prev_upper)
     } else {
@@ -330,11 +326,9 @@ where
         basic_lower
     };
 
-    // Calculate trend direction values
     let up_trend = Signal::Bullish.into();
     let down_trend = Signal::Bearish.into();
 
-    // Determine current trend and Supertrend value based on previous trend
     let (output_trend, output_supertrend) = if input_prev_trend == up_trend {
         if input_close < output_lower {
             (down_trend, output_upper)

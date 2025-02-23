@@ -1,7 +1,6 @@
 use num_traits::{Float, FromPrimitive};
 
 use crate::KandError;
-
 /// Returns the lookback period required by the Parabolic SAR indicator.
 ///
 /// # Description
@@ -14,7 +13,9 @@ use crate::KandError;
 ///
 /// # Returns
 /// * `Ok(usize)` - The lookback period (1)
-/// * `Err(KandError)` - If parameters are invalid
+///
+/// # Errors
+/// * Returns `KandError::InvalidParameter` if `param_acceleration` or `param_maximum` are invalid
 ///
 /// # Example
 /// ```
@@ -64,12 +65,13 @@ where T: Float + FromPrimitive {
 ///
 /// # Returns
 /// * `Ok(())` - Calculation successful
-/// * `Err(KandError)` - Error cases:
-///   * `InvalidData` - Input arrays are empty
-///   * `LengthMismatch` - Input/output array lengths don't match
-///   * `InvalidParameter` - Invalid acceleration/maximum values
-///   * `InsufficientData` - Not enough data points
-///   * `NaNDetected` - Input contains NaN values
+///
+/// # Errors
+/// * `KandError::InvalidData` - Input arrays are empty
+/// * `KandError::LengthMismatch` - Input/output array lengths don't match
+/// * `KandError::InvalidParameter` - Invalid acceleration/maximum values
+/// * `KandError::InsufficientData` - Not enough data points
+/// * `KandError::NaNDetected` - Input contains NaN values
 ///
 /// # Example
 /// ```
@@ -244,14 +246,16 @@ where
 /// * `param_maximum` - Maximum acceleration factor. Type: `T`
 ///
 /// # Returns
+/// A `Result` containing:
 /// * `Ok((T, bool, T, T))` - Tuple containing:
 ///   * Updated SAR value
 ///   * New trend direction
 ///   * Updated acceleration factor
 ///   * Updated extreme point
-/// * `Err(KandError)` - Error cases:
-///   * `InvalidParameter` - Invalid acceleration/maximum values
-///   * `NaNDetected` - Input contains NaN values
+///
+/// # Errors
+/// * `KandError::InvalidParameter` - Invalid acceleration/maximum values
+/// * `KandError::NaNDetected` - Input contains NaN values
 ///
 /// # Example
 /// ```
