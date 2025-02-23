@@ -1,7 +1,6 @@
 use num_traits::{Float, FromPrimitive};
 
 use crate::KandError;
-
 /// Returns the lookback period required for Balance of Power (BOP) calculation.
 ///
 /// # Description
@@ -13,6 +12,9 @@ use crate::KandError;
 ///
 /// # Returns
 /// * `Result<usize, KandError>` - Always returns 0 as no lookback is needed
+///
+/// # Errors
+/// This function does not return any errors. It always returns `Ok(0)`.
 ///
 /// # Example
 /// ```

@@ -4,6 +4,7 @@ use kand::ohlcv::ecl::ecl;
 use crate::helper::generate_test_data;
 
 #[allow(dead_code)]
+#[allow(clippy::similar_names)]
 fn bench_ecl(c: &mut Criterion) {
     let mut group = c.benchmark_group("ecl");
 

@@ -18,8 +18,9 @@ use crate::{
 ///
 /// # Returns
 /// * `Ok(usize)` - The required lookback period
-/// * `Err(KandError)` - Returns error in following cases:
-///   - `KandError::InvalidParameter`: If `param_period` is less than 2
+///
+/// # Errors
+/// * Returns `KandError::InvalidParameter` if `param_period` is less than 2
 ///
 /// # Examples
 /// ```

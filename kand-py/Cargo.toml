@@ -21,12 +21,12 @@ pyo3 = {workspace = true}
 kand = { workspace = true}
 
 [features]
-default = ["float64", "int64", "check"]
-
-float32 = ["kand/float32"]
-float64 = ["kand/float64"]
-int32 = ["kand/int32"]
-int64 = ["kand/int64"]
-
-check = ["kand/check"]
-deep-check = ["check", "kand/deep-check"]
+default = ["extended", "check"]     # Default: extended precision with basic checks
+standard = ["f32", "i32"]          # Standard precision mode (32-bit)
+extended = ["f64", "i64"]          # Extended precision mode (64-bit)
+f32 = ["kand/f32"]                 # 32-bit floating point
+f64 = ["kand/f64"]                 # 64-bit floating point
+i32 = ["kand/i32"]                 # 32-bit integer
+i64 = ["kand/i64"]                 # 64-bit integer
+check = ["kand/check"]             # Basic validation checks
+deep-check = ["check", "kand/deep-check"] # Extended validation checks

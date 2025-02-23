@@ -15,8 +15,10 @@ use crate::{
 /// candlestick is required.
 ///
 /// # Returns
-/// * `Ok(0)` - The Gravestone Doji pattern only requires a single candlestick
-/// * `Err(KandError)` - If an error occurs during calculation
+/// * `Result<usize, KandError>` - Returns `Ok(0)` as the Gravestone Doji pattern only requires a single candlestick
+///
+/// # Errors
+/// This function does not return any errors.
 ///
 /// # Examples
 /// ```

@@ -209,11 +209,11 @@ where
 /// # Calculation
 /// 1. Calculate real body, upper shadow, and lower shadow lengths
 /// 2. Calculate total range = high - low
-/// 3. Update EMA of body sizes using: EMA = (body - prev_ema) * k + prev_ema
+/// 3. Update EMA of body sizes using: EMA = (body - `prev_ema`) * k + `prev_ema`
 /// 4. Check pattern conditions:
-///    - Small body: body <= body_avg
-///    - Shadow threshold = shadow_factor * total_range / 100
-///    - Long upper/lower shadow: shadow >= shadow_threshold
+///    - Small body: body <= `body_avg`
+///    - Shadow threshold = `shadow_factor` * `total_range` / 100
+///    - Long upper/lower shadow: shadow >= `shadow_threshold`
 ///
 /// # Arguments
 /// * `input_open` - Opening price of the candlestick

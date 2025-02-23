@@ -4,9 +4,9 @@ use num_enum::{IntoPrimitive, TryFromPrimitive};
 /// Moving Average types for technical analysis.
 ///
 /// The integer representation of this enum is determined by the enabled features:
-/// - With feature "int64": Uses i64 representation
-/// - With feature "int32": Uses i32 representation
-/// - With no features enabled: Defaults to i32 representation
+/// - With feature "i64": Uses i64 representation (extended precision)
+/// - With feature "i32": Uses i32 representation (standard precision)
+/// - With no features enabled: Defaults to i32
 ///
 /// # Variants
 ///
@@ -21,7 +21,7 @@ use num_enum::{IntoPrimitive, TryFromPrimitive};
 /// * `TRIMA` - Triangular Moving Average
 /// * `WMA` - Weighted Moving Average
 #[derive(Debug, Clone, Copy, PartialEq, Eq, IntoPrimitive, TryFromPrimitive)]
-#[cfg(all(feature = "int64", not(feature = "int32")))]
+#[cfg(all(feature = "i64", feature = "i32"))]
 #[repr(i64)]
 pub enum MAType {
     DEMA  = 0,
@@ -37,7 +37,23 @@ pub enum MAType {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, IntoPrimitive, TryFromPrimitive)]
-#[cfg(all(feature = "int32", not(feature = "int64")))]
+#[cfg(all(feature = "i64", not(feature = "i32")))]
+#[repr(i64)]
+pub enum MAType {
+    DEMA  = 0,
+    EMA   = 1,
+    KAMA  = 2,
+    MAMA  = 3,
+    RMA   = 4,
+    SMA   = 5,
+    T3    = 6,
+    TEMA  = 7,
+    TRIMA = 8,
+    WMA   = 9,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, IntoPrimitive, TryFromPrimitive)]
+#[cfg(all(feature = "i32", not(feature = "i64")))]
 #[repr(i32)]
 pub enum MAType {
     DEMA  = 0,
@@ -53,7 +69,7 @@ pub enum MAType {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, IntoPrimitive, TryFromPrimitive)]
-#[cfg(not(any(feature = "int32", feature = "int64")))]
+#[cfg(not(any(feature = "i32", feature = "i64")))]
 #[repr(i32)]
 pub enum MAType {
     DEMA  = 0,
@@ -85,19 +101,19 @@ impl Default for MAType {
 /// Standard signal values for technical indicators.
 ///
 /// The integer representation of this enum is determined by the enabled features:
-/// - With feature "int64": Uses i64 representation
-/// - With feature "int32": Uses i32 representation
-/// - With no features enabled: Defaults to i32 representation
+/// - With feature "i64": Uses i64 representation (extended precision)
+/// - With feature "i32": Uses i32 representation (standard precision)
+/// - With no features enabled: Defaults to i32
 ///
-/// # Values
+/// Signal values are designed to be consistent across precision modes:
 /// * `Bullish` (+100): Strong upward potential
-/// * `Balance` (50): Moderate signal strength
+/// * `Balance` (+50): Moderate upward bias
 /// * `Bearish` (-100): Strong downward potential
 /// * `Neutral` (0): No clear directional bias
-/// * `Pattern` (1): Technical pattern detected
-/// * `Invalid` (-1): Invalid value
+/// * `Pattern` (+1): Technical pattern detected
+/// * `Invalid` (-1): Invalid or error state
 #[derive(Debug, Clone, Copy, PartialEq, Eq, IntoPrimitive, TryFromPrimitive)]
-#[cfg(all(feature = "int64", not(feature = "int32")))]
+#[cfg(all(feature = "i64", feature = "i32"))]
 #[repr(i64)]
 pub enum Signal {
     Bullish = 100,
@@ -109,7 +125,19 @@ pub enum Signal {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, IntoPrimitive, TryFromPrimitive)]
-#[cfg(all(feature = "int32", not(feature = "int64")))]
+#[cfg(all(feature = "i64", not(feature = "i32")))]
+#[repr(i64)]
+pub enum Signal {
+    Bullish = 100,
+    Balance = 50,
+    Bearish = -100,
+    Neutral = 0,
+    Pattern = 1,
+    Invalid = -1,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, IntoPrimitive, TryFromPrimitive)]
+#[cfg(all(feature = "i32", not(feature = "i64")))]
 #[repr(i32)]
 pub enum Signal {
     Bullish = 100,
@@ -121,7 +149,7 @@ pub enum Signal {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, IntoPrimitive, TryFromPrimitive)]
-#[cfg(not(any(feature = "int32", feature = "int64")))]
+#[cfg(not(any(feature = "i32", feature = "i64")))]
 #[repr(i32)]
 pub enum Signal {
     Bullish = 100,

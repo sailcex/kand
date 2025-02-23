@@ -20,8 +20,9 @@ use crate::{
 ///
 /// # Returns
 /// * `Ok(usize)` - The required lookback period
-/// * `Err(KandError)` - Error cases:
-///   - `KandError::InvalidParameter` - If `param_period` is less than 2
+///
+/// # Errors
+/// * `KandError::InvalidParameter` - If `param_period` is less than 2
 ///
 /// # Examples
 /// ```
@@ -56,7 +57,7 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// 2. Upper shadow = high - max(open,close)
 /// 3. Lower shadow = min(open,close) - low
 /// 4. Compare body length to EMA of previous body lengths
-/// 5. Check if both shadows are smaller than threshold (param_shadow_percent% of body)
+/// 5. Check if both shadows are smaller than threshold (`param_shadow_percent`% of body)
 ///
 /// # Parameters
 /// * `input_open` - Array of opening prices
@@ -76,7 +77,7 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// * `Err(KandError)` - Error cases:
 ///   - `InvalidData` - Empty input arrays
 ///   - `LengthMismatch` - Input/output arrays have different lengths
-///   - `InvalidParameter` - Invalid param_period (<2) or param_shadow_percent (<=0)
+///   - `InvalidParameter` - Invalid `param_period` (<2) or `param_shadow_percent` (<=0)
 ///   - `InsufficientData` - Input length less than required lookback period
 ///   - `NaNDetected` - NaN values in input (when `deep-check` enabled)
 ///   - `ConversionError` - Numeric conversion error
@@ -210,7 +211,7 @@ where
 /// 1. Body = |close - open|
 /// 2. Upper shadow = high - max(open,close)
 /// 3. Lower shadow = min(open,close) - low
-/// 4. Shadow threshold = body * param_shadow_percent / 100
+/// 4. Shadow threshold = body * `param_shadow_percent` / 100
 /// 5. New EMA = (Current - Prev) * K + Prev, where K = 2/(period+1)
 /// 6. Pattern identified if:
 ///    - Body > current EMA
@@ -231,7 +232,7 @@ where
 ///   - Signal value (1: Bullish, 0: None, -1: Bearish)
 ///   - Updated EMA of body sizes
 /// * `Err(KandError)` - Error cases:
-///   - `InvalidParameter` - If param_period < 2 or param_shadow_percent <= 0
+///   - `InvalidParameter` - If `param_period` < 2 or `param_shadow_percent` <= 0
 ///   - `NaNDetected` - If any input contains NaN
 ///   - `ConversionError` - Numeric conversion error
 ///

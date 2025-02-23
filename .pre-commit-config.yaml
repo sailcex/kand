@@ -20,7 +20,7 @@ repos:
         pass_filenames: false
       - id: cargo-check
       - id: clippy
-        args: ['--all-targets', '--fix', '--allow-dirty', '--allow-staged', '--', '-D', 'warnings']
+        args: ['--all-targets', "--all-features", '--fix', '--allow-dirty', '--allow-staged', '--', '-D', 'warnings']
 
   - repo: local
     hooks:

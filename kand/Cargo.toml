@@ -28,11 +28,12 @@ name = "bench_main"
 harness = false
 
 [features]
-default    = ["float64", "int64", "check"]
-float32    = []
-float64    = []
-int32      = []
-int64      = []
-check      = []
-deep-check = ["check"]
-required-features = ["int32", "int64"]
+default = ["extended", "check"]     # Default: extended precision with basic checks
+standard = ["f32", "i32"]          # Standard precision mode (32-bit)
+extended = ["f64", "i64"]          # Extended precision mode (64-bit)
+f32 = []                           # 32-bit floating point
+f64 = []                           # 64-bit floating point
+i32 = []                           # 32-bit integer
+i64 = []                           # 64-bit integer
+check = []                         # Basic validation checks
+deep-check = ["check"]             # Extended validation checks

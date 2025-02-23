@@ -16,6 +16,16 @@ use crate::{
 ///
 /// # Returns
 /// * `Result<usize, KandError>` - Returns 0 as no lookback is needed
+///
+/// # Errors
+/// This function does not return any errors. It always returns `Ok(0)`.
+///
+/// # Example
+/// ```
+/// use kand::ohlcv::cdl_doji;
+/// let lookback = cdl_doji::lookback().unwrap();
+/// assert_eq!(lookback, 0);
+/// ```
 pub const fn lookback() -> Result<usize, KandError> {
     Ok(0)
 }

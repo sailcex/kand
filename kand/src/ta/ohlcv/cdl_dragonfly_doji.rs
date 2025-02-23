@@ -15,8 +15,10 @@ use crate::{
 /// is required.
 ///
 /// # Returns
-/// * `Ok(0)` - The Dragonfly Doji pattern only requires a single candlestick
-/// * `Err(KandError)` - If an error occurs during calculation
+/// * `Result<usize, KandError>` - Always returns `Ok(0)` as the pattern requires a single candlestick
+///
+/// # Errors
+/// This function does not return any errors. It always returns `Ok(0)`.
 ///
 /// # Examples
 /// ```

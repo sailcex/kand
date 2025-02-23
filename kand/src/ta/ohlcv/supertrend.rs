@@ -88,7 +88,7 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// * `Err(KandError)` - Error cases:
 ///   - `InvalidData` - Empty input arrays
 ///   - `LengthMismatch` - Input/output arrays have different lengths
-///   - `InvalidParameter` - Invalid param_period (<2)
+///   - `InvalidParameter` - Invalid `param_period` (<2)
 ///   - `InsufficientData` - Input length less than required lookback
 ///   - `NaNDetected` - NaN values in input (with `deep-check` feature)
 ///   - `ConversionError` - Numeric conversion error
@@ -261,7 +261,7 @@ where
 ///   - Current upper band
 ///   - Current lower band
 /// * `Err(KandError)` - Error cases:
-///   - `InvalidParameter` - Invalid param_period (<2)
+///   - `InvalidParameter` - Invalid `param_period` (<2)
 ///   - `NaNDetected` - NaN values in input (with `deep-check` feature)
 ///   - `ConversionError` - Numeric conversion error
 pub fn supertrend_incremental<T>(
