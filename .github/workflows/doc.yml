@@ -29,7 +29,7 @@ jobs:
       - name: Install dependencies
         run: |
           pip install mkdocs-material mkdocstrings mkdocstrings-python mkdocs-minify-plugin
-          pip install -e kand
+          pip install .
       - name: Copy README.md to docs
         run: cp README.md docs/index.md
       - run: mkdocs gh-deploy --force
