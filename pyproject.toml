@@ -4,7 +4,7 @@ build-backend = "maturin"
 
 [project]
 name = "kand"
-description = ""
+description = "A high-performance technical analysis library written in Rust with Python bindings."
 authors = [{ name = "CtrlX", email = "gitctrlx@gmail.com" }]
 requires-python = ">=3.8"
 keywords = [
