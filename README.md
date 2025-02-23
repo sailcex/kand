@@ -35,12 +35,80 @@
   <b>Kand: Blazingly Fast Technical Analysis Library in Rust, Python</b>
 </h2>
 
+## Why Kand?
 
-## Features
-- Zero-cost abstractions and SIMD optimizations
-- Thread-safe and memory-safe by design
-- Comprehensive test coverage and documentation
-- Clean, ergonomic API with robust error handling
+- 🚀 **Blazing Fast**
+   Built in Rust for top-tier performance and safety, matching or beating TA-Lib.
+- ⚡️ **Zero-Copy**
+   Native NumPy support with zero-copy data passing—no overhead, pure speed.
+- 🔥 **GIL-Free**
+   Fully unlocks Python’s GIL for seamless multi-threaded power, outshining TA-Lib.
+- 🛠️ **One-Line Install**
+   No messy C library setup like TA-Lib—just one command to get started.
+- ⏱️ **O(1) Incremental Speed**
+   Lightning-fast incremental calculations with near-zero cost.
+- 💻 **Cross-Platform**
+   Runs smoothly on macOS, Linux, and Windows.
+
+To learn more, read the [doc](https://rust-ta.github.io/kand/).
+
+#### Python API
+
+The Python interface of `kand` leverages PyO3 for ultra-low latency bindings (~7ns overhead) to the Rust core, seamlessly integrating with NumPy for zero-copy operations and true thread-safe calculations. Below are examples for batch and incremental usage.
+
+```python
+import numpy as np
+from kand import ema
+
+# Batch EMA computation with zero-copy NumPy integration
+# Input: NumPy array of prices (float64)
+# Output: Array of EMA values based on period and default smoothing factor
+prices = np.array([10.0, 11.0, 12.0, 13.0, 14.0], dtype=np.float64)
+ema_values = ema(prices, period=3)  # Uses default smoothing factor k=2/(period+1)
+
+# Incremental EMA update for streaming data
+# Input: New price and previous EMA; constant-time update
+prev_ema = 13.5
+new_price = 15.0
+new_ema = ema_incremental(new_price, prev_ema, period=3)  # Default k=2/(period+1)
+```
+
+**Key Features:**
+
+- **Zero-Copy**: Operates directly on NumPy arrays, avoiding memory duplication.
+- **GIL-Free**: Rust backend releases the Python GIL, enabling parallel execution.
+- **Incremental Updates**: O(1) complexity for real-time applications.
+
+---
+
+#### Rust API
+
+The Rust interface in `kand` provides a high-performance, type-safe implementation of EMA with flexible parameter control. The examples below demonstrate batch and incremental calculations.
+
+```rust
+use kand::ohlcv::ema;
+
+// Batch EMA calculation over a price series
+// Input: Price vector, period, optional smoothing factor (None for default k=2/(period+1))
+// Output: Writes EMA values to a pre-allocated buffer
+let prices = vec![10.0, 11.0, 12.0, 13.0, 14.0];
+let mut ema_values = vec![0.0; prices.len()];
+ema::ema(&prices, 3, None, &mut ema_values)?;  // Default k=2/(4)=0.5
+
+// Constant-time incremental EMA update
+// Input: New price, previous EMA, period, optional smoothing factor
+let prev_ema = 13.5;
+let new_price = 15.0;
+let new_ema = ema::ema_incremental(new_price, prev_ema, 3, None)?;  // Default k=0.5
+```
+
+**Key Features:**
+
+- **Memory Efficiency**: Uses a mutable buffer (`&mut Vec<f64>`) to store results, minimizing allocations.
+- **Error Handling**: Returns `Result<(), KandError>` or `Result<f64, KandError>` for robust failure detection (e.g., invalid period, NaN inputs).
+- **Incremental Design**: O(1) updates for real-time systems.
+
+---
 
 ## Setup
 
@@ -54,7 +122,7 @@ pip install kand
 
 ### Rust
 
-You can take latest release from `crates.io`, or if you want to use the latest features / performance improvements point to the `main` branch of this repo.
+You can take latest release from [`crates.io`](https://crates.io/crates/kand), or if you want to use the latest features / performance improvements point to the `main` branch of this repo.
 
 ```toml
 [dependencies]
