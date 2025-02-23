@@ -1,9 +1,9 @@
-# Technical Analysis Library for Rust
+# Kand - Technical Analysis in Rust
 [![Crates.io](https://img.shields.io/crates/v/kand.svg)](https://crates.io/crates/kand)
 [![Docs.rs](https://docs.rs/kand/badge.svg)](https://docs.rs/kand)
 [![image](https://img.shields.io/pypi/v/kand.svg)](https://pypi.python.org/pypi/kand)
 [![image](https://img.shields.io/pypi/pyversions/kand.svg)](https://pypi.python.org/pypi/kand)
-[![Actions status](https://github.com/rust-ta/kand/actions/workflows/ci.yml/badge.svg)](https://github.com/rust-ta/kand/actions)
+[![Actions status](https://github.com/rust-ta/kand/actions/workflows/CI.yml/badge.svg)](https://github.com/rust-ta/kand/actions)
 [![License](https://img.shields.io/github/license/rust-ta/kand)](https://github.com/rust-ta/kand/blob/main/LICENSE)
 
 A high-performance Rust library for technical analysis of financial market data.
