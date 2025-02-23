@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="docs/assets/logo.png" alt="Kand Logo" width="400">
+  <img src="docs/assets/logo.png" alt="Kand Logo" width="250">
 </h1>
 
 <div align="center">
@@ -38,13 +38,13 @@
 ## Why Kand?
 
 - 🚀 **Blazing Fast**
-   Built in Rust for top-tier performance and safety, matching or beating TA-Lib.
+   Built in Rust for top-tier performance and safety.
 - ⚡️ **Zero-Copy**
    Native NumPy support with zero-copy data passing—no overhead, pure speed.
 - 🔥 **GIL-Free**
-   Fully unlocks Python’s GIL for seamless multi-threaded power, outshining TA-Lib.
+   Fully unlocks Python’s GIL for seamless multi-threaded power.
 - 🛠️ **One-Line Install**
-   No messy C library setup like TA-Lib—just one command to get started.
+   No messy C library setup—just one command to get started.
 - ⏱️ **O(1) Incremental Speed**
    Lightning-fast incremental calculations with near-zero cost.
 - 💻 **Cross-Platform**
