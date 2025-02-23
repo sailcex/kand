@@ -94,5 +94,5 @@ plugins:
 
 # Page tree
 nav:
-  - Home: "../README.md"
+  - Home: "index.md"
   - API: "api.md"
