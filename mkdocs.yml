@@ -117,6 +117,8 @@ markdown_extensions:
 # Page tree
 nav:
   - Home: "index.md"
-  - Install: "install.md"
+  - Install:
+      - Quick Start: "install.md"
+      - Advanced Setup: "advance.md"
   - API: "api.md"
   - About: "about.md"
