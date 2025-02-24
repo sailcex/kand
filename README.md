@@ -38,19 +38,24 @@
 ## Why Kand?
 
 - 🚀 **Blazing Fast**
-   Built in Rust for top-tier performance and safety.
-- ⚡️ **Zero-Copy**
-   Native NumPy support with zero-copy data passing—no overhead, pure speed.
-- 🔥 **GIL-Free**
-   Fully unlocks Python’s GIL for seamless multi-threaded power.
-- 🛠️ **One-Line Install**
-   No messy C library setup—just one command to get started.
-- ⏱️ **O(1) Incremental Speed**
-   Lightning-fast incremental calculations with near-zero cost.
-- 💻 **Cross-Platform**
-   Runs smoothly on macOS, Linux, and Windows.
+  Built in Rust for elite performance and safety, rivaling top libraries like TALib.
 
-To learn more, read the [doc](https://rust-ta.github.io/kand/).
+- 🔥 **GIL-Free**
+  Unlocks Python’s GIL for seamless multi-threading—unlike TALib’s single-threaded limits.
+
+- ⏱️ **O(1) Incremental Speed**
+  Lightning-fast incremental updates, outpacing traditional batch methods.
+
+- ⚡️ **Zero-Copy**
+  Native NumPy integration with zero-copy data passing—no overhead, just speed.
+
+- 🛠️ **One-Line Install**
+  Skip TALib’s complex C library setup—install with a single command.
+
+- 💻 **Cross-Platform**
+  Runs effortlessly on macOS, Linux, and Windows.
+
+Discover more benefits in our [comprehensive documentation](https://rust-ta.github.io/kand/).
 
 #### Python API
 
@@ -83,16 +88,22 @@ new_ema = ema_incremental(new_price, prev_ema, period=3)  # Default k=2/(period+
 
 #### Rust API
 
-The Rust interface in `kand` provides a high-performance, type-safe implementation of EMA with flexible parameter control. The examples below demonstrate batch and incremental calculations.
+The Rust interface in `kand` provides a high-performance, type-safe implementation of EMA with flexible parameter control. It supports both Vec and ndarray inputs for batch and incremental calculations, as shown below.
 
 ```rust
 use kand::ohlcv::ema;
+use ndarray::Array1;
 
 // Batch EMA calculation over a price series
 // Input: Price vector, period, optional smoothing factor (None for default k=2/(period+1))
 // Output: Writes EMA values to a pre-allocated buffer
 let prices = vec![10.0, 11.0, 12.0, 13.0, 14.0];
 let mut ema_values = vec![0.0; prices.len()];
+ema::ema(&prices, 3, None, &mut ema_values)?;  // Default k=2/(4)=0.5
+
+// Batch EMA with ndarray for scientific workflows
+let prices = Array1::from_vec(vec![10.0, 11.0, 12.0, 13.0, 14.0]);
+let mut ema_values = Array1::zeros(prices.len());
 ema::ema(&prices, 3, None, &mut ema_values)?;  // Default k=2/(4)=0.5
 
 // Constant-time incremental EMA update
@@ -104,9 +115,9 @@ let new_ema = ema::ema_incremental(new_price, prev_ema, 3, None)?;  // Default k
 
 **Key Features:**
 
-- **Memory Efficiency**: Uses a mutable buffer (`&mut Vec<f64>`) to store results, minimizing allocations.
-- **Error Handling**: Returns `Result<(), KandError>` or `Result<f64, KandError>` for robust failure detection (e.g., invalid period, NaN inputs).
-- **Incremental Design**: O(1) updates for real-time systems.
+- **Memory Efficiency**: Leverages mutable buffers (`&mut Vec<f64>` or `&mut Array1<f64>`) to store results, slashing memory allocations.
+- **Error Handling**: Returns `Result<(), KandError>` or `Result<f64, KandError>` for reliable failure detection (e.g., invalid period, NaN inputs).
+- **Incremental Design**: O(1) updates tailored for real-time systems.
 
 ---
 
@@ -114,7 +125,7 @@ let new_ema = ema::ema_incremental(new_price, prev_ema, 3, None)?;  // Default k
 
 ### Python
 
-Install the latest Kand version with:
+Get started with Kand in one command - no extra configuration needed:
 
 ```bash
 pip install kand
