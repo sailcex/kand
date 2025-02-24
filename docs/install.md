@@ -27,26 +27,6 @@ pip install kand
 
     No compilation needed—just `pip install` and go!
 
-## Rust Installation
-
-### Requirements
-- Rust 1.80+
-- `cargo` (Rust package manager)
-
-### Add as a Dependency
-Incorporate `kand` into your Rust project:
-
-```toml
-[dependencies]
-kand = "0.1.0"  # Check latest version on crates.io
-```
-
-Or use the CLI:
-
-```bash
-cargo add kand
-```
-
 ## Docker Usage
 
 ### Pull the Official Image

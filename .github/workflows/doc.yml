@@ -34,4 +34,5 @@ jobs:
         run: |
           cp README.md docs/index.md
           sed -i 's|docs/assets/logo.png|assets/logo.png|g' docs/index.md
+          sed -i 's|docs/assets/bench_ema.png|assets/bench_ema.png|g' docs/index.md
       - run: mkdocs gh-deploy --force

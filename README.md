@@ -1,7 +1,6 @@
 <h1 align="center">
   <img src="docs/assets/logo.png" alt="Kand Logo" width="250">
 </h1>
-
 <div align="center">
   <a href="https://crates.io/crates/kand">
     <img src="https://img.shields.io/crates/v/kand.svg" alt="Crates.io"/>
@@ -32,30 +31,40 @@
   <a href="https://github.com/rust-ta/kand">GitHub</a>
 </p>
 <h2 align="center">
-  <b>Kand: Blazingly Fast Technical Analysis Library in Rust, Python</b>
+  <b>Kand: A Blazingly Fast Technical Analysis Library, written in Rust.</b>
 </h2>
+
+<p align="center">
+  <picture align="center">
+    <img alt="EMA Performance Comparison" src="docs/assets/bench_ema.png" width="600">
+  </picture>
+</p>
+
+<p align="center">
+  <i>EMA calculation performance comparison across different implementations.</i>
+</p>
 
 ## Why Kand?
 
-- 🚀 **Blazing Fast**
+- **Blazing Fast**
   Built in Rust for elite performance and safety, rivaling top libraries like TALib.
 
-- 🔥 **GIL-Free**
+- **GIL-Free**
   Unlocks Python’s GIL for seamless multi-threading—unlike TALib’s single-threaded limits.
 
-- ⏱️ **O(1) Incremental Speed**
+- **O(1) Incremental Speed**
   Lightning-fast incremental updates, outpacing traditional batch methods.
 
-- ⚡️ **Zero-Copy**
+- **Zero-Copy**
   Native NumPy integration with zero-copy data passing—no overhead, just speed.
 
-- 📊 **Rich Indicators**
+- **Rich Indicators**
   Extended indicator set including TPO, VWAP, Supertrend—beyond TALib’s basics.
 
-- 🛠️ **One-Line Install**
+- **One-Line Install**
   Skip TALib’s complex C library setup—install with a single command.
 
-- 💻 **Cross-Platform**
+- **Cross-Platform**
   Runs effortlessly on macOS, Linux, and Windows.
 
 Discover more benefits in our [comprehensive documentation](https://rust-ta.github.io/kand/about).
@@ -69,16 +78,13 @@ import numpy as np
 from kand import ema
 
 # Batch EMA computation with zero-copy NumPy integration
-# Input: NumPy array of prices (float64)
-# Output: Array of EMA values based on period and default smoothing factor
 prices = np.array([10.0, 11.0, 12.0, 13.0, 14.0], dtype=np.float64)
-ema_values = ema(prices, period=3)  # Uses default smoothing factor k=2/(period+1)
+ema_values = ema(prices, period=3)
 
 # Incremental EMA update for streaming data
-# Input: New price and previous EMA; constant-time update
 prev_ema = 13.5
 new_price = 15.0
-new_ema = ema_incremental(new_price, prev_ema, period=3)  # Default k=2/(period+1)
+new_ema = ema_incremental(new_price, prev_ema, period=3)
 ```
 
 **Key Features:**
@@ -98,22 +104,19 @@ use kand::ohlcv::ema;
 use ndarray::Array1;
 
 // Batch EMA calculation over a price series
-// Input: Price vector, period, optional smoothing factor (None for default k=2/(period+1))
-// Output: Writes EMA values to a pre-allocated buffer
 let prices = vec![10.0, 11.0, 12.0, 13.0, 14.0];
 let mut ema_values = vec![0.0; prices.len()];
-ema::ema(&prices, 3, None, &mut ema_values)?;  // Default k=2/(4)=0.5
+ema::ema(&prices, 3, None, &mut ema_values)?;
 
 // Batch EMA with ndarray for scientific workflows
 let prices = Array1::from_vec(vec![10.0, 11.0, 12.0, 13.0, 14.0]);
 let mut ema_values = Array1::zeros(prices.len());
-ema::ema(&prices, 3, None, &mut ema_values)?;  // Default k=2/(4)=0.5
+ema::ema(&prices, 3, None, &mut ema_values)?;
 
 // Constant-time incremental EMA update
-// Input: New price, previous EMA, period, optional smoothing factor
 let prev_ema = 13.5;
 let new_price = 15.0;
-let new_ema = ema::ema_incremental(new_price, prev_ema, 3, None)?;  // Default k=0.5
+let new_ema = ema::ema_incremental(new_price, prev_ema, 3, None)?;
 ```
 
 **Key Features:**
