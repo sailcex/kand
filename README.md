@@ -49,13 +49,16 @@
 - ⚡️ **Zero-Copy**
   Native NumPy integration with zero-copy data passing—no overhead, just speed.
 
+- 📊 **Rich Indicators**
+  Extended indicator set including TPO, VWAP, Supertrend—beyond TALib’s basics.
+
 - 🛠️ **One-Line Install**
   Skip TALib’s complex C library setup—install with a single command.
 
 - 💻 **Cross-Platform**
   Runs effortlessly on macOS, Linux, and Windows.
 
-Discover more benefits in our [comprehensive documentation](https://rust-ta.github.io/kand/).
+Discover more benefits in our [comprehensive documentation](https://rust-ta.github.io/kand/about).
 
 #### Python API
 

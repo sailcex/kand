@@ -49,9 +49,11 @@ theme:
     - navigation.instant.progress
     - navigation.tracking
     - navigation.tabs
+    - content.tabs.link
     - navigation.sections
     - navigation.expand
     - navigation.path
+    - content.code.copy
     - toc.follow
     - search.suggest
     - search.highlight
@@ -61,7 +63,6 @@ theme:
     - navigation.footer
     - navigation.indexes
     - content.code.select
-    - content.code.copy
     - content.code.annotate
 
 # Additional configuration
@@ -111,7 +112,15 @@ markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
   - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
   - admonition
+  - pymdownx.details
+  - attr_list
+  - md_in_html
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
   - tables
 
 # Page tree
@@ -121,4 +130,5 @@ nav:
       - Quick Start: "install.md"
       - Advanced Setup: "advance.md"
   - API: "api.md"
+  - Performance: "performance.md"
   - About: "about.md"
