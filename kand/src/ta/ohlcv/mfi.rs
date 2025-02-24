@@ -1,6 +1,6 @@
 use num_traits::{Float, FromPrimitive};
 
-use crate::{ta::ohlcv::typprice, KandError};
+use crate::{KandError, ta::ohlcv::typprice};
 
 /// Calculates the lookback period required for Money Flow Index (MFI) calculation.
 ///

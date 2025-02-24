@@ -1,4 +1,4 @@
-use kand::{stats::stddev, TAFloat};
+use kand::{TAFloat, stats::stddev};
 use numpy::{IntoPyArray, PyArray1, PyReadonlyArray1};
 use pyo3::prelude::*;
 

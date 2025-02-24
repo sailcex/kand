@@ -1,8 +1,8 @@
 use num_traits::{Float, FromPrimitive};
 
 use crate::{
-    ta::{ohlcv::sma, stats::var},
     KandError,
+    ta::{ohlcv::sma, stats::var},
 };
 
 /// Returns the lookback period required for Bollinger Bands calculation.

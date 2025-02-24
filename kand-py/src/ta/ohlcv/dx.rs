@@ -1,4 +1,4 @@
-use kand::{ohlcv::dx, TAFloat};
+use kand::{TAFloat, ohlcv::dx};
 use numpy::{IntoPyArray, PyArray1, PyReadonlyArray1};
 use pyo3::prelude::*;
 

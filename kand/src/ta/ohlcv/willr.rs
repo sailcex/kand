@@ -1,8 +1,8 @@
 use num_traits::{Float, FromPrimitive};
 
 use crate::{
-    helper::{highest_bars, lowest_bars},
     KandError,
+    helper::{highest_bars, lowest_bars},
 };
 
 /// Returns the lookback period required for Williams %R calculation

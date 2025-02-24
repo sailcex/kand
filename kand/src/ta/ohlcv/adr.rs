@@ -1,6 +1,6 @@
 use num_traits::{Float, FromPrimitive};
 
-use crate::{ta::ohlcv::sma, KandError};
+use crate::{KandError, ta::ohlcv::sma};
 
 /// Returns the lookback period required for Average Daily Range (ADR) calculation.
 ///

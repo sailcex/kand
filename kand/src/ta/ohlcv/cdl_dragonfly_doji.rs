@@ -1,10 +1,10 @@
 use num_traits::{Float, FromPrimitive};
 
 use crate::{
-    helper::{real_body_length, upper_shadow_length},
-    types::Signal,
     KandError,
     TAInt,
+    helper::{real_body_length, upper_shadow_length},
+    types::Signal,
 };
 
 /// Returns the lookback period required for Dragonfly Doji pattern detection.

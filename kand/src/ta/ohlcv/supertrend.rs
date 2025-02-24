@@ -1,7 +1,7 @@
 use num_traits::{Float, FromPrimitive};
 
 use super::atr;
-use crate::{types::Signal, KandError, TAInt};
+use crate::{KandError, TAInt, types::Signal};
 
 /// Returns the lookback period required for Supertrend calculation
 ///

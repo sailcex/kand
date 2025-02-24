@@ -1,6 +1,6 @@
 use num_traits::{Float, FromPrimitive};
 
-use crate::{helper::get_levels_hl, KandError};
+use crate::{KandError, helper::get_levels_hl};
 
 /// Calculates Time Price Opportunity (TPO) profile from OHLCV data.
 ///

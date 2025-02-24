@@ -35,9 +35,9 @@
 //!     // First (period-1) values will be NaN, then: [NaN, NaN, 4.0, 6.0, 8.0]
 //!
 //!     // Calculate next SMA value incrementally
-//!     let prev_sma = 8.0;           // Last SMA value
-//!     let new_price = 12.0;         // New price to include
-//!     let old_price = 6.0;          // Oldest price to remove
+//!     let prev_sma = 8.0; // Last SMA value
+//!     let new_price = 12.0; // New price to include
+//!     let old_price = 6.0; // Oldest price to remove
 //!
 //!     let next_sma = sma::sma_incremental(prev_sma, new_price, old_price, period).unwrap();
 //!     // next_sma = 10.0 ((8.0 + 10.0 + 12.0) / 3)

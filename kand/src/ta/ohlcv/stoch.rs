@@ -1,6 +1,6 @@
 use num_traits::{Float, FromPrimitive};
 
-use crate::{ta::ohlcv::sma, KandError};
+use crate::{KandError, ta::ohlcv::sma};
 
 /// Calculates the lookback period required for Stochastic Oscillator calculation.
 ///

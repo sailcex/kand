@@ -1,10 +1,10 @@
 use num_traits::{Float, FromPrimitive};
 
 use crate::{
-    helper::{lower_shadow_length, real_body_length},
-    types::Signal,
     KandError,
     TAInt,
+    helper::{lower_shadow_length, real_body_length},
+    types::Signal,
 };
 
 /// Returns the lookback period required for Gravestone Doji pattern detection.

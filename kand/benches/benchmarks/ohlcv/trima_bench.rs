@@ -1,4 +1,4 @@
-use criterion::{black_box, criterion_group, BenchmarkId, Criterion};
+use criterion::{BenchmarkId, Criterion, black_box, criterion_group};
 use kand::ohlcv::trima::trima;
 
 use crate::helper::generate_test_data;

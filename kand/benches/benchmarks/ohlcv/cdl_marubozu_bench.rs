@@ -1,4 +1,4 @@
-use criterion::{black_box, criterion_group, BenchmarkId, Criterion};
+use criterion::{BenchmarkId, Criterion, black_box, criterion_group};
 use kand::ohlcv::cdl_marubozu::cdl_marubozu;
 
 use crate::helper::generate_test_data;

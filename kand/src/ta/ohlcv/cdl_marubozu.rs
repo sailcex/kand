@@ -1,10 +1,10 @@
 use num_traits::{Float, FromPrimitive};
 
 use crate::{
-    helper::{lower_shadow_length, period_to_k, real_body_length, upper_shadow_length},
-    types::Signal,
     KandError,
     TAInt,
+    helper::{lower_shadow_length, period_to_k, real_body_length, upper_shadow_length},
+    types::Signal,
 };
 
 /// Calculates the lookback period for Marubozu pattern detection.

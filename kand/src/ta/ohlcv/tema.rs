@@ -1,6 +1,6 @@
 use num_traits::{Float, FromPrimitive};
 
-use crate::{ta::ohlcv::ema, KandError};
+use crate::{KandError, ta::ohlcv::ema};
 
 /// Calculates the lookback period required for Triple Exponential Moving Average (TEMA)
 ///

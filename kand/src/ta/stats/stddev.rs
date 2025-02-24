@@ -1,6 +1,6 @@
 use num_traits::{Float, FromPrimitive};
 
-use crate::{ta::stats::var, KandError};
+use crate::{KandError, ta::stats::var};
 
 /// Calculates the lookback period required for Standard Deviation calculation.
 ///
