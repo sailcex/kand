@@ -17,8 +17,8 @@
   <a href="https://github.com/rust-ta/kand/actions/workflows/CI.yml">
     <img src="https://github.com/rust-ta/kand/actions/workflows/CI.yml/badge.svg" alt="CI Status"/>
   </a>
-  <a href="https://github.com/rust-ta/kand/blob/main/LICENSE">
-    <img src="https://img.shields.io/github/license/rust-ta/kand" alt="License"/>
+  <a href="https://pypi.python.org/pypi/kand">
+    <img src="https://img.shields.io/pypi/l/kand.svg" alt="License"/>
   </a>
 </div>
 <p align="center">
@@ -34,6 +34,8 @@
   <b>Kand: A Blazingly Fast Technical Analysis Library, written in Rust.</b>
 </h2>
 
+> ⚠️ **Development Status**: This project is under active development. APIs may change, and some features might not be fully implemented or tested yet. Contributions and feedback are welcome!
+
 <p align="center">
   <picture align="center">
     <img alt="EMA Performance Comparison" src="docs/assets/bench_ema.png" width="600">
@@ -46,28 +48,28 @@
 
 ## Why Kand?
 
-- **Blazing Fast**
-  Built in Rust for elite performance and safety, rivaling top libraries like TALib.
+- **⚡ Unmatched Performance**
+  Built in Rust, delivering blazing speed and memory safety, rivaling TALib’s peak.
 
-- **GIL-Free**
-  Unlocks Python’s GIL for seamless multi-threading—unlike TALib’s single-threaded limits.
+- **🔓 Multithreading Unleashed**
+  Breaks free from Python’s GIL, enabling seamless parallel processing beyond single-threaded limits.
 
-- **O(1) Incremental Speed**
-  Lightning-fast incremental updates, outpacing traditional batch methods.
+- **⚙️ Real-Time Incremental Core**
+  O(1) complexity updates, redefining high-efficiency computation.
 
-- **Zero-Copy**
-  Native NumPy integration with zero-copy data passing—no overhead, just speed.
+- **🚀 Native Zero-Copy**
+  Deeply integrated with NumPy, ensuring lossless data flow at maximum speed.
 
-- **Rich Indicators**
-  Extended indicator set including TPO, VWAP, Supertrend—beyond TALib’s basics.
+- **📊 Pioneering Indicators**
+  Features advanced tools like TPO, VWAP, and Supertrend, pushing analysis frontiers.
 
-- **One-Line Install**
-  Skip TALib’s complex C library setup—install with a single command.
+- **📦 Lightweight & Effortless**
+  Ultra-compact package with one-line install—no bloat, no complex dependencies.
 
-- **Cross-Platform**
-  Runs effortlessly on macOS, Linux, and Windows.
+- **💻 Universal Compatibility**
+  Runs flawlessly across macOS, Linux, and Windows.
 
-Discover more benefits in our [comprehensive documentation](https://rust-ta.github.io/kand/about).
+Dive deeper at our [official documentation](https://rust-ta.github.io/kand/about).
 
 #### Python API
 
