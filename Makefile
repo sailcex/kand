@@ -54,3 +54,7 @@ doc:
 .PHONY: pre-commit
 pre-commit:
 	pre-commit run --all-files
+
+.PHONY: cliff
+cliff:
+	git-cliff
