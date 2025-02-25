@@ -153,6 +153,10 @@ where
             }
         }
     }
+
+    let param_period_t = T::from(param_period).ok_or(KandError::ConversionError)?;
+    let hundred_t = T::from(100).ok_or(KandError::ConversionError)?;
+
     // Calculate Aroon Up and Down values for each index starting from lookback
     // Note: We use param_period + 1 in highest_bars/lowest_bars because:
     //
@@ -183,12 +187,11 @@ where
         output_prev_low[i] = input_low[i - days_since_low];
 
         // Calculate Aroon Up and Down values
-        output_aroon_up[i] =
-            T::from(100.0 * (param_period as f64 - days_since_high as f64) / param_period as f64)
-                .ok_or(KandError::ConversionError)?;
-        output_aroon_down[i] =
-            T::from(100.0 * (param_period as f64 - days_since_low as f64) / param_period as f64)
-                .ok_or(KandError::ConversionError)?;
+        let days_since_high_t = T::from(days_since_high).ok_or(KandError::ConversionError)?;
+        let days_since_low_t = T::from(days_since_low).ok_or(KandError::ConversionError)?;
+
+        output_aroon_up[i] = hundred_t - (hundred_t * days_since_high_t / param_period_t);
+        output_aroon_down[i] = hundred_t - (hundred_t * days_since_low_t / param_period_t);
     }
 
     // Fill NaN values for lookback period
@@ -305,12 +308,13 @@ where
         days_since_low = 0;
     }
 
-    let aroon_up =
-        T::from(100.0 * (param_period as f64 - days_since_high as f64) / param_period as f64)
-            .ok_or(KandError::ConversionError)?;
-    let aroon_down =
-        T::from(100.0 * (param_period as f64 - days_since_low as f64) / param_period as f64)
-            .ok_or(KandError::ConversionError)?;
+    let param_period_t = T::from(param_period).ok_or(KandError::ConversionError)?;
+    let hundred_t = T::from(100.0).ok_or(KandError::ConversionError)?;
+    let days_since_high_t = T::from(days_since_high).ok_or(KandError::ConversionError)?;
+    let days_since_low_t = T::from(days_since_low).ok_or(KandError::ConversionError)?;
+
+    let aroon_up = hundred_t - (hundred_t * days_since_high_t / param_period_t);
+    let aroon_down = hundred_t - (hundred_t * days_since_low_t / param_period_t);
 
     Ok((
         aroon_up,
