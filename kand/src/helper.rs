@@ -26,6 +26,13 @@ use crate::KandError;
 ///
 /// # Returns
 /// * `Result<usize, KandError>` - Number of bars back to lowest value if successful, error otherwise
+///
+/// # Errors
+/// * Returns `KandError::InvalidParameter` if:
+///   - The input array is empty
+///   - `start_idx` is out of bounds
+///   - `lookback` is 0
+///   - `start_idx` is less than `lookback - 1`
 pub fn lowest_bars<T>(array: &[T], start_idx: usize, lookback: usize) -> Result<usize, KandError>
 where T: Float + FromPrimitive {
     if array.is_empty() || start_idx >= array.len() || lookback == 0 || start_idx < lookback - 1 {
@@ -68,6 +75,13 @@ where T: Float + FromPrimitive {
 ///
 /// # Returns
 /// * `Result<usize, KandError>` - Number of bars back to highest value if successful, error otherwise
+///
+/// # Errors
+/// * Returns `KandError::InvalidParameter` if:
+///   - The input array is empty
+///   - `start_idx` is out of bounds
+///   - `lookback` is 0
+///   - `start_idx` is less than `lookback - 1`
 pub fn highest_bars<T>(array: &[T], start_idx: usize, lookback: usize) -> Result<usize, KandError>
 where T: Float + FromPrimitive {
     if array.is_empty() || start_idx >= array.len() || lookback == 0 || start_idx < lookback - 1 {
@@ -85,6 +99,7 @@ where T: Float + FromPrimitive {
     }
     Ok(highest_idx)
 }
+
 /// Calculate k factor from period value (k = 2 / (period + 1))
 ///
 /// # Arguments
@@ -200,6 +215,8 @@ where T: Float {
 /// * Returns `KandError::InvalidParameter` if `param_interval` is <= 0
 /// * Returns `KandError::InvalidData` if input arrays are empty
 /// * Returns `KandError::LengthMismatch` if input arrays have different lengths
+/// * Returns `KandError::NaNDetected` if any input value is NaN (with "deep-check" feature)
+/// * Returns `KandError::ConversionError` if conversion from float to usize fails
 ///
 /// # Examples
 /// ```
