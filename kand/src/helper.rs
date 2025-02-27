@@ -116,7 +116,8 @@ where T: Float + FromPrimitive {
     if period == 0 {
         return Err(KandError::InvalidParameter);
     }
-    Ok(T::from(2).ok_or(KandError::ConversionError)? / T::from(period + 1).ok_or(KandError::ConversionError)?)
+    Ok(T::from(2).ok_or(KandError::ConversionError)?
+        / T::from(period + 1).ok_or(KandError::ConversionError)?)
 }
 
 /// Calculate candlestick real body length

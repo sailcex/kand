@@ -4,13 +4,28 @@ This document records all significant updates and changes to the Kand project.
 
 ## [unreleased]
 
+### 🚜 Refactor
+
+- *(ci:release)* Refactor release ci
+
+## [0.1.2] - 2025-02-27
+
 ### 🐛 Bug Fixes
 
 - *(makefile)* Update makefile
+- *(bench)* Added #[allow(clippy::expect_used)] to suppress clippy warnings
+- *(cdl_gravestone_doji)* Optimize T::from(100).unwrap() to T::from(100).ok_or(KandError::ConversionError)?
+- *(var)* Replace unwrap with safe conversion using ok_or(KandError::ConversionError)?
 
 ### 🚜 Refactor
 
 - *(ci)* Simplify release workflow and customize changelog footer
+- *(tpo)* Replace as f64 with f64::from(u8::try_from(i).unwrap()) for type conversion
+
+### 📚 Documentation
+
+- Update rust doc
+- *(helper)* Add missing error documentation for lowest_bars and highest_bars functions
 
 ## [0.1.1] - 2025-02-27
 

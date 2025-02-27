@@ -261,8 +261,8 @@ mod tests {
         // level_floor: [100.0, 100.1, 100.2, 100.3, 100.4]
         // level_ceiling: [100.1, 100.2, 100.3, 100.4, 100.5]
         for i in 0..expected_levels {
-            let floor_expected = f64::from(u8::try_from(i).unwrap()) * interval + 100.0;
-            let ceiling_expected = f64::from(u8::try_from(i + 1).unwrap()) * interval + 100.0;
+            let floor_expected = f64::from(u8::try_from(i).unwrap()).mul_add(interval, 100.0);
+            let ceiling_expected = f64::from(u8::try_from(i + 1).unwrap()).mul_add(interval, 100.0);
             assert_relative_eq!(
                 level_floor[i],
                 floor_expected,
