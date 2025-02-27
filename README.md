@@ -222,7 +222,7 @@ Recommend Rust version `>=1.80`.
 - [x] **SUPERTREND** - Super Trend Indicator
 - [x] **T3** - Triple Exponential Moving Average (T3)
 - [x] **TEMA** - Triple Exponential Moving Average
-- [x] **TPO** - Time Price Opportunity
+- [x] **TPO** - Time Price Opportunity **[Unstable]**
 - [x] **TRANGE** - True Range
 - [x] **TRIMA** - Triangular Moving Average
 - [x] **TRIX** - 1-day Rate-Of-Change (ROC) of a Triple Smooth EMA
