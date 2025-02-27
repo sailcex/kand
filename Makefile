@@ -62,7 +62,7 @@ uv-sync:
 	uv venv
 	uv lock --upgrade
 	uv sync
-	uv run "./scripts/gen_stub.py"
+	uv run "./scripts/gen_stub.py" kand python/kand/_kand.pyi
 
 # Run pre-commit hooks on all files
 .PHONY: pre-commit
