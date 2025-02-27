@@ -201,7 +201,7 @@ where
 
     // Check for Gravestone Doji pattern
     let is_doji_body =
-        range > T::zero() && body <= range * param_body_percent / T::from(100).unwrap();
+        range > T::zero() && body <= range * param_body_percent / T::from(100).ok_or(KandError::ConversionError)?;
     let has_minimal_lower_shadow = dn_shadow <= body;
 
     let output_signal = if is_doji_body && has_minimal_lower_shadow {
