@@ -10,6 +10,9 @@ use crate::KandError;
 ///
 /// # Returns
 /// * `Result<usize, KandError>` - The lookback period (always 1)
+///
+/// # Errors
+/// This function does not return any errors.
 pub const fn lookback() -> Result<usize, KandError> {
     Ok(1)
 }

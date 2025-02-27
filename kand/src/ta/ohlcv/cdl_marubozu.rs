@@ -74,13 +74,14 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 ///
 /// # Returns
 /// * `Ok(())` - Calculation successful
-/// * `Err(KandError)` - Error cases:
-///   - `InvalidData` - Empty input arrays
-///   - `LengthMismatch` - Input/output arrays have different lengths
-///   - `InvalidParameter` - Invalid `param_period` (<2) or `param_shadow_percent` (<=0)
-///   - `InsufficientData` - Input length less than required lookback period
-///   - `NaNDetected` - NaN values in input (when `deep-check` enabled)
-///   - `ConversionError` - Numeric conversion error
+///
+/// # Errors
+/// * [`KandError::InvalidData`] - Empty input arrays
+/// * [`KandError::LengthMismatch`] - Input/output arrays have different lengths
+/// * [`KandError::InvalidParameter`] - Invalid `param_period` (<2) or `param_shadow_percent` (<=0)
+/// * [`KandError::InsufficientData`] - Input length less than required lookback period
+/// * [`KandError::NaNDetected`] - NaN values in input (when `deep-check` enabled)
+/// * [`KandError::ConversionError`] - Numeric conversion error
 ///
 /// # Examples
 /// ```
@@ -229,12 +230,13 @@ where
 ///
 /// # Returns
 /// * `Ok((TAInt, T))` - Tuple containing:
-///   - Signal value (1: Bullish, 0: None, -1: Bearish)
+///   - Signal value (100: Bullish, 0: None, -100: Bearish)
 ///   - Updated EMA of body sizes
-/// * `Err(KandError)` - Error cases:
-///   - `InvalidParameter` - If `param_period` < 2 or `param_shadow_percent` <= 0
-///   - `NaNDetected` - If any input contains NaN
-///   - `ConversionError` - Numeric conversion error
+///
+/// # Errors
+/// * [`KandError::InvalidParameter`] - If `param_period` < 2 or `param_shadow_percent` <= 0
+/// * [`KandError::NaNDetected`] - If any input contains NaN (when `deep-check` feature is enabled)
+/// * [`KandError::ConversionError`] - If numeric conversion fails
 ///
 /// # Examples
 /// ```

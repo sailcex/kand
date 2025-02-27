@@ -85,7 +85,6 @@ where T: Float + FromPrimitive {
     }
     Ok(highest_idx)
 }
-
 /// Calculate k factor from period value (k = 2 / (period + 1))
 ///
 /// # Arguments
@@ -93,12 +92,16 @@ where T: Float + FromPrimitive {
 ///
 /// # Returns
 /// * `Result<T, KandError>` - The calculated k factor if successful, error otherwise
+///
+/// # Errors
+/// * Returns `KandError::InvalidParameter` if `period` is 0
+/// * Returns `KandError::ConversionError` if the conversion from `usize` to `T` fails
 pub fn period_to_k<T>(period: usize) -> Result<T, KandError>
 where T: Float + FromPrimitive {
     if period == 0 {
         return Err(KandError::InvalidParameter);
     }
-    Ok(T::from(2).unwrap() / T::from(period + 1).ok_or(KandError::ConversionError)?)
+    Ok(T::from(2).ok_or(KandError::ConversionError)? / T::from(period + 1).ok_or(KandError::ConversionError)?)
 }
 
 /// Calculate candlestick real body length

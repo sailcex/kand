@@ -8,7 +8,10 @@ use crate::KandError;
 /// OBV has no lookback period as it can be calculated from the first data point.
 ///
 /// # Returns
-/// * `Result<usize, KandError>` - Returns 0 as OBV can be calculated from first data point
+/// * `Ok(usize)` - Returns 0 as OBV can be calculated from first data point
+///
+/// # Errors
+/// This function does not return any errors.
 ///
 /// # Example
 /// ```

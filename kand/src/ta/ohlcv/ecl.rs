@@ -1,7 +1,6 @@
 use num_traits::{Float, FromPrimitive};
 
 use crate::KandError;
-
 /// Returns the lookback period required for Expanded Camarilla Levels (ECL) calculation.
 ///
 /// # Description
@@ -11,6 +10,9 @@ use crate::KandError;
 ///
 /// # Returns
 /// * `Result<usize, KandError>` - The lookback period (1)
+///
+/// # Errors
+/// This function does not return any errors.
 ///
 /// # Example
 /// ```

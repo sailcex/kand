@@ -59,8 +59,11 @@ pub const fn lookback() -> Result<usize, KandError> {
 ///
 /// # Returns
 /// * `Ok(())` - Calculation completed successfully
-/// * `Err(KandError::LengthMismatch)` - If input arrays have different lengths
-/// * `Err(KandError::NaNDetected)` - If any input contains NaN values (when `deep-check` enabled)
+///
+/// # Errors
+/// * [`KandError::LengthMismatch`] - If input arrays have different lengths
+/// * [`KandError::InvalidParameter`] - If `param_body_percent` is less than or equal to zero
+/// * [`KandError::NaNDetected`] - If any input contains NaN values (when `deep-check` feature enabled)
 ///
 /// # Examples
 /// ```
@@ -162,9 +165,11 @@ where
 /// * `Ok(TAInt)` - Signal value where:
 ///   - 100: Bullish Dragonfly Doji pattern detected
 ///   - 0: No pattern detected
-/// * `Err(KandError::InvalidParameter)` - If `param_body_percent` is less than or equal to zero
-/// * `Err(KandError::NaNDetected)` - If any input value is NaN (when `deep-check` enabled)
-/// * `Err(KandError::ConversionError)` - If numeric conversion fails
+///
+/// # Errors
+/// * [`KandError::InvalidParameter`] - If `param_body_percent` is less than or equal to zero
+/// * [`KandError::NaNDetected`] - If any input value is NaN (when `deep-check` feature enabled)
+/// * [`KandError::ConversionError`] - If numeric conversion fails
 ///
 /// # Examples
 /// ```

@@ -73,11 +73,12 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 ///
 /// # Returns
 /// * `Ok(())` - Calculation completed successfully
-/// * `Err(KandError)` - Returns error in following cases:
-///   - `KandError::LengthMismatch`: Input arrays have different lengths
-///   - `KandError::InvalidParameter`: Parameter values are invalid
-///   - `KandError::InsufficientData`: Input length is less than required lookback
-///   - `KandError::NaNDetected`: Input contains NaN values (when `deep-check` enabled)
+///
+/// # Errors
+/// * [`KandError::LengthMismatch`] - If input arrays have different lengths
+/// * [`KandError::InvalidParameter`] - If parameter values are invalid
+/// * [`KandError::InsufficientData`] - If input length is less than required lookback
+/// * [`KandError::NaNDetected`] - If input contains NaN values (when `deep-check` enabled)
 ///
 /// # Examples
 /// ```
@@ -212,11 +213,13 @@ where
 /// * `Ok((TAInt, T))` - Returns tuple containing:
 ///   - First element: Pattern signal (100 for bullish hammer, 0 for no pattern)
 ///   - Second element: Updated EMA value of body sizes
-/// * `Err(KandError::InvalidParameter)` - If parameters are invalid:
+///
+/// # Errors
+/// * [`KandError::InvalidParameter`] - If parameters are invalid:
 ///   - `param_period` is less than 2
 ///   - `param_factor` is less than or equal to zero
-/// * `Err(KandError::NaNDetected)` - If any input value is NaN (when `deep-check` enabled)
-/// * `Err(KandError::ConversionError)` - If numeric conversion fails
+/// * [`KandError::NaNDetected`] - If any input value is NaN (when `deep-check` enabled)
+/// * [`KandError::ConversionError`] - If numeric conversion fails
 ///
 /// # Examples
 /// ```
