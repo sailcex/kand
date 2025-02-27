@@ -127,5 +127,6 @@ nav:
       - Quick Start: "install.md"
       - Advanced Setup: "advance.md"
   - API: "api.md"
+  - Changelog: "changelog.md"
   - Performance: "performance.md"
   - About: "about.md"
