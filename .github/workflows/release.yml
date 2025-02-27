@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*.*.*'
 
+permissions:
+  contents: write  # Grants permission to create releases
+
 jobs:
   generate-changelog:
     name: Generate Changelog
