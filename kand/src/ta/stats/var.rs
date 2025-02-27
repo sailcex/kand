@@ -145,7 +145,7 @@ where
         sum_sq = sum_sq + *val * *val;
     }
 
-    let period_t = T::from(param_period).unwrap();
+    let period_t = T::from(param_period).ok_or(KandError::ConversionError)?;
     let mean = sum / period_t;
     output_var[lookback] = (sum_sq - sum * mean) / period_t;
     output_sum[lookback] = sum;
@@ -241,7 +241,7 @@ where
     let new_sum_sq =
         input_prev_sum_sq - input_old_price * input_old_price + input_price * input_price;
 
-    let period_t = T::from(param_period).unwrap();
+    let period_t = T::from(param_period).ok_or(KandError::ConversionError)?;
     let mean = new_sum / period_t;
     let var = (new_sum_sq - new_sum * mean) / period_t;
 
