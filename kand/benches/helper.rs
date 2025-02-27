@@ -9,6 +9,7 @@ use rand::Rng;
 /// - The floating point type `T` cannot represent common values like 0.0, 0.5, 1.0, 2.0, 100.0
 /// - Type conversion from `usize` to type `T` fails
 #[must_use]
+#[allow(clippy::expect_used)]
 pub fn generate_test_data<T: Float + FromPrimitive + rand::distr::uniform::SampleUniform>(
     size: usize,
 ) -> Vec<T> {

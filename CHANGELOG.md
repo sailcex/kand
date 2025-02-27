@@ -1,14 +1,16 @@
 # Changelog
 
-This document records all significant updates and changes to the Kand project. Changes for each version are organized by category, allowing users to quickly understand the project's development history and feature evolution.
-
-## Version History
+This document records all significant updates and changes to the Kand project.
 
 ## [unreleased]
 
 ### 🐛 Bug Fixes
 
 - *(makefile)* Update makefile
+
+### 🚜 Refactor
+
+- *(ci)* Simplify release workflow and customize changelog footer
 
 ## [0.1.1] - 2025-02-27
 
@@ -22,4 +24,4 @@ This document records all significant updates and changes to the Kand project. C
 
 ---
 
-> **Note**: This changelog is automatically generated based on Git commit history.
+> "Quantitative trading begins with data, thrives on strategy, and succeeds through execution. Kand, making trading simpler."
