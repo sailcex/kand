@@ -50,11 +50,27 @@ fmt:
 doc:
 	cargo +nightly doc --all-features --no-deps --open
 
+# Generate CHANGELOG.md using git-cliff
+.PHONY: cliff
+cliff:
+	git-cliff
+	git cliff --output CHANGELOG.md
+
+# Sync Python environment using uv
+.PHONY: uv-sync
+uv-sync:
+	uv venv
+	uv lock --upgrade
+	uv sync
+	uv run "./scripts/gen_stub.py"
+
 # Run pre-commit hooks on all files
 .PHONY: pre-commit
 pre-commit:
 	pre-commit run --all-files
-
-.PHONY: cliff
-cliff:
-	git-cliff
+	$(MAKE) build
+	$(MAKE) test
+	$(MAKE) clippy
+	$(MAKE) fmt
+	$(MAKE) cliff
+	$(MAKE) uv-sync
