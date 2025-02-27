@@ -32,8 +32,8 @@ jobs:
           pip install .
       - name: Copy and process README.md
         run: |
+          cp CHANGELOG.md docs/changelog.md
           cp README.md docs/index.md
           sed -i 's|docs/assets/logo.png|assets/logo.png|g' docs/index.md
           sed -i 's|docs/assets/bench_ema.png|assets/bench_ema.png|g' docs/index.md
-          sed -i 's|docs/CHANGELOG.md|changelog.md|g' docs/index.md
       - run: mkdocs gh-deploy --force
