@@ -80,7 +80,6 @@
 //! - Configurable precision modes (standard/extended)
 //! - In-place calculations to minimize memory allocations
 //! - Optional validation checks that can be disabled for maximum performance
-
 #![allow(clippy::similar_names, clippy::too_many_lines)]
 
 pub mod ta;
@@ -90,12 +89,6 @@ pub mod helper;
 
 pub mod error;
 pub use error::{KandError, Result};
-
-#[cfg(all(feature = "f32", feature = "f64"))]
-pub type TAFloat = f64;
-
-#[cfg(all(feature = "i32", feature = "i64"))]
-pub type TAInt = i64;
 
 /// Default floating-point precision type used across the library.
 ///
@@ -111,10 +104,7 @@ pub type TAInt = i64;
 #[cfg(all(feature = "f32", not(feature = "f64")))]
 pub type TAFloat = f32;
 
-#[cfg(all(feature = "f64", not(feature = "f32")))]
-pub type TAFloat = f64;
-
-#[cfg(not(any(feature = "f32", feature = "f64")))]
+#[cfg(not(all(feature = "f32", not(feature = "f64"))))]
 pub type TAFloat = f64; // Default to f64 when no features are enabled
 
 /// Default integer type used for indicator outputs.
@@ -131,8 +121,9 @@ pub type TAFloat = f64; // Default to f64 when no features are enabled
 #[cfg(all(feature = "i32", not(feature = "i64")))]
 pub type TAInt = i32;
 
-#[cfg(all(feature = "i64", not(feature = "i32")))]
-pub type TAInt = i64;
+#[cfg(not(all(feature = "i32", not(feature = "i64"))))]
+pub type TAInt = i64; // Default to i64 when no features are enabled
 
-#[cfg(not(any(feature = "i32", feature = "i64")))]
-pub type TAInt = i32; // Default to i32 when no features are enabled
+/// Global compensation value used for floating-point comparisons
+/// to account for rounding errors in calculations.
+pub const COMPENSATION: TAFloat = 0.000_000_000_1; // 10^-10

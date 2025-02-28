@@ -1,4 +1,3 @@
-#[allow(unused_imports)]
 use num_enum::{IntoPrimitive, TryFromPrimitive};
 
 /// Moving Average types for technical analysis.
@@ -21,7 +20,7 @@ use num_enum::{IntoPrimitive, TryFromPrimitive};
 /// * `TRIMA` - Triangular Moving Average
 /// * `WMA` - Weighted Moving Average
 #[derive(Debug, Clone, Copy, PartialEq, Eq, IntoPrimitive, TryFromPrimitive)]
-#[cfg(all(feature = "i64", feature = "i32"))]
+#[cfg(feature = "i64")]
 #[repr(i64)]
 pub enum MAType {
     DEMA  = 0,
@@ -37,39 +36,7 @@ pub enum MAType {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, IntoPrimitive, TryFromPrimitive)]
-#[cfg(all(feature = "i64", not(feature = "i32")))]
-#[repr(i64)]
-pub enum MAType {
-    DEMA  = 0,
-    EMA   = 1,
-    KAMA  = 2,
-    MAMA  = 3,
-    RMA   = 4,
-    SMA   = 5,
-    T3    = 6,
-    TEMA  = 7,
-    TRIMA = 8,
-    WMA   = 9,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, IntoPrimitive, TryFromPrimitive)]
-#[cfg(all(feature = "i32", not(feature = "i64")))]
-#[repr(i32)]
-pub enum MAType {
-    DEMA  = 0,
-    EMA   = 1,
-    KAMA  = 2,
-    MAMA  = 3,
-    RMA   = 4,
-    SMA   = 5,
-    T3    = 6,
-    TEMA  = 7,
-    TRIMA = 8,
-    WMA   = 9,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, IntoPrimitive, TryFromPrimitive)]
-#[cfg(not(any(feature = "i32", feature = "i64")))]
+#[cfg(not(feature = "i64"))]
 #[repr(i32)]
 pub enum MAType {
     DEMA  = 0,
@@ -113,7 +80,7 @@ impl Default for MAType {
 /// * `Pattern` (+1): Technical pattern detected
 /// * `Invalid` (-1): Invalid or error state
 #[derive(Debug, Clone, Copy, PartialEq, Eq, IntoPrimitive, TryFromPrimitive)]
-#[cfg(all(feature = "i64", feature = "i32"))]
+#[cfg(feature = "i64")]
 #[repr(i64)]
 pub enum Signal {
     Bullish = 100,
@@ -125,31 +92,7 @@ pub enum Signal {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, IntoPrimitive, TryFromPrimitive)]
-#[cfg(all(feature = "i64", not(feature = "i32")))]
-#[repr(i64)]
-pub enum Signal {
-    Bullish = 100,
-    Balance = 50,
-    Bearish = -100,
-    Neutral = 0,
-    Pattern = 1,
-    Invalid = -1,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, IntoPrimitive, TryFromPrimitive)]
-#[cfg(all(feature = "i32", not(feature = "i64")))]
-#[repr(i32)]
-pub enum Signal {
-    Bullish = 100,
-    Balance = 50,
-    Bearish = -100,
-    Neutral = 0,
-    Pattern = 1,
-    Invalid = -1,
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, IntoPrimitive, TryFromPrimitive)]
-#[cfg(not(any(feature = "i32", feature = "i64")))]
+#[cfg(not(feature = "i64"))]
 #[repr(i32)]
 pub enum Signal {
     Bullish = 100,
