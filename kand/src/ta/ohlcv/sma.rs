@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Calculates the lookback period required for Simple Moving Average (SMA).
 ///
@@ -76,8 +74,11 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// sma::sma(&prices, period, &mut sma_values).unwrap();
 /// // sma_values = [NaN, NaN, 4.0, 6.0, 8.0]
 /// ```
-pub fn sma<T>(input: &[T], param_period: usize, output_sma: &mut [T]) -> Result<(), KandError>
-where T: Float + FromPrimitive {
+pub fn sma(
+    input: &[TAFloat],
+    param_period: usize,
+    output_sma: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input.len();
     let lookback = lookback(param_period)?;
 
@@ -111,18 +112,18 @@ where T: Float + FromPrimitive {
 
     let mut sum = input[0];
     for value in input.iter().take(lookback + 1).skip(1) {
-        sum = sum + *value;
+        sum += *value;
     }
-    output_sma[lookback] = sum / T::from(param_period).ok_or(KandError::ConversionError)?;
+    output_sma[lookback] = sum / param_period as TAFloat;
 
     for i in (lookback + 1)..input.len() {
         sum = sum + input[i] - input[i - param_period];
-        output_sma[i] = sum / T::from(param_period).ok_or(KandError::ConversionError)?;
+        output_sma[i] = sum / param_period as TAFloat;
     }
 
     // Fill initial values with NAN
     for value in output_sma.iter_mut().take(lookback) {
-        *value = T::nan();
+        *value = TAFloat::NAN;
     }
 
     Ok(())
@@ -144,13 +145,13 @@ where T: Float + FromPrimitive {
 /// - n is the time period
 ///
 /// # Arguments
-/// * `input_prev_sma` - Previous SMA value
+/// * `prev_sma` - Previous SMA value
 /// * `input_new_price` - New price to include in calculation
 /// * `input_old_price` - Oldest price to remove from calculation
 /// * `param_period` - The time period for SMA calculation (must be >= 2)
 ///
 /// # Returns
-/// * `Result<T, KandError>` - The next SMA value on success
+/// * `Result<TAFloat, KandError>` - The next SMA value on success
 ///
 /// # Errors
 /// * Returns `KandError::InvalidParameter` if `param_period` < 2
@@ -167,15 +168,12 @@ where T: Float + FromPrimitive {
 /// let next_sma = sma::sma_incremental(prev_sma, new_price, old_price, period).unwrap();
 /// assert_eq!(next_sma, 6.666666666666666);
 /// ```
-pub fn sma_incremental<T>(
-    input_prev_sma: T,
-    input_new_price: T,
-    input_old_price: T,
+pub fn sma_incremental(
+    prev_sma: TAFloat,
+    input_new_price: TAFloat,
+    input_old_price: TAFloat,
     param_period: usize,
-) -> Result<T, KandError>
-where
-    T: Float + FromPrimitive,
-{
+) -> Result<TAFloat, KandError> {
     #[cfg(feature = "check")]
     {
         if param_period < 2 {
@@ -185,13 +183,12 @@ where
 
     #[cfg(feature = "deep-check")]
     {
-        if input_prev_sma.is_nan() || input_new_price.is_nan() || input_old_price.is_nan() {
+        if prev_sma.is_nan() || input_new_price.is_nan() || input_old_price.is_nan() {
             return Err(KandError::NaNDetected);
         }
     }
 
-    let period_t = T::from(param_period).ok_or(KandError::ConversionError)?;
-    Ok(input_prev_sma + (input_new_price - input_old_price) / period_t)
+    Ok(prev_sma + (input_new_price - input_old_price) / param_period as TAFloat)
 }
 
 #[cfg(test)]

@@ -1,7 +1,6 @@
-use num_traits::{Float, FromPrimitive};
-
 use crate::{
     KandError,
+    TAFloat,
     TAInt,
     helper::{lower_shadow_length, period_to_k, real_body_length, upper_shadow_length},
     types::Signal,
@@ -107,19 +106,16 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// )
 /// .unwrap();
 /// ```
-pub fn cdl_long_shadow<T>(
-    input_open: &[T],
-    input_high: &[T],
-    input_low: &[T],
-    input_close: &[T],
+pub fn cdl_long_shadow(
+    input_open: &[TAFloat],
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
+    input_close: &[TAFloat],
     param_period: usize,
-    param_shadow_factor: T,
+    param_shadow_factor: TAFloat,
     output_signals: &mut [TAInt],
-    output_body_avg: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_body_avg: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_open.len();
     let lookback = lookback(param_period)?;
 
@@ -149,7 +145,7 @@ where
         if param_period < 2 {
             return Err(KandError::InvalidParameter);
         }
-        if param_shadow_factor <= T::zero() {
+        if param_shadow_factor <= 0.0 {
             return Err(KandError::InvalidParameter);
         }
     }
@@ -168,11 +164,11 @@ where
     }
 
     // Calculate initial SMA
-    let mut sum = T::zero();
+    let mut sum = 0.0;
     for i in 0..param_period {
-        sum = sum + real_body_length(input_open[i], input_close[i]);
+        sum += real_body_length(input_open[i], input_close[i]);
     }
-    let mut body_avg = sum / T::from(param_period).ok_or(KandError::ConversionError)?;
+    let mut body_avg = sum / param_period as TAFloat;
     output_body_avg[lookback] = body_avg;
 
     // Process remaining candles
@@ -194,7 +190,7 @@ where
     // Fill initial values
     for i in 0..lookback {
         output_signals[i] = Signal::Invalid.into();
-        output_body_avg[i] = T::nan();
+        output_body_avg[i] = TAFloat::NAN;
     }
 
     Ok(())
@@ -220,12 +216,12 @@ where
 /// * `input_high` - High price of the candlestick
 /// * `input_low` - Low price of the candlestick
 /// * `input_close` - Closing price of the candlestick
-/// * `input_prev_body_avg` - Previous EMA value of body sizes
+/// * `prev_body_avg` - Previous EMA value of body sizes
 /// * `param_period` - Period for EMA calculation
 /// * `param_shadow_factor` - Minimum percentage of total range that shadow must be
 ///
 /// # Returns
-/// * `Ok((TAInt, T))` - Tuple containing:
+/// * `Ok((TAInt, TAFloat))` - Tuple containing:
 ///   - First element: Pattern signal where:
 ///     * 100: Bullish Long Lower Shadow
 ///     * -100: Bearish Long Upper Shadow
@@ -254,25 +250,22 @@ where
 /// )
 /// .unwrap();
 /// ```
-pub fn cdl_long_shadow_incremental<T>(
-    input_open: T,
-    input_high: T,
-    input_low: T,
-    input_close: T,
-    input_prev_body_avg: T,
+pub fn cdl_long_shadow_incremental(
+    input_open: TAFloat,
+    input_high: TAFloat,
+    input_low: TAFloat,
+    input_close: TAFloat,
+    prev_body_avg: TAFloat,
     param_period: usize,
-    param_shadow_factor: T,
-) -> Result<(TAInt, T), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    param_shadow_factor: TAFloat,
+) -> Result<(TAInt, TAFloat), KandError> {
     #[cfg(feature = "check")]
     {
         // Parameter range check
         if param_period < 2 {
             return Err(KandError::InvalidParameter);
         }
-        if param_shadow_factor <= T::zero() {
+        if param_shadow_factor <= 0.0 {
             return Err(KandError::InvalidParameter);
         }
     }
@@ -284,7 +277,7 @@ where
             || input_high.is_nan()
             || input_low.is_nan()
             || input_close.is_nan()
-            || input_prev_body_avg.is_nan()
+            || prev_body_avg.is_nan()
         {
             return Err(KandError::NaNDetected);
         }
@@ -295,12 +288,11 @@ where
     let down_shadow = lower_shadow_length(input_low, input_open, input_close);
     let total_range = input_high - input_low;
     let k = period_to_k(param_period)?;
-    let body_avg = (body - input_prev_body_avg) * k + input_prev_body_avg;
+    let body_avg = (body - prev_body_avg) * k + prev_body_avg;
 
     // Check for Long Shadow patterns
     let is_small_body = body <= body_avg;
-    let shadow_threshold =
-        (param_shadow_factor / T::from(100).ok_or(KandError::ConversionError)?) * total_range;
+    let shadow_threshold = (param_shadow_factor / 100.0) * total_range;
     let has_long_upper_shadow = up_shadow >= shadow_threshold;
     let has_long_lower_shadow = down_shadow >= shadow_threshold;
 
@@ -380,7 +372,7 @@ mod tests {
         assert_eq!(output_signals[22], Signal::Bullish.into()); // Example bullish signal
 
         // Test incremental calculation matches regular calculation
-        let mut input_prev_body_avg = output_body_avg[13]; // First valid body average
+        let mut prev_body_avg = output_body_avg[13]; // First valid body average
 
         // Test each incremental step
         for i in 14..18 {
@@ -389,14 +381,14 @@ mod tests {
                 input_high[i],
                 input_low[i],
                 input_close[i],
-                input_prev_body_avg,
+                prev_body_avg,
                 param_period,
                 param_shadow_factor,
             )
             .unwrap();
             assert_eq!(signal, output_signals[i]);
             assert_relative_eq!(new_body_avg, output_body_avg[i], epsilon = 0.00001);
-            input_prev_body_avg = new_body_avg;
+            prev_body_avg = new_body_avg;
         }
     }
 }

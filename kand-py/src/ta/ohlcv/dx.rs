@@ -7,10 +7,9 @@ use pyo3::prelude::*;
 /// The DX indicator measures the strength of a trend by comparing positive and negative directional movements.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   high: High prices as a 1-D NumPy array of type `f32`.
-///   low: Low prices as a 1-D NumPy array of type `f32`.
-///   close: Close prices as a 1-D NumPy array of type `f32`.
+///   high: High prices as a 1-D NumPy array of type `TAFloat`.
+///   low: Low prices as a 1-D NumPy array of type `TAFloat`.
+///   close: Close prices as a 1-D NumPy array of type `TAFloat`.
 ///   period: Window size for DX calculation. Must be positive and less than input length.
 ///
 /// Returns:
@@ -20,10 +19,6 @@ use pyo3::prelude::*;
 ///   - Smoothed -DM values
 ///   - Smoothed TR values
 ///   Each array has the same length as the input, with the first `period` elements containing NaN values.
-///
-/// Note:
-///   This function releases the Python GIL during computation using `py.allow_threads()` to enable
-///   concurrent Python execution.
 ///
 /// Examples:
 ///   ```python
@@ -94,12 +89,12 @@ pub fn dx_py(
 /// Args:
 ///     input_high (float): Current high price.
 ///     input_low (float): Current low price.
-///     input_prev_high (float): Previous period's high price.
-///     input_prev_low (float): Previous period's low price.
-///     input_prev_close (float): Previous period's close price.
-///     input_prev_smoothed_plus_dm (float): Previous smoothed +DM value.
-///     input_prev_smoothed_minus_dm (float): Previous smoothed -DM value.
-///     input_prev_smoothed_tr (float): Previous smoothed TR value.
+///     prev_high (float): Previous period's high price.
+///     prev_low (float): Previous period's low price.
+///     prev_close (float): Previous period's close price.
+///     prev_smoothed_plus_dm (float): Previous smoothed +DM value.
+///     prev_smoothed_minus_dm (float): Previous smoothed -DM value.
+///     prev_smoothed_tr (float): Previous smoothed TR value.
 ///     param_period (int): Period for DX calculation (typically 14).
 ///
 /// Returns:
@@ -125,24 +120,24 @@ pub fn dx_py(
 #[pyo3(name = "dx_incremental", signature = (
     input_high,
     input_low,
-    input_prev_high,
-    input_prev_low,
-    input_prev_close,
-    input_prev_smoothed_plus_dm,
-    input_prev_smoothed_minus_dm,
-    input_prev_smoothed_tr,
+    prev_high,
+    prev_low,
+    prev_close,
+    prev_smoothed_plus_dm,
+    prev_smoothed_minus_dm,
+    prev_smoothed_tr,
     param_period
 ))]
 pub fn dx_incremental_py(
     py: Python,
     input_high: TAFloat,
     input_low: TAFloat,
-    input_prev_high: TAFloat,
-    input_prev_low: TAFloat,
-    input_prev_close: TAFloat,
-    input_prev_smoothed_plus_dm: TAFloat,
-    input_prev_smoothed_minus_dm: TAFloat,
-    input_prev_smoothed_tr: TAFloat,
+    prev_high: TAFloat,
+    prev_low: TAFloat,
+    prev_close: TAFloat,
+    prev_smoothed_plus_dm: TAFloat,
+    prev_smoothed_minus_dm: TAFloat,
+    prev_smoothed_tr: TAFloat,
     param_period: usize,
 ) -> PyResult<(TAFloat, TAFloat, TAFloat, TAFloat)> {
     // Perform the incremental DX calculation while releasing the GIL
@@ -150,12 +145,12 @@ pub fn dx_incremental_py(
         dx::dx_incremental(
             input_high,
             input_low,
-            input_prev_high,
-            input_prev_low,
-            input_prev_close,
-            input_prev_smoothed_plus_dm,
-            input_prev_smoothed_minus_dm,
-            input_prev_smoothed_tr,
+            prev_high,
+            prev_low,
+            prev_close,
+            prev_smoothed_plus_dm,
+            prev_smoothed_minus_dm,
+            prev_smoothed_tr,
             param_period,
         )
     })

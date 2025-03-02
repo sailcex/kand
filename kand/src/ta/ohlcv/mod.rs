@@ -65,7 +65,6 @@ pub mod stoch;
 pub mod supertrend;
 pub mod t3;
 pub mod tema;
-pub mod tpo;
 pub mod trange;
 pub mod trima;
 pub mod trix;

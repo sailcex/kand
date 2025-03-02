@@ -9,6 +9,10 @@ This document records all significant updates and changes to the Kand project.
 - *(ci:publish-doc)* Update publish-doc
 - *(makefile)* Fix uv-sync, add params for gen_stub.py
 
+### 💼 Other
+
+- Update the types and lib type
+
 ## [0.1.3] - 2025-02-27
 
 ### 🚜 Refactor

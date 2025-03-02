@@ -7,8 +7,7 @@ use pyo3::prelude::*;
 /// Variance measures the average squared deviation of data points from their mean over a specified period.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   prices: Input prices as a 1-D NumPy array of type `f64`.
+///   prices: Input prices as a 1-D NumPy array of type `TAFloat`.
 ///   period: Period for Variance calculation (must be >= 2).
 ///
 /// Returns:
@@ -17,10 +16,6 @@ use pyo3::prelude::*;
 ///   - Running sum values
 ///   - Running sum of squares values
 ///   Each array has the same length as the input, with the first (period-1) elements containing NaN values.
-///
-/// Note:
-///   This function releases the Python GIL during computation using `py.allow_threads()` to enable
-///   concurrent Python execution.
 ///
 /// Examples:
 ///   ```python

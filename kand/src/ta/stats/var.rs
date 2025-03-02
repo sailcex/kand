@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Calculates the lookback period required for Variance calculation.
 ///
@@ -91,16 +89,13 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// .unwrap();
 /// // First (period-1) values are NaN, followed by calculated Variance values
 /// ```
-pub fn var<T>(
-    input_prices: &[T],
+pub fn var(
+    input_prices: &[TAFloat],
     param_period: usize,
-    output_var: &mut [T],
-    output_sum: &mut [T],
-    output_sum_sq: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_var: &mut [TAFloat],
+    output_sum: &mut [TAFloat],
+    output_sum_sq: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_prices.len();
     let lookback = lookback(param_period)?;
 
@@ -138,14 +133,14 @@ where
     }
 
     // Calculate initial values
-    let mut sum = T::zero();
-    let mut sum_sq = T::zero();
+    let mut sum = 0.0;
+    let mut sum_sq = 0.0;
     for val in input_prices.iter().take(param_period) {
-        sum = sum + *val;
-        sum_sq = sum_sq + *val * *val;
+        sum += *val;
+        sum_sq += *val * *val;
     }
 
-    let period_t = T::from(param_period).ok_or(KandError::ConversionError)?;
+    let period_t = param_period as TAFloat;
     let mean = sum / period_t;
     output_var[lookback] = (sum_sq - sum * mean) / period_t;
     output_sum[lookback] = sum;
@@ -167,9 +162,9 @@ where
 
     // Fill initial values with NAN
     for i in 0..lookback {
-        output_var[i] = T::nan();
-        output_sum[i] = T::nan();
-        output_sum_sq[i] = T::nan();
+        output_var[i] = TAFloat::NAN;
+        output_sum[i] = TAFloat::NAN;
+        output_sum_sq[i] = TAFloat::NAN;
     }
 
     Ok(())
@@ -183,13 +178,13 @@ where
 ///
 /// # Arguments
 /// * `input_price` - The newest price value to include in calculation
-/// * `input_prev_sum` - Previous sum of values in the period
-/// * `input_prev_sum_sq` - Previous sum of squared values in the period
+/// * `prev_sum` - Previous sum of values in the period
+/// * `prev_sum_sq` - Previous sum of squared values in the period
 /// * `input_old_price` - Oldest price value to remove from calculation
 /// * `param_period` - The time period for Variance calculation (must be >= 2)
 ///
 /// # Returns
-/// * `Result<(T, T, T), KandError>` - Tuple containing (variance, `new_sum`, `new_sum_sq`) on success
+/// * `Result<(TAFloat, TAFloat, TAFloat), KandError>` - Tuple containing (variance, `new_sum`, `new_sum_sq`) on success
 ///
 /// # Errors
 /// * Returns `KandError::InvalidParameter` if period is less than 2
@@ -207,16 +202,13 @@ where
 /// )
 /// .unwrap();
 /// ```
-pub fn var_incremental<T>(
-    input_price: T,
-    input_prev_sum: T,
-    input_prev_sum_sq: T,
-    input_old_price: T,
+pub fn var_incremental(
+    input_price: TAFloat,
+    prev_sum: TAFloat,
+    prev_sum_sq: TAFloat,
+    input_old_price: TAFloat,
     param_period: usize,
-) -> Result<(T, T, T), KandError>
-where
-    T: Float + FromPrimitive,
-{
+) -> Result<(TAFloat, TAFloat, TAFloat), KandError> {
     #[cfg(feature = "check")]
     {
         // Parameter range check
@@ -229,19 +221,18 @@ where
     {
         // NaN check
         if input_price.is_nan()
-            || input_prev_sum.is_nan()
-            || input_prev_sum_sq.is_nan()
+            || prev_sum.is_nan()
+            || prev_sum_sq.is_nan()
             || input_old_price.is_nan()
         {
             return Err(KandError::NaNDetected);
         }
     }
 
-    let new_sum = input_prev_sum - input_old_price + input_price;
-    let new_sum_sq =
-        input_prev_sum_sq - input_old_price * input_old_price + input_price * input_price;
+    let new_sum = prev_sum - input_old_price + input_price;
+    let new_sum_sq = prev_sum_sq - input_old_price * input_old_price + input_price * input_price;
 
-    let period_t = T::from(param_period).ok_or(KandError::ConversionError)?;
+    let period_t = param_period as TAFloat;
     let mean = new_sum / period_t;
     let var = (new_sum_sq - new_sum * mean) / period_t;
 

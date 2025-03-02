@@ -10,18 +10,13 @@ use pyo3::prelude::*;
 /// where k is typically 2/(period+1).
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   data: Input data as a 1-D NumPy array of type `f32`.
+///   data: Input data as a 1-D NumPy array of type `TAFloat`.
 ///   period: Window size for EMA calculation. Must be positive and less than input length.
 ///   k: Optional custom smoothing factor. If None, uses default k = 2/(period+1).
 ///
 /// Returns:
 ///   A new 1-D NumPy array containing the EMA values. The array has the same length as the input,
 ///   with the first `period-1` elements containing NaN values.
-///
-/// Note:
-///   This function releases the Python GIL during computation using `py.allow_threads()` to enable
-///   concurrent Python execution.
 ///
 /// Examples:
 ///   ```python
@@ -61,14 +56,14 @@ pub fn ema_py(
 /// reprocessing the entire dataset.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   price: Current period's price value as `f32`.
-///   prev_ema: Previous period's EMA value as `f32`.
+///
+///   price: Current period's price value as `TAFloat`.
+///   prev_ema: Previous period's EMA value as `TAFloat`.
 ///   period: Window size for EMA calculation. Must be >= 2.
 ///   k: Optional custom smoothing factor. If None, uses default k = 2/(period+1).
 ///
 /// Returns:
-///   The new EMA value as `f32`.
+///   The new EMA value as `TAFloat`.
 ///
 /// Examples:
 ///   ```python

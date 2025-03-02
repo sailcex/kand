@@ -1,7 +1,5 @@
-use num_traits::{Float, FromPrimitive};
-
 use super::typprice;
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Returns the lookback period required for VWAP calculation.
 ///
@@ -91,18 +89,15 @@ pub const fn lookback() -> Result<usize, KandError> {
 /// )
 /// .unwrap();
 /// ```
-pub fn vwap<T>(
-    input_high: &[T],
-    input_low: &[T],
-    input_close: &[T],
-    input_volume: &[T],
-    output_vwap: &mut [T],
-    output_cum_pv: &mut [T],
-    output_cum_vol: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+pub fn vwap(
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
+    input_close: &[TAFloat],
+    input_volume: &[TAFloat],
+    output_vwap: &mut [TAFloat],
+    output_cum_pv: &mut [TAFloat],
+    output_cum_vol: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_high.len();
 
     #[cfg(feature = "check")]
@@ -138,8 +133,8 @@ where
         }
     }
 
-    let mut cum_pv = T::zero();
-    let mut cum_vol = T::zero();
+    let mut cum_pv = 0.0;
+    let mut cum_vol = 0.0;
 
     for i in 0..len {
         let (new_cum_pv, new_cum_vol, vwap) = vwap_incremental(
@@ -186,7 +181,7 @@ where
 /// * `prev_cum_vol` - Previous cumulative volume
 ///
 /// # Returns
-/// * `Result<(T, T, T), KandError>` - Tuple containing (new cumulative PV, new cumulative volume, new VWAP)
+/// * `Result<(TAFloat, TAFloat, TAFloat), KandError>` - Tuple containing (new cumulative PV, new cumulative volume, new VWAP)
 ///
 /// # Errors
 /// None - this function cannot fail
@@ -204,22 +199,19 @@ where
 /// let (new_cum_pv, new_cum_vol, new_vwap) =
 ///     vwap::vwap_incremental(high, low, close, volume, prev_cum_pv, prev_cum_vol).unwrap();
 /// ```
-pub fn vwap_incremental<T>(
-    high: T,
-    low: T,
-    close: T,
-    volume: T,
-    prev_cum_pv: T,
-    prev_cum_vol: T,
-) -> Result<(T, T, T), KandError>
-where
-    T: Float + FromPrimitive,
-{
+pub fn vwap_incremental(
+    high: TAFloat,
+    low: TAFloat,
+    close: TAFloat,
+    volume: TAFloat,
+    prev_cum_pv: TAFloat,
+    prev_cum_vol: TAFloat,
+) -> Result<(TAFloat, TAFloat, TAFloat), KandError> {
     let typ_price = typprice::typprice_incremental(high, low, close)?;
     let cum_pv = prev_cum_pv + (typ_price * volume);
     let cum_vol = prev_cum_vol + volume;
-    let vwap = if cum_vol.is_zero() {
-        T::nan()
+    let vwap = if cum_vol == 0.0 {
+        0.0
     } else {
         cum_pv / cum_vol
     };

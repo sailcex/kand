@@ -8,8 +8,7 @@ use pyo3::prelude::*;
 /// to evaluate overbought or oversold conditions.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   prices: Input prices as a 1-D NumPy array of type `f64`.
+///   prices: Input prices as a 1-D NumPy array of type `TAFloat`.
 ///   period: Window size for RSI calculation. Must be positive and less than input length.
 ///
 /// Returns:
@@ -18,10 +17,6 @@ use pyo3::prelude::*;
 ///   - Average gain values
 ///   - Average loss values
 ///   Each array has the same length as the input, with the first `period` elements containing NaN values.
-///
-/// Note:
-///   This function releases the Python GIL during computation using `py.allow_threads()` to enable
-///   concurrent Python execution.
 ///
 /// Examples:
 ///   ```python

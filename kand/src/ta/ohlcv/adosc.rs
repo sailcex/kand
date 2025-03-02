@@ -1,7 +1,5 @@
-use num_traits::{Float, FromPrimitive};
-
 use super::{ad, ema};
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Get the lookback period for A/D Oscillator calculation
 ///
@@ -110,21 +108,18 @@ pub const fn lookback(
 /// )
 /// .unwrap();
 /// ```
-pub fn adosc<T>(
-    input_high: &[T],
-    input_low: &[T],
-    input_close: &[T],
-    input_volume: &[T],
+pub fn adosc(
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
+    input_close: &[TAFloat],
+    input_volume: &[TAFloat],
     param_fast_period: usize,
     param_slow_period: usize,
-    output_adosc: &mut [T],
-    output_ad: &mut [T],
-    output_ad_fast_ema: &mut [T],
-    output_ad_slow_ema: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_adosc: &mut [TAFloat],
+    output_ad: &mut [TAFloat],
+    output_ad_fast_ema: &mut [TAFloat],
+    output_ad_slow_ema: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_high.len();
     let lookback = lookback(param_fast_period, param_slow_period)?;
 
@@ -181,7 +176,7 @@ where
 
     // Fill initial values with NAN
     for x in output_adosc.iter_mut().take(lookback) {
-        *x = T::nan();
+        *x = TAFloat::NAN;
     }
 
     Ok(())
@@ -207,14 +202,14 @@ where
 /// * `input_low` - Current low price
 /// * `input_close` - Current close price
 /// * `input_volume` - Current volume
-/// * `input_prev_ad` - Previous AD value
-/// * `input_prev_ad_fast_ema` - Previous fast EMA value of AD line
-/// * `input_prev_ad_slow_ema` - Previous slow EMA value of AD line
+/// * `prev_ad` - Previous AD value
+/// * `prev_ad_fast_ema` - Previous fast EMA value of AD line
+/// * `prev_ad_slow_ema` - Previous slow EMA value of AD line
 /// * `param_fast_period` - Fast EMA period
 /// * `param_slow_period` - Slow EMA period
 ///
 /// # Returns
-/// * `Result<(T, T, T, T), KandError>` - Tuple of (ADOSC, AD, Fast EMA, Slow EMA)
+/// * `Result<(TAFloat, TAFloat, TAFloat, TAFloat), KandError>` - Tuple of (ADOSC, AD, Fast EMA, Slow EMA)
 ///
 /// # Errors
 /// * `KandError::InvalidParameter` - If `fast_period` or `slow_period` is 0, or if `fast_period` >= `slow_period`
@@ -237,20 +232,17 @@ where
 /// )
 /// .unwrap();
 /// ```
-pub fn adosc_incremental<T>(
-    input_high: T,
-    input_low: T,
-    input_close: T,
-    input_volume: T,
-    input_prev_ad: T,
-    input_prev_ad_fast_ema: T,
-    input_prev_ad_slow_ema: T,
+pub fn adosc_incremental(
+    input_high: TAFloat,
+    input_low: TAFloat,
+    input_close: TAFloat,
+    input_volume: TAFloat,
+    prev_ad: TAFloat,
+    prev_ad_fast_ema: TAFloat,
+    prev_ad_slow_ema: TAFloat,
     param_fast_period: usize,
     param_slow_period: usize,
-) -> Result<(T, T, T, T), KandError>
-where
-    T: Float + FromPrimitive,
-{
+) -> Result<(TAFloat, TAFloat, TAFloat, TAFloat), KandError> {
     #[cfg(feature = "check")]
     {
         // Parameter range check
@@ -269,25 +261,19 @@ where
             || input_low.is_nan()
             || input_close.is_nan()
             || input_volume.is_nan()
-            || input_prev_ad.is_nan()
-            || input_prev_ad_fast_ema.is_nan()
-            || input_prev_ad_slow_ema.is_nan()
+            || prev_ad.is_nan()
+            || prev_ad_fast_ema.is_nan()
+            || prev_ad_slow_ema.is_nan()
         {
             return Err(KandError::NaNDetected);
         }
     }
 
-    let output_ad = ad::ad_incremental(
-        input_high,
-        input_low,
-        input_close,
-        input_volume,
-        input_prev_ad,
-    )?;
+    let output_ad = ad::ad_incremental(input_high, input_low, input_close, input_volume, prev_ad)?;
     let output_ad_fast_ema =
-        ema::ema_incremental(output_ad, input_prev_ad_fast_ema, param_fast_period, None)?;
+        ema::ema_incremental(output_ad, prev_ad_fast_ema, param_fast_period, None)?;
     let output_ad_slow_ema =
-        ema::ema_incremental(output_ad, input_prev_ad_slow_ema, param_slow_period, None)?;
+        ema::ema_incremental(output_ad, prev_ad_slow_ema, param_slow_period, None)?;
     let output_adosc = output_ad_fast_ema - output_ad_slow_ema;
 
     Ok((

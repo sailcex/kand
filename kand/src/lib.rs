@@ -124,6 +124,6 @@ pub type TAInt = i32;
 #[cfg(not(all(feature = "i32", not(feature = "i64"))))]
 pub type TAInt = i64; // Default to i64 when no features are enabled
 
-/// Global compensation value used for floating-point comparisons
+/// Global EPSILON value used for floating-point comparisons
 /// to account for rounding errors in calculations.
-pub const COMPENSATION: TAFloat = 0.000_000_000_1; // 10^-10
+pub const EPSILON: TAFloat = 0.000_000_000_1; // 10^-10

@@ -9,16 +9,11 @@ use pyo3::prelude::*;
 /// When volume decreases without a significant price change, the price will eventually jump downward.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   close: Close prices as a 1-D NumPy array of type `f64`.
-///   volume: Volume data as a 1-D NumPy array of type `f64`.
+///   close: Close prices as a 1-D NumPy array of type `TAFloat`.
+///   volume: Volume data as a 1-D NumPy array of type `TAFloat`.
 ///
 /// Returns:
 ///   A new 1-D NumPy array containing the OBV values. The array has the same length as the input.
-///
-/// Note:
-///   This function releases the Python GIL during computation using `py.allow_threads()` to enable
-///   concurrent Python execution.
 ///
 /// Examples:
 ///   ```python

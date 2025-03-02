@@ -9,18 +9,13 @@ use pyo3::prelude::*;
 /// is dominant.
 ///
 /// Args:
-///     high: High prices as a 1-D NumPy array of type `f64`.
-///     low: Low prices as a 1-D NumPy array of type `f64`.
-///     close: Close prices as a 1-D NumPy array of type `f64`.
-///     volume: Volume data as a 1-D NumPy array of type `f64`.
+///     high: High prices as a 1-D NumPy array of type `TAFloat`.
+///     low: Low prices as a 1-D NumPy array of type `TAFloat`.
+///     close: Close prices as a 1-D NumPy array of type `TAFloat`.
+///     volume: Volume data as a 1-D NumPy array of type `TAFloat`.
 ///
 /// Returns:
 ///     A new 1-D NumPy array containing the A/D values. The array has the same length as the inputs.
-///
-/// Note:
-///     This function releases the Python GIL during computation using `py.allow_threads()` to enable
-///     concurrent Python execution.
-///
 /// Examples:
 ///     ```python
 ///     >>> import numpy as np

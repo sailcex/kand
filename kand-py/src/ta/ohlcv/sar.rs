@@ -5,9 +5,8 @@ use pyo3::prelude::*;
 /// Calculates the Parabolic SAR (Stop And Reverse) indicator over NumPy arrays.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   high: Input high prices as a 1-D NumPy array of type `f32`.
-///   low: Input low prices as a 1-D NumPy array of type `f32`.
+///   high: Input high prices as a 1-D NumPy array of type `TAFloat`.
+///   low: Input low prices as a 1-D NumPy array of type `TAFloat`.
 ///   acceleration: Initial acceleration factor (e.g. 0.02).
 ///   maximum: Maximum acceleration factor (e.g. 0.2).
 ///

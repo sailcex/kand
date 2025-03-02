@@ -8,8 +8,7 @@ use pyo3::prelude::*;
 /// the current price and the price n periods ago.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   data: Input price data as a 1-D NumPy array of type `f64`.
+///   data: Input price data as a 1-D NumPy array of type `TAFloat`.
 ///   period: Number of periods to look back. Must be >= 2.
 ///
 /// Returns:

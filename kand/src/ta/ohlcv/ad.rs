@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Returns the lookback period required for A/D calculation
 ///
@@ -81,16 +79,13 @@ pub const fn lookback() -> Result<usize, KandError> {
 /// .unwrap();
 /// ```
 #[allow(clippy::similar_names)]
-pub fn ad<T>(
-    input_high: &[T],
-    input_low: &[T],
-    input_close: &[T],
-    input_volume: &[T],
-    output_ad: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+pub fn ad(
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
+    input_close: &[TAFloat],
+    input_volume: &[TAFloat],
+    output_ad: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_high.len();
     let lookback = lookback()?;
 
@@ -125,16 +120,16 @@ where
         }
     }
 
-    let mut ad = T::zero();
+    let mut ad = 0.0;
     for i in lookback..len {
         let high_low_diff = input_high[i] - input_low[i];
-        let mfm = if high_low_diff == T::zero() {
-            T::zero()
+        let mfm = if high_low_diff == 0.0 {
+            0.0
         } else {
             ((input_close[i] - input_low[i]) - (input_high[i] - input_close[i])) / high_low_diff
         };
         let mfv = mfm * input_volume[i];
-        ad = ad + mfv;
+        ad += mfv;
         output_ad[i] = ad;
     }
 
@@ -159,10 +154,10 @@ where
 /// * `input_low` - Latest low price
 /// * `input_close` - Latest closing price
 /// * `input_volume` - Latest volume
-/// * `input_prev_ad` - Previous A/D value
+/// * `prev_ad` - Previous A/D value
 ///
 /// # Returns
-/// * `Result<T, KandError>` - Latest A/D value if calculation succeeds
+/// * `Result<TAFloat, KandError>` - Latest A/D value if calculation succeeds
 ///
 /// # Errors
 /// * `KandError::NaNDetected` - If any input contains NaN values
@@ -174,27 +169,18 @@ where
 /// let input_low = 11.0;
 /// let input_close = 13.0;
 /// let input_volume = 200.0;
-/// let input_prev_ad = 25.0;
+/// let prev_ad = 25.0;
 ///
-/// let output_ad = ad::ad_incremental(
-///     input_high,
-///     input_low,
-///     input_close,
-///     input_volume,
-///     input_prev_ad,
-/// )
-/// .unwrap();
+/// let output_ad =
+///     ad::ad_incremental(input_high, input_low, input_close, input_volume, prev_ad).unwrap();
 /// ```
-pub fn ad_incremental<T>(
-    input_high: T,
-    input_low: T,
-    input_close: T,
-    input_volume: T,
-    input_prev_ad: T,
-) -> Result<T, KandError>
-where
-    T: Float + FromPrimitive,
-{
+pub fn ad_incremental(
+    input_high: TAFloat,
+    input_low: TAFloat,
+    input_close: TAFloat,
+    input_volume: TAFloat,
+    prev_ad: TAFloat,
+) -> Result<TAFloat, KandError> {
     #[cfg(feature = "deep-check")]
     {
         // NaN check
@@ -202,20 +188,20 @@ where
             || input_low.is_nan()
             || input_close.is_nan()
             || input_volume.is_nan()
-            || input_prev_ad.is_nan()
+            || prev_ad.is_nan()
         {
             return Err(KandError::NaNDetected);
         }
     }
 
     let high_low_diff = input_high - input_low;
-    let mfm = if high_low_diff == T::zero() {
-        T::zero()
+    let mfm = if high_low_diff == 0.0 {
+        0.0
     } else {
         ((input_close - input_low) - (input_high - input_close)) / high_low_diff
     };
     let mfv = mfm * input_volume;
-    Ok(input_prev_ad + mfv)
+    Ok(prev_ad + mfv)
 }
 
 #[cfg(test)]
@@ -292,7 +278,7 @@ mod tests {
         }
 
         // Now test incremental calculation matches regular calculation
-        let mut input_prev_ad = output_ad[0];
+        let mut prev_ad = output_ad[0];
 
         // Test each incremental step
         for i in 1..input_high.len() {
@@ -301,11 +287,11 @@ mod tests {
                 input_low[i],
                 input_close[i],
                 input_volume[i],
-                input_prev_ad,
+                prev_ad,
             )
             .unwrap();
             assert_relative_eq!(result, output_ad[i], epsilon = 0.00001);
-            input_prev_ad = result;
+            prev_ad = result;
         }
     }
 }

@@ -9,10 +9,9 @@ use pyo3::prelude::*;
 /// with emphasis on the closing price.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   high: High prices as a 1-D NumPy array of type `f32`.
-///   low: Low prices as a 1-D NumPy array of type `f32`.
-///   close: Close prices as a 1-D NumPy array of type `f32`.
+///   high: High prices as a 1-D NumPy array of type `TAFloat`.
+///   low: Low prices as a 1-D NumPy array of type `TAFloat`.
+///   close: Close prices as a 1-D NumPy array of type `TAFloat`.
 ///
 /// Returns:
 ///   A 1-D NumPy array containing the WCLPRICE values.
@@ -52,9 +51,9 @@ pub fn wclprice_py(
 /// Calculates a single Weighted Close Price (WCLPRICE) value from the latest price data.
 ///
 /// Args:
-///   high: Latest high price value as `f32`.
-///   low: Latest low price value as `f32`.
-///   close: Latest close price value as `f32`.
+///   high: Latest high price value as `TAFloat`.
+///   low: Latest low price value as `TAFloat`.
+///   close: Latest close price value as `TAFloat`.
 ///
 /// Returns:
 ///   The calculated WCLPRICE value.

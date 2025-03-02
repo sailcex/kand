@@ -7,17 +7,12 @@ use pyo3::prelude::*;
 /// Calculates the rolling sum of values over a specified period.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   input: Input values as a 1-D NumPy array of type `f64`.
+///   input: Input values as a 1-D NumPy array of type `TAFloat`.
 ///   period: Period for sum calculation (must be >= 2).
 ///
 /// Returns:
 ///   A 1-D NumPy array containing the sum values.
 ///   The first (period-1) elements contain NaN values.
-///
-/// Note:
-///   This function releases the Python GIL during computation using `py.allow_threads()` to enable
-///   concurrent Python execution.
 ///
 /// Examples:
 ///   ```python

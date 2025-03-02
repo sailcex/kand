@@ -8,19 +8,14 @@ use pyo3::prelude::*;
 /// by decomposing the entire range of an asset price for a given period.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   high: High prices as a 1-D NumPy array of type `f32`.
-///   low: Low prices as a 1-D NumPy array of type `f32`.
-///   close: Close prices as a 1-D NumPy array of type `f32`.
+///   high: High prices as a 1-D NumPy array of type `TAFloat`.
+///   low: Low prices as a 1-D NumPy array of type `TAFloat`.
+///   close: Close prices as a 1-D NumPy array of type `TAFloat`.
 ///   period: Window size for ATR calculation. Must be greater than 1.
 ///
 /// Returns:
 ///   A new 1-D NumPy array containing the ATR values. The array has the same length as the input,
 ///   with the first `period` elements containing NaN values.
-///
-/// Note:
-///   This function releases the Python GIL during computation using `py.allow_threads()` to enable
-///   concurrent Python execution.
 ///
 /// Examples:
 ///   ```python
@@ -70,7 +65,7 @@ pub fn atr_py(
 /// Calculate the next ATR value incrementally.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
+///
 ///   high: Current period's high price.
 ///   low: Current period's low price.
 ///   prev_close: Previous period's close price.

@@ -9,10 +9,9 @@ use pyo3::prelude::*;
 /// two lines: %K (the fast line) and %D (the slow line).
 ///
 /// Args:
-///     py: Python interpreter token required for GIL management.
-///     high: High prices as a 1-D NumPy array of type `f32`.
-///     low: Low prices as a 1-D NumPy array of type `f32`.
-///     close: Close prices as a 1-D NumPy array of type `f32`.
+///     high: High prices as a 1-D NumPy array of type `TAFloat`.
+///     low: Low prices as a 1-D NumPy array of type `TAFloat`.
+///     close: Close prices as a 1-D NumPy array of type `TAFloat`.
 ///     k_period: Period for %K calculation. Must be >= 2.
 ///     k_slow_period: Smoothing period for slow %K. Must be >= 2.
 ///     d_period: Period for %D calculation. Must be >= 2.

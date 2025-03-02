@@ -8,9 +8,8 @@ use pyo3::prelude::*;
 /// high and low prices for each period.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   high: Array of high prices as a 1-D NumPy array of type `f64`.
-///   low: Array of low prices as a 1-D NumPy array of type `f64`.
+///   high: Array of high prices as a 1-D NumPy array of type `TAFloat`.
+///   low: Array of low prices as a 1-D NumPy array of type `TAFloat`.
 ///
 /// Returns:
 ///   A 1-D NumPy array containing the median price values.
@@ -46,7 +45,7 @@ pub fn medprice_py(
 /// Calculates a single Median Price value incrementally.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
+///
 ///   high: Current period's high price as `f64`.
 ///   low: Current period's low price as `f64`.
 ///

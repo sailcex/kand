@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Returns the lookback period for Rate of Change Percentage (ROCP) calculation.
 ///
@@ -79,14 +77,11 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 ///
 /// rocp::rocp(&input_price, param_period, &mut output_rocp).unwrap();
 /// ```
-pub fn rocp<T>(
-    input_price: &[T],
+pub fn rocp(
+    input_price: &[TAFloat],
     param_period: usize,
-    output_rocp: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_rocp: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_price.len();
     let lookback = lookback(param_period)?;
 
@@ -125,7 +120,7 @@ where
 
     // Fill initial values with NAN
     for value in output_rocp.iter_mut().take(lookback) {
-        *value = T::nan();
+        *value = TAFloat::NAN;
     }
 
     Ok(())
@@ -144,10 +139,10 @@ where
 ///
 /// # Arguments
 /// * `input` - The most recent price value
-/// * `input_prev` - The price from n periods ago
+/// * `prev` - The price from n periods ago
 ///
 /// # Returns
-/// * `Result<T, KandError>` - The calculated ROCP value if successful, error otherwise
+/// * `Result<TAFloat, KandError>` - The calculated ROCP value if successful, error otherwise
 ///
 /// # Errors
 /// Returns error if (with "`deep-check`" feature):
@@ -162,16 +157,15 @@ where
 ///
 /// let output_rocp = rocp_incremental(current_price, prev_price).unwrap();
 /// ```
-pub fn rocp_incremental<T>(input: T, input_prev: T) -> Result<T, KandError>
-where T: Float + FromPrimitive {
+pub fn rocp_incremental(input: TAFloat, prev: TAFloat) -> Result<TAFloat, KandError> {
     #[cfg(feature = "deep-check")]
     {
-        if input.is_nan() || input_prev.is_nan() {
+        if input.is_nan() || prev.is_nan() {
             return Err(KandError::NaNDetected);
         }
     }
 
-    Ok((input - input_prev) / input_prev)
+    Ok((input - prev) / prev)
 }
 
 #[cfg(test)]

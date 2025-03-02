@@ -10,8 +10,7 @@ use pyo3::prelude::*;
 /// - A lower band (K standard deviations below middle band)
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   price: Input price values as a 1-D NumPy array of type `f32`.
+///   price: Input price values as a 1-D NumPy array of type `TAFloat`.
 ///   period: The time period for calculations (must be >= 2).
 ///   dev_up: Number of standard deviations for upper band.
 ///   dev_down: Number of standard deviations for lower band.
@@ -93,7 +92,7 @@ pub fn bbands_py(
 /// Calculate the next Bollinger Bands values incrementally.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
+///
 ///   price: The current price value.
 ///   prev_sma: The previous SMA value.
 ///   prev_sum: The previous sum for variance calculation.

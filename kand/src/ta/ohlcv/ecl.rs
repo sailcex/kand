@@ -1,6 +1,5 @@
-use num_traits::{Float, FromPrimitive};
+use crate::{KandError, TAFloat};
 
-use crate::KandError;
 /// Returns the lookback period required for Expanded Camarilla Levels (ECL) calculation.
 ///
 /// # Description
@@ -93,24 +92,21 @@ pub const fn lookback() -> Result<usize, KandError> {
 /// .unwrap();
 /// ```
 #[allow(clippy::similar_names)]
-pub fn ecl<T>(
-    input_high: &[T],
-    input_low: &[T],
-    input_close: &[T],
-    output_h5: &mut [T],
-    output_h4: &mut [T],
-    output_h3: &mut [T],
-    output_h2: &mut [T],
-    output_h1: &mut [T],
-    output_l1: &mut [T],
-    output_l2: &mut [T],
-    output_l3: &mut [T],
-    output_l4: &mut [T],
-    output_l5: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+pub fn ecl(
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
+    input_close: &[TAFloat],
+    output_h5: &mut [TAFloat],
+    output_h4: &mut [TAFloat],
+    output_h3: &mut [TAFloat],
+    output_h2: &mut [TAFloat],
+    output_h1: &mut [TAFloat],
+    output_l1: &mut [TAFloat],
+    output_l2: &mut [TAFloat],
+    output_l3: &mut [TAFloat],
+    output_l4: &mut [TAFloat],
+    output_l5: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_high.len();
     let lookback = lookback()?;
 
@@ -157,44 +153,36 @@ where
         }
     }
 
-    let param_factor = T::from(1.1).ok_or(KandError::ConversionError)?;
+    let param_factor = 1.1;
 
     for i in lookback..len {
         let range = input_high[i - 1] - input_low[i - 1];
         let h5_val = (input_high[i - 1] / input_low[i - 1]) * input_close[i - 1];
 
         output_h5[i] = h5_val;
-        output_h4[i] = input_close[i - 1]
-            + range * param_factor / T::from(2).ok_or(KandError::ConversionError)?;
-        output_h3[i] = input_close[i - 1]
-            + range * param_factor / T::from(4).ok_or(KandError::ConversionError)?;
-        output_h2[i] = input_close[i - 1]
-            + range * param_factor / T::from(6).ok_or(KandError::ConversionError)?;
-        output_h1[i] = input_close[i - 1]
-            + range * param_factor / T::from(12).ok_or(KandError::ConversionError)?;
-        output_l1[i] = input_close[i - 1]
-            - range * param_factor / T::from(12).ok_or(KandError::ConversionError)?;
-        output_l2[i] = input_close[i - 1]
-            - range * param_factor / T::from(6).ok_or(KandError::ConversionError)?;
-        output_l3[i] = input_close[i - 1]
-            - range * param_factor / T::from(4).ok_or(KandError::ConversionError)?;
-        output_l4[i] = input_close[i - 1]
-            - range * param_factor / T::from(2).ok_or(KandError::ConversionError)?;
+        output_h4[i] = input_close[i - 1] + range * param_factor / 2.0;
+        output_h3[i] = input_close[i - 1] + range * param_factor / 4.0;
+        output_h2[i] = input_close[i - 1] + range * param_factor / 6.0;
+        output_h1[i] = input_close[i - 1] + range * param_factor / 12.0;
+        output_l1[i] = input_close[i - 1] - range * param_factor / 12.0;
+        output_l2[i] = input_close[i - 1] - range * param_factor / 6.0;
+        output_l3[i] = input_close[i - 1] - range * param_factor / 4.0;
+        output_l4[i] = input_close[i - 1] - range * param_factor / 2.0;
         output_l5[i] = input_close[i - 1] - (h5_val - input_close[i - 1]);
     }
 
     // Fill initial values with NAN
     for i in 0..lookback {
-        output_h5[i] = T::nan();
-        output_h4[i] = T::nan();
-        output_h3[i] = T::nan();
-        output_h2[i] = T::nan();
-        output_h1[i] = T::nan();
-        output_l1[i] = T::nan();
-        output_l2[i] = T::nan();
-        output_l3[i] = T::nan();
-        output_l4[i] = T::nan();
-        output_l5[i] = T::nan();
+        output_h5[i] = TAFloat::NAN;
+        output_h4[i] = TAFloat::NAN;
+        output_h3[i] = TAFloat::NAN;
+        output_h2[i] = TAFloat::NAN;
+        output_h1[i] = TAFloat::NAN;
+        output_l1[i] = TAFloat::NAN;
+        output_l2[i] = TAFloat::NAN;
+        output_l3[i] = TAFloat::NAN;
+        output_l4[i] = TAFloat::NAN;
+        output_l5[i] = TAFloat::NAN;
     }
 
     Ok(())
@@ -227,7 +215,7 @@ where
 /// * `prev_close` - Previous period's close price
 ///
 /// # Returns
-/// * `Result<(T,T,T,T,T,T,T,T,T,T), KandError>` - Tuple containing (H5,H4,H3,H2,H1,L1,L2,L3,L4,L5)
+/// * `Result<(TAFloat,TAFloat,TAFloat,TAFloat,TAFloat,TAFloat,TAFloat,TAFloat,TAFloat,TAFloat), KandError>` - Tuple containing (H5,H4,H3,H2,H1,L1,L2,L3,L4,L5)
 ///
 /// # Errors
 /// * `KandError::NaNDetected` - Input contains NaN (when `deep-check` enabled)
@@ -243,14 +231,25 @@ where
 /// .unwrap();
 /// ```
 #[allow(clippy::similar_names)]
-pub fn ecl_incremental<T>(
-    prev_high: T,
-    prev_low: T,
-    prev_close: T,
-) -> Result<(T, T, T, T, T, T, T, T, T, T), KandError>
-where
-    T: Float + FromPrimitive,
-{
+pub fn ecl_incremental(
+    prev_high: TAFloat,
+    prev_low: TAFloat,
+    prev_close: TAFloat,
+) -> Result<
+    (
+        TAFloat,
+        TAFloat,
+        TAFloat,
+        TAFloat,
+        TAFloat,
+        TAFloat,
+        TAFloat,
+        TAFloat,
+        TAFloat,
+        TAFloat,
+    ),
+    KandError,
+> {
     #[cfg(feature = "deep-check")]
     {
         // NaN check
@@ -259,18 +258,18 @@ where
         }
     }
 
-    let param_factor = T::from(1.1).ok_or(KandError::ConversionError)?;
+    let param_factor = 1.1;
     let range = prev_high - prev_low;
     let h5_val = (prev_high / prev_low) * prev_close;
 
-    let h4 = prev_close + range * param_factor / T::from(2).ok_or(KandError::ConversionError)?;
-    let h3 = prev_close + range * param_factor / T::from(4).ok_or(KandError::ConversionError)?;
-    let h2 = prev_close + range * param_factor / T::from(6).ok_or(KandError::ConversionError)?;
-    let h1 = prev_close + range * param_factor / T::from(12).ok_or(KandError::ConversionError)?;
-    let l1 = prev_close - range * param_factor / T::from(12).ok_or(KandError::ConversionError)?;
-    let l2 = prev_close - range * param_factor / T::from(6).ok_or(KandError::ConversionError)?;
-    let l3 = prev_close - range * param_factor / T::from(4).ok_or(KandError::ConversionError)?;
-    let l4 = prev_close - range * param_factor / T::from(2).ok_or(KandError::ConversionError)?;
+    let h4 = prev_close + range * param_factor / 2.0;
+    let h3 = prev_close + range * param_factor / 4.0;
+    let h2 = prev_close + range * param_factor / 6.0;
+    let h1 = prev_close + range * param_factor / 12.0;
+    let l1 = prev_close - range * param_factor / 12.0;
+    let l2 = prev_close - range * param_factor / 6.0;
+    let l3 = prev_close - range * param_factor / 4.0;
+    let l4 = prev_close - range * param_factor / 2.0;
     let l5 = prev_close - (h5_val - prev_close);
 
     Ok((h5_val, h4, h3, h2, h1, l1, l2, l3, l4, l5))

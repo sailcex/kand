@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::{KandError, ta::ohlcv::sma};
+use crate::{KandError, TAFloat, ta::ohlcv::sma};
 
 /// Returns the lookback period required for Average Daily Range (ADR) calculation.
 ///
@@ -70,15 +68,12 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// adr::adr(&input_high, &input_low, param_period, &mut output_adr).unwrap();
 /// // First two values are NaN (period-1), followed by calculated ADR values
 /// ```
-pub fn adr<T>(
-    input_high: &[T],
-    input_low: &[T],
+pub fn adr(
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
     param_period: usize,
-    output_adr: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_adr: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_high.len();
     let lookback = lookback(param_period)?;
 
@@ -111,7 +106,7 @@ where
     }
 
     // Calculate daily ranges
-    let mut ranges = vec![T::zero(); len];
+    let mut ranges = vec![0.0; len];
     for i in 0..len {
         ranges[i] = input_high[i] - input_low[i];
     }
@@ -129,7 +124,7 @@ where
 /// the latest value, avoiding recalculation of the entire series.
 ///
 /// # Arguments
-/// * `input_prev_adr` - Previous ADR value
+/// * `prev_adr` - Previous ADR value
 /// * `input_new_high` - Latest high price
 /// * `input_new_low` - Latest low price
 /// * `input_old_high` - Oldest high price to be removed from period
@@ -137,7 +132,7 @@ where
 /// * `param_period` - The time period for ADR calculation (must be >= 2)
 ///
 /// # Returns
-/// * `Result<T, KandError>` - Latest ADR value on success, Err on failure
+/// * `Result<TAFloat, KandError>` - Latest ADR value on success, Err on failure
 ///
 /// # Errors
 /// * `KandError::NaNDetected` - If any input value is NaN
@@ -156,17 +151,14 @@ where
 /// let next_adr =
 ///     adr::adr_incremental(prev_adr, new_high, new_low, old_high, old_low, period).unwrap();
 /// ```
-pub fn adr_incremental<T>(
-    input_prev_adr: T,
-    input_new_high: T,
-    input_new_low: T,
-    input_old_high: T,
-    input_old_low: T,
+pub fn adr_incremental(
+    prev_adr: TAFloat,
+    input_new_high: TAFloat,
+    input_new_low: TAFloat,
+    input_old_high: TAFloat,
+    input_old_low: TAFloat,
     param_period: usize,
-) -> Result<T, KandError>
-where
-    T: Float + FromPrimitive,
-{
+) -> Result<TAFloat, KandError> {
     #[cfg(feature = "check")]
     {
         // Parameter range check
@@ -177,7 +169,7 @@ where
 
     #[cfg(feature = "deep-check")]
     {
-        if input_prev_adr.is_nan()
+        if prev_adr.is_nan()
             || input_new_high.is_nan()
             || input_new_low.is_nan()
             || input_old_high.is_nan()
@@ -190,5 +182,5 @@ where
     let new_range = input_new_high - input_new_low;
     let old_range = input_old_high - input_old_low;
 
-    sma::sma_incremental(input_prev_adr, new_range, old_range, param_period)
+    sma::sma_incremental(prev_adr, new_range, old_range, param_period)
 }

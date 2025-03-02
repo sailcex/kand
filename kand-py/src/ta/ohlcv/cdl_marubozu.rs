@@ -5,11 +5,10 @@ use pyo3::prelude::*;
 /// Detects Marubozu candlestick patterns in price data.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   open: Opening prices as a 1-D NumPy array of type `f32`.
-///   high: High prices as a 1-D NumPy array of type `f32`.
-///   low: Low prices as a 1-D NumPy array of type `f32`.
-///   close: Close prices as a 1-D NumPy array of type `f32`.
+///   open: Opening prices as a 1-D NumPy array of type `TAFloat`.
+///   high: High prices as a 1-D NumPy array of type `TAFloat`.
+///   low: Low prices as a 1-D NumPy array of type `TAFloat`.
+///   close: Close prices as a 1-D NumPy array of type `TAFloat`.
 ///   period: Period for EMA calculation of body sizes.
 ///   shadow_percent: Maximum shadow size as percentage of body.
 ///
@@ -74,7 +73,7 @@ pub fn cdl_marubozu_py(
 /// Detects a Marubozu pattern in a single candlestick.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
+///
 ///   open: Opening price.
 ///   high: High price.
 ///   low: Low price.

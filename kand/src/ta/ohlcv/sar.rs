@@ -1,6 +1,5 @@
-use num_traits::{Float, FromPrimitive};
+use crate::{KandError, TAFloat};
 
-use crate::KandError;
 /// Returns the lookback period required by the Parabolic SAR indicator.
 ///
 /// # Description
@@ -8,8 +7,8 @@ use crate::KandError;
 /// For the Parabolic SAR indicator, this is always 1 period.
 ///
 /// # Parameters
-/// * `param_acceleration` - The acceleration factor used in SAR calculation. Type: `T`
-/// * `param_maximum` - The maximum allowed acceleration factor. Type: `T`
+/// * `param_acceleration` - The acceleration factor used in SAR calculation. Type: `TAFloat`
+/// * `param_maximum` - The maximum allowed acceleration factor. Type: `TAFloat`
 ///
 /// # Returns
 /// * `Ok(usize)` - The lookback period (1)
@@ -26,8 +25,10 @@ use crate::KandError;
 /// let lookback = sar::lookback(acceleration, maximum).unwrap();
 /// assert_eq!(lookback, 1);
 /// ```
-pub const fn lookback<T>(_param_acceleration: T, _param_maximum: T) -> Result<usize, KandError>
-where T: Float + FromPrimitive {
+pub const fn lookback(
+    _param_acceleration: TAFloat,
+    _param_maximum: TAFloat,
+) -> Result<usize, KandError> {
     Ok(1)
 }
 
@@ -54,14 +55,14 @@ where T: Float + FromPrimitive {
 /// ```
 ///
 /// # Parameters
-/// * `input_high` - Array of high prices. Type: `&[T]`
-/// * `input_low` - Array of low prices. Type: `&[T]`
-/// * `param_acceleration` - Initial acceleration factor (e.g. 0.02). Type: `T`
-/// * `param_maximum` - Maximum acceleration factor (e.g. 0.2). Type: `T`
-/// * `output_sar` - Buffer to store SAR values. Type: `&mut [T]`
+/// * `input_high` - Array of high prices. Type: `&[TAFloat]`
+/// * `input_low` - Array of low prices. Type: `&[TAFloat]`
+/// * `param_acceleration` - Initial acceleration factor (e.g. 0.02). Type: `TAFloat`
+/// * `param_maximum` - Maximum acceleration factor (e.g. 0.2). Type: `TAFloat`
+/// * `output_sar` - Buffer to store SAR values. Type: `&mut [TAFloat]`
 /// * `output_is_long` - Buffer to store trend direction (true=long, false=short). Type: `&mut [bool]`
-/// * `output_af` - Buffer to store acceleration factors. Type: `&mut [T]`
-/// * `output_ep` - Buffer to store extreme points. Type: `&mut [T]`
+/// * `output_af` - Buffer to store acceleration factors. Type: `&mut [TAFloat]`
+/// * `output_ep` - Buffer to store extreme points. Type: `&mut [TAFloat]`
 ///
 /// # Returns
 /// * `Ok(())` - Calculation successful
@@ -96,19 +97,16 @@ where T: Float + FromPrimitive {
 /// )
 /// .unwrap();
 /// ```
-pub fn sar<T>(
-    input_high: &[T],
-    input_low: &[T],
-    param_acceleration: T,
-    param_maximum: T,
-    output_sar: &mut [T],
+pub fn sar(
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
+    param_acceleration: TAFloat,
+    param_maximum: TAFloat,
+    output_sar: &mut [TAFloat],
     output_is_long: &mut [bool],
-    output_af: &mut [T],
-    output_ep: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_af: &mut [TAFloat],
+    output_ep: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_high.len();
     let lookback = lookback(param_acceleration, param_maximum)?;
 
@@ -125,7 +123,7 @@ where
         {
             return Err(KandError::LengthMismatch);
         }
-        if param_acceleration <= T::zero() || param_maximum <= param_acceleration {
+        if param_acceleration <= 0.0 || param_maximum <= param_acceleration {
             return Err(KandError::InvalidParameter);
         }
         if len <= lookback {
@@ -155,10 +153,10 @@ where
     };
 
     // Initialize the SAR output and auxiliary arrays at the first index.
-    output_sar[0] = T::nan();
+    output_sar[0] = TAFloat::NAN;
     output_is_long[0] = initial_trend;
-    output_af[0] = T::zero();
-    output_ep[0] = T::nan();
+    output_af[0] = 0.0;
+    output_ep[0] = TAFloat::NAN;
 
     // Derive the second SAR value from the first bar's price data.
     output_sar[1] = if initial_trend {
@@ -234,20 +232,20 @@ where
 /// Useful for real-time calculations where new data arrives sequentially.
 ///
 /// # Parameters
-/// * `input_high` - Current period's high price. Type: `T`
-/// * `input_low` - Current period's low price. Type: `T`
-/// * `input_prev_high` - Previous period's high price. Type: `T`
-/// * `input_prev_low` - Previous period's low price. Type: `T`
-/// * `input_prev_sar` - Previous period's SAR value. Type: `T`
+/// * `input_high` - Current period's high price. Type: `TAFloat`
+/// * `input_low` - Current period's low price. Type: `TAFloat`
+/// * `prev_high` - Previous period's high price. Type: `TAFloat`
+/// * `prev_low` - Previous period's low price. Type: `TAFloat`
+/// * `prev_sar` - Previous period's SAR value. Type: `TAFloat`
 /// * `input_is_long` - Current trend direction (true=long, false=short). Type: `bool`
-/// * `input_af` - Current acceleration factor. Type: `T`
-/// * `input_ep` - Current extreme point. Type: `T`
-/// * `param_acceleration` - Acceleration factor increment. Type: `T`
-/// * `param_maximum` - Maximum acceleration factor. Type: `T`
+/// * `input_af` - Current acceleration factor. Type: `TAFloat`
+/// * `input_ep` - Current extreme point. Type: `TAFloat`
+/// * `param_acceleration` - Acceleration factor increment. Type: `TAFloat`
+/// * `param_maximum` - Maximum acceleration factor. Type: `TAFloat`
 ///
 /// # Returns
 /// A `Result` containing:
-/// * `Ok((T, bool, T, T))` - Tuple containing:
+/// * `Ok((TAFloat, bool, TAFloat, TAFloat))` - Tuple containing:
 ///   * Updated SAR value
 ///   * New trend direction
 ///   * Updated acceleration factor
@@ -275,24 +273,21 @@ where
 /// )
 /// .unwrap();
 /// ```
-pub fn sar_incremental<T>(
-    input_high: T,
-    input_low: T,
-    input_prev_high: T,
-    input_prev_low: T,
-    input_prev_sar: T,
+pub fn sar_incremental(
+    input_high: TAFloat,
+    input_low: TAFloat,
+    prev_high: TAFloat,
+    prev_low: TAFloat,
+    prev_sar: TAFloat,
     input_is_long: bool,
-    input_af: T,
-    input_ep: T,
-    param_acceleration: T,
-    param_maximum: T,
-) -> Result<(T, bool, T, T), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    input_af: TAFloat,
+    input_ep: TAFloat,
+    param_acceleration: TAFloat,
+    param_maximum: TAFloat,
+) -> Result<(TAFloat, bool, TAFloat, TAFloat), KandError> {
     #[cfg(feature = "check")]
     {
-        if param_acceleration <= T::zero() || param_maximum <= param_acceleration {
+        if param_acceleration <= 0.0 || param_maximum <= param_acceleration {
             return Err(KandError::InvalidParameter);
         }
     }
@@ -301,9 +296,9 @@ where
     {
         if input_high.is_nan()
             || input_low.is_nan()
-            || input_prev_high.is_nan()
-            || input_prev_low.is_nan()
-            || input_prev_sar.is_nan()
+            || prev_high.is_nan()
+            || prev_low.is_nan()
+            || prev_sar.is_nan()
         {
             return Err(KandError::NaNDetected);
         }
@@ -311,7 +306,6 @@ where
 
     let high = input_high;
     let low = input_low;
-    let prev_sar = input_prev_sar;
     let mut is_long = input_is_long;
     let mut af = input_af;
     let mut ep = input_ep;
@@ -319,7 +313,7 @@ where
     let mut sar = prev_sar + af * (ep - prev_sar);
 
     if is_long {
-        sar = sar.min(input_prev_low);
+        sar = sar.min(prev_low);
         if high > ep {
             ep = high;
             af = (af + param_acceleration).min(param_maximum);
@@ -331,7 +325,7 @@ where
             af = param_acceleration;
         }
     } else {
-        sar = sar.max(input_prev_high);
+        sar = sar.max(prev_high);
         if low < ep {
             ep = low;
             af = (af + param_acceleration).min(param_maximum);

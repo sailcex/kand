@@ -1,6 +1,6 @@
 [package]
 name = "kand"
-version = "0.1.4"
+version = "0.2.0"
 edition = "2024"
 authors = ["CtrlX <gitctrlx@gmail.com>"]
 readme = "../README.md"
@@ -12,7 +12,6 @@ keywords = ["technical-analysis", "finance", "rust", "talib", "indicators"]
 categories = ["finance", "algorithms", "data-structures", "science", "mathematics"]
 
 [dependencies]
-num-traits = { workspace = true }
 num_enum = { workspace = true }
 thiserror = { workspace = true }
 
@@ -29,9 +28,7 @@ name = "bench_main"
 harness = false
 
 [features]
-default = ["extended", "check"]     # Default: extended precision with basic checks
-standard = ["f32", "i32"]          # Standard precision mode (32-bit)
-extended = ["f64", "i64"]          # Extended precision mode (64-bit)
+default = ["f64", "i64", "check"]     # Default: extended precision with basic checks
 f32 = []                           # 32-bit floating point
 f64 = []                           # 64-bit floating point
 i32 = []                           # 32-bit integer

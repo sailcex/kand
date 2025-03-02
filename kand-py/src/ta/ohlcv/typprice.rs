@@ -8,17 +8,12 @@ use pyo3::prelude::*;
 /// for each period.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   high: Input high prices as a 1-D NumPy array of type `f32`.
-///   low: Input low prices as a 1-D NumPy array of type `f32`.
-///   close: Input close prices as a 1-D NumPy array of type `f32`.
+///   high: Input high prices as a 1-D NumPy array of type `TAFloat`.
+///   low: Input low prices as a 1-D NumPy array of type `TAFloat`.
+///   close: Input close prices as a 1-D NumPy array of type `TAFloat`.
 ///
 /// Returns:
 ///   A new 1-D NumPy array containing the Typical Price values. The array has the same length as the inputs.
-///
-/// Note:
-///   This function releases the Python GIL during computation using `py.allow_threads()` to enable
-///   concurrent Python execution.
 ///
 /// Examples:
 ///   ```python

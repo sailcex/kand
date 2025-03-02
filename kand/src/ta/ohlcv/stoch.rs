@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::{KandError, ta::ohlcv::sma};
+use crate::{KandError, TAFloat, ta::ohlcv::sma};
 
 /// Calculates the lookback period required for Stochastic Oscillator calculation.
 ///
@@ -113,20 +111,17 @@ pub const fn lookback(
 /// .unwrap();
 /// ```
 #[allow(clippy::similar_names)]
-pub fn stoch<T>(
-    input_high: &[T],
-    input_low: &[T],
-    input_close: &[T],
+pub fn stoch(
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
+    input_close: &[TAFloat],
     param_k_period: usize,
     param_k_slow_period: usize,
     param_d_period: usize,
-    output_fast_k: &mut [T],
-    output_k: &mut [T],
-    output_d: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_fast_k: &mut [TAFloat],
+    output_k: &mut [TAFloat],
+    output_d: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_high.len();
     let lookback = lookback(param_k_period, param_k_slow_period, param_d_period)?;
 
@@ -163,7 +158,7 @@ where
         }
     }
 
-    let hundred = T::from(100).ok_or(KandError::ConversionError)?;
+    let hundred = 100.0;
 
     // Calculate Fast %K first
     for i in (param_k_period - 1)..len {
@@ -177,10 +172,10 @@ where
         }
 
         let range = highest_high - lowest_low;
-        if range > T::zero() {
+        if range > 0.0 {
             output_fast_k[i] = hundred * (input_close[i] - lowest_low) / range;
         } else {
-            output_fast_k[i] = T::from(50).ok_or(KandError::ConversionError)?; // Default to 50 when range is zero
+            output_fast_k[i] = 50.0; // Default to 50 when range is zero
         }
     }
 
@@ -196,9 +191,9 @@ where
 
     // Fill initial values with NAN
     for i in 0..lookback {
-        output_fast_k[i] = T::nan();
-        output_k[i] = T::nan();
-        output_d[i] = T::nan();
+        output_fast_k[i] = TAFloat::NAN;
+        output_k[i] = TAFloat::NAN;
+        output_d[i] = TAFloat::NAN;
     }
 
     Ok(())

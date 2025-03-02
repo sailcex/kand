@@ -1,7 +1,5 @@
-use num_traits::{Float, FromPrimitive};
-
 use super::ema;
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Calculate the lookback period required for MACD calculation
 ///
@@ -112,20 +110,17 @@ pub fn lookback(
 /// )
 /// .unwrap();
 /// ```
-pub fn macd<T>(
-    input_price: &[T],
+pub fn macd(
+    input_price: &[TAFloat],
     param_fast_period: usize,
     param_slow_period: usize,
     param_signal_period: usize,
-    output_macd_line: &mut [T],
-    output_signal_line: &mut [T],
-    output_histogram: &mut [T],
-    output_fast_ema: &mut [T],
-    output_slow_ema: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_macd_line: &mut [TAFloat],
+    output_signal_line: &mut [TAFloat],
+    output_histogram: &mut [TAFloat],
+    output_fast_ema: &mut [TAFloat],
+    output_slow_ema: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_price.len();
     let lookback = lookback(param_fast_period, param_slow_period, param_signal_period)?;
 
@@ -190,11 +185,11 @@ where
 
     // Fill initial values with NAN
     for i in 0..lookback {
-        output_macd_line[i] = T::nan();
-        output_signal_line[i] = T::nan();
-        output_histogram[i] = T::nan();
-        output_fast_ema[i] = T::nan();
-        output_slow_ema[i] = T::nan();
+        output_macd_line[i] = TAFloat::NAN;
+        output_signal_line[i] = TAFloat::NAN;
+        output_histogram[i] = TAFloat::NAN;
+        output_fast_ema[i] = TAFloat::NAN;
+        output_slow_ema[i] = TAFloat::NAN;
     }
 
     Ok(())
@@ -216,15 +211,15 @@ where
 ///
 /// # Arguments
 /// * `input_price` - Current price value
-/// * `input_prev_fast_ema` - Previous fast EMA value
-/// * `input_prev_slow_ema` - Previous slow EMA value
-/// * `input_prev_signal` - Previous signal line value
+/// * `prev_fast_ema` - Previous fast EMA value
+/// * `prev_slow_ema` - Previous slow EMA value
+/// * `prev_signal` - Previous signal line value
 /// * `param_fast_period` - Fast EMA period (typically 12)
 /// * `param_slow_period` - Slow EMA period (typically 26)
 /// * `param_signal_period` - Signal line period (typically 9)
 ///
 /// # Returns
-/// * `Result<(T, T, T), KandError>` - Tuple of (MACD, Signal, Histogram) if successful
+/// * `Result<(TAFloat, TAFloat, TAFloat), KandError>` - Tuple of (MACD, Signal, Histogram) if successful
 ///
 /// # Errors
 /// * `KandError::InvalidParameter` - If any period is 0 or `fast_period` >= `slow_period`
@@ -245,18 +240,15 @@ where
 /// )
 /// .unwrap();
 /// ```
-pub fn macd_incremental<T>(
-    input_price: T,
-    input_prev_fast_ema: T,
-    input_prev_slow_ema: T,
-    input_prev_signal: T,
+pub fn macd_incremental(
+    input_price: TAFloat,
+    prev_fast_ema: TAFloat,
+    prev_slow_ema: TAFloat,
+    prev_signal: TAFloat,
     param_fast_period: usize,
     param_slow_period: usize,
     param_signal_period: usize,
-) -> Result<(T, T, T), KandError>
-where
-    T: Float + FromPrimitive,
-{
+) -> Result<(TAFloat, TAFloat, TAFloat), KandError> {
     #[cfg(feature = "check")]
     {
         // Parameter range check
@@ -272,18 +264,18 @@ where
     {
         // NaN check
         if input_price.is_nan()
-            || input_prev_fast_ema.is_nan()
-            || input_prev_slow_ema.is_nan()
-            || input_prev_signal.is_nan()
+            || prev_fast_ema.is_nan()
+            || prev_slow_ema.is_nan()
+            || prev_signal.is_nan()
         {
             return Err(KandError::NaNDetected);
         }
     }
 
-    let fast_ema = ema::ema_incremental(input_price, input_prev_fast_ema, param_fast_period, None)?;
-    let slow_ema = ema::ema_incremental(input_price, input_prev_slow_ema, param_slow_period, None)?;
+    let fast_ema = ema::ema_incremental(input_price, prev_fast_ema, param_fast_period, None)?;
+    let slow_ema = ema::ema_incremental(input_price, prev_slow_ema, param_slow_period, None)?;
     let macd = fast_ema - slow_ema;
-    let signal = ema::ema_incremental(macd, input_prev_signal, param_signal_period, None)?;
+    let signal = ema::ema_incremental(macd, prev_signal, param_signal_period, None)?;
     let histogram = macd - signal;
 
     Ok((macd, signal, histogram))

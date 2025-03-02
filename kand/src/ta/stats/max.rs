@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Calculates the lookback period required for Maximum Value calculation.
 ///
@@ -72,14 +70,11 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// max::max(&prices, period, &mut max_values).unwrap();
 /// // max_values = [NaN, NaN, 3.0, 3.0, 4.0]
 /// ```
-pub fn max<T>(
-    input_prices: &[T],
+pub fn max(
+    input_prices: &[TAFloat],
     param_period: usize,
-    output_max: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_max: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_prices.len();
     let lookback = lookback(param_period)?;
 
@@ -129,7 +124,7 @@ where
 
     // Fill initial values with NAN
     for value in output_max.iter_mut().take(lookback) {
-        *value = T::nan();
+        *value = TAFloat::NAN;
     }
 
     Ok(())
@@ -142,12 +137,12 @@ where
 ///
 /// # Arguments
 /// * `input_price` - The newest price value to include in calculation
-/// * `input_prev_max` - The previous period's MAX value
+/// * `prev_max` - The previous period's MAX value
 /// * `input_old_price` - The oldest price value being removed from the period
 /// * `param_period` - The time period for calculation (must be >= 2)
 ///
 /// # Returns
-/// * `Result<T, KandError>` - The new MAX value on success
+/// * `Result<TAFloat, KandError>` - The new MAX value on success
 ///
 /// # Errors
 /// * Returns `KandError::InvalidParameter` if period is less than 2
@@ -164,15 +159,12 @@ where
 /// let new_max = max::max_incremental(new_price, prev_max, old_price, period).unwrap();
 /// assert_eq!(new_max, 11.0);
 /// ```
-pub fn max_incremental<T>(
-    input_price: T,
-    input_prev_max: T,
-    input_old_price: T,
+pub fn max_incremental(
+    input_price: TAFloat,
+    prev_max: TAFloat,
+    input_old_price: TAFloat,
     param_period: usize,
-) -> Result<T, KandError>
-where
-    T: Float + FromPrimitive,
-{
+) -> Result<TAFloat, KandError> {
     #[cfg(feature = "check")]
     {
         // Parameter range check
@@ -184,23 +176,23 @@ where
     #[cfg(feature = "deep-check")]
     {
         // NaN check
-        if input_price.is_nan() || input_prev_max.is_nan() || input_old_price.is_nan() {
+        if input_price.is_nan() || prev_max.is_nan() || input_old_price.is_nan() {
             return Err(KandError::NaNDetected);
         }
     }
 
     // If new price is higher than previous max, it becomes the new max
-    if input_price >= input_prev_max {
+    if input_price >= prev_max {
         return Ok(input_price);
     }
 
     // If old price being removed was the max, need to recalculate
-    if input_prev_max == input_old_price {
+    if prev_max == input_old_price {
         return Ok(input_price); // Need full recalculation in this case
     }
 
     // Otherwise keep previous max
-    Ok(input_prev_max)
+    Ok(prev_max)
 }
 
 #[cfg(test)]

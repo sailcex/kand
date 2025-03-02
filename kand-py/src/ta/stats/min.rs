@@ -7,8 +7,7 @@ use pyo3::prelude::*;
 /// The MIN indicator finds the lowest price value within a given time period.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   prices: Input prices as a 1-D NumPy array of type `f64`.
+///   prices: Input prices as a 1-D NumPy array of type `TAFloat`.
 ///   period: Period for MIN calculation (must be >= 2).
 ///
 /// Returns:

@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Calculates the lookback period required for Minimum Value calculation.
 ///
@@ -78,14 +76,11 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// min::min(&input, period, &mut output).unwrap();
 /// // output = [NaN, NaN, 6.0, 6.0, 6.0]
 /// ```
-pub fn min<T>(
-    input_prices: &[T],
+pub fn min(
+    input_prices: &[TAFloat],
     param_period: usize,
-    output_min: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_min: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_prices.len();
     let lookback = lookback(param_period)?;
 
@@ -135,7 +130,7 @@ where
 
     // Fill initial values with NAN
     for value in output_min.iter_mut().take(lookback) {
-        *value = T::nan();
+        *value = TAFloat::NAN;
     }
 
     Ok(())
@@ -148,12 +143,12 @@ where
 ///
 /// # Arguments
 /// * `input_price` - The new price value to include in calculation
-/// * `input_prev_min` - The previous MIN value
-/// * `input_prev_price` - The price value that will drop out of the period
+/// * `prev_min` - The previous MIN value
+/// * `prev_price` - The price value that will drop out of the period
 /// * `param_period` - The time period for MIN calculation (must be >= 2)
 ///
 /// # Returns
-/// * `Result<T, KandError>` - The new MIN value on success
+/// * `Result<TAFloat, KandError>` - The new MIN value on success
 ///
 /// # Errors
 /// * Returns `KandError::InvalidParameter` if period is less than 2
@@ -171,15 +166,12 @@ where
 /// let new_min = min::min_incremental(new_price, prev_min, dropping_price, period).unwrap();
 /// assert_eq!(new_min, 12.0);
 /// ```
-pub fn min_incremental<T>(
-    input_price: T,
-    input_prev_min: T,
-    input_prev_price: T,
+pub fn min_incremental(
+    input_price: TAFloat,
+    prev_min: TAFloat,
+    prev_price: TAFloat,
     param_period: usize,
-) -> Result<T, KandError>
-where
-    T: Float + FromPrimitive,
-{
+) -> Result<TAFloat, KandError> {
     #[cfg(feature = "check")]
     {
         // Parameter range check
@@ -191,25 +183,25 @@ where
     #[cfg(feature = "deep-check")]
     {
         // NaN check
-        if input_price.is_nan() || input_prev_min.is_nan() || input_prev_price.is_nan() {
+        if input_price.is_nan() || prev_min.is_nan() || prev_price.is_nan() {
             return Err(KandError::NaNDetected);
         }
     }
 
     // If the new price is less than previous min, it becomes the new min
-    if input_price < input_prev_min {
+    if input_price < prev_min {
         return Ok(input_price);
     }
 
     // If the price being removed was the previous min,
     // we need to scan the period for the new min
-    if input_prev_price == input_prev_min {
+    if prev_price == prev_min {
         // In this case we need the full period data to recalculate
         return Err(KandError::InsufficientData);
     }
 
     // Otherwise the previous min is still valid
-    Ok(input_prev_min)
+    Ok(prev_min)
 }
 
 #[cfg(test)]

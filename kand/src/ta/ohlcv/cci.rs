@@ -1,7 +1,5 @@
-use num_traits::{Float, FromPrimitive};
-
 use super::{sma, typprice};
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Returns the lookback period required for CCI calculation.
 ///
@@ -105,19 +103,16 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// )
 /// .unwrap();
 /// ```
-pub fn cci<T>(
-    input_high: &[T],
-    input_low: &[T],
-    input_close: &[T],
+pub fn cci(
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
+    input_close: &[TAFloat],
     param_period: usize,
-    output_cci: &mut [T],
-    output_tp: &mut [T],
-    output_tp_sma: &mut [T],
-    output_mean_dev: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_cci: &mut [TAFloat],
+    output_tp: &mut [TAFloat],
+    output_tp_sma: &mut [TAFloat],
+    output_mean_dev: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_high.len();
     let lookback = lookback(param_period)?;
 
@@ -161,18 +156,18 @@ where
     sma::sma(output_tp, param_period, output_tp_sma)?;
 
     // Calculate mean deviation
-    let factor = T::from(0.015).ok_or(KandError::ConversionError)?;
+    let factor = 0.015;
     for i in lookback..len {
-        let mut mean_dev = T::zero();
+        let mut mean_dev = 0.0;
         for j in 0..param_period {
-            mean_dev = mean_dev + (output_tp[i - j] - output_tp_sma[i]).abs();
+            mean_dev += (output_tp[i - j] - output_tp_sma[i]).abs();
         }
-        mean_dev = mean_dev / T::from(param_period).ok_or(KandError::ConversionError)?;
+        mean_dev /= param_period as TAFloat;
         output_mean_dev[i] = mean_dev;
 
         // Calculate CCI
-        output_cci[i] = if mean_dev == T::zero() {
-            T::zero()
+        output_cci[i] = if mean_dev == 0.0 {
+            0.0
         } else {
             (output_tp[i] - output_tp_sma[i]) / (factor * mean_dev)
         };
@@ -180,10 +175,10 @@ where
 
     // Fill all output arrays with NAN initially
     for i in 0..lookback {
-        output_cci[i] = T::nan();
-        output_tp[i] = T::nan();
-        output_tp_sma[i] = T::nan();
-        output_mean_dev[i] = T::nan();
+        output_cci[i] = TAFloat::NAN;
+        output_tp[i] = TAFloat::NAN;
+        output_tp_sma[i] = TAFloat::NAN;
+        output_mean_dev[i] = TAFloat::NAN;
     }
 
     Ok(())
@@ -211,8 +206,8 @@ where
 /// 4. Apply CCI formula with constant factor 0.015
 ///
 /// # Arguments
-/// * `input_prev_sma_tp` - Previous SMA value of typical prices
-/// * `input_prev_mean_dev` - Previous mean deviation value
+/// * `prev_sma_tp` - Previous SMA value of typical prices
+/// * `prev_mean_dev` - Previous mean deviation value
 /// * `input_new_high` - New high price
 /// * `input_new_low` - New low price
 /// * `input_new_close` - New close price
@@ -223,7 +218,7 @@ where
 /// * `tp_buffer` - Circular buffer containing last `param_period` typical prices
 ///
 /// # Returns
-/// * `Result<T, KandError>` - The next CCI value on success, or error on failure
+/// * `Result<TAFloat, KandError>` - The next CCI value on success, or error on failure
 ///
 /// # Errors
 /// * `KandError::InvalidParameter` - If period is less than 2
@@ -256,20 +251,17 @@ where
 /// )
 /// .unwrap();
 /// ```
-pub fn cci_incremental<T>(
-    input_prev_sma_tp: T,
-    input_new_high: T,
-    input_new_low: T,
-    input_new_close: T,
-    input_old_high: T,
-    input_old_low: T,
-    input_old_close: T,
+pub fn cci_incremental(
+    prev_sma_tp: TAFloat,
+    input_new_high: TAFloat,
+    input_new_low: TAFloat,
+    input_new_close: TAFloat,
+    input_old_high: TAFloat,
+    input_old_low: TAFloat,
+    input_old_close: TAFloat,
     param_period: usize,
-    tp_buffer: &mut Vec<T>,
-) -> Result<T, KandError>
-where
-    T: Float + FromPrimitive,
-{
+    tp_buffer: &mut Vec<TAFloat>,
+) -> Result<TAFloat, KandError> {
     #[cfg(feature = "check")]
     {
         // Parameter range check
@@ -281,7 +273,7 @@ where
     #[cfg(feature = "deep-check")]
     {
         // NaN check
-        if input_prev_sma_tp.is_nan()
+        if prev_sma_tp.is_nan()
             || input_new_high.is_nan()
             || input_new_low.is_nan()
             || input_new_close.is_nan()
@@ -294,13 +286,11 @@ where
     }
 
     // Calculate new and old typical prices
-    let new_tp = (input_new_high + input_new_low + input_new_close)
-        / T::from(3).ok_or(KandError::ConversionError)?;
-    let old_tp = (input_old_high + input_old_low + input_old_close)
-        / T::from(3).ok_or(KandError::ConversionError)?;
+    let new_tp = (input_new_high + input_new_low + input_new_close) / 3.0;
+    let old_tp = (input_old_high + input_old_low + input_old_close) / 3.0;
 
     // Calculate new SMA of typical prices
-    let sma_tp = sma::sma_incremental(input_prev_sma_tp, new_tp, old_tp, param_period)?;
+    let sma_tp = sma::sma_incremental(prev_sma_tp, new_tp, old_tp, param_period)?;
 
     // Update circular buffer - remove oldest and add newest TP
     if tp_buffer.len() == param_period {
@@ -309,16 +299,16 @@ where
     tp_buffer.push(new_tp);
 
     // Recalculate mean deviation using all points in buffer against new SMA
-    let mut mean_dev = T::zero();
+    let mut mean_dev = 0.0;
     for &tp in tp_buffer.iter() {
-        mean_dev = mean_dev + (tp - sma_tp).abs();
+        mean_dev += (tp - sma_tp).abs();
     }
-    mean_dev = mean_dev / T::from(param_period).ok_or(KandError::ConversionError)?;
+    mean_dev /= param_period as TAFloat;
 
     // Calculate CCI using constant factor 0.015
-    let factor = T::from(0.015).ok_or(KandError::ConversionError)?;
-    Ok(if mean_dev.abs() <= T::epsilon() {
-        T::zero()
+    let factor = 0.015;
+    Ok(if mean_dev.abs() <= TAFloat::EPSILON {
+        0.0
     } else {
         (new_tp - sma_tp) / (factor * mean_dev)
     })

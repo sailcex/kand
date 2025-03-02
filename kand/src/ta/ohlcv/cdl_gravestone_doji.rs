@@ -1,7 +1,6 @@
-use num_traits::{Float, FromPrimitive};
-
 use crate::{
     KandError,
+    TAFloat,
     TAInt,
     helper::{lower_shadow_length, real_body_length},
     types::Signal,
@@ -80,17 +79,14 @@ pub const fn lookback() -> Result<usize, KandError> {
 /// )
 /// .unwrap();
 /// ```
-pub fn cdl_gravestone_doji<T>(
-    input_open: &[T],
-    input_high: &[T],
-    input_low: &[T],
-    input_close: &[T],
-    param_body_percent: T,
+pub fn cdl_gravestone_doji(
+    input_open: &[TAFloat],
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
+    input_close: &[TAFloat],
+    param_body_percent: TAFloat,
     output_signals: &mut [TAInt],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+) -> Result<(), KandError> {
     let len = input_open.len();
 
     #[cfg(feature = "check")]
@@ -177,16 +173,13 @@ where
 /// )
 /// .unwrap();
 /// ```
-pub fn cdl_gravestone_doji_incremental<T>(
-    input_open: T,
-    input_high: T,
-    input_low: T,
-    input_close: T,
-    param_body_percent: T,
-) -> Result<TAInt, KandError>
-where
-    T: Float + FromPrimitive,
-{
+pub fn cdl_gravestone_doji_incremental(
+    input_open: TAFloat,
+    input_high: TAFloat,
+    input_low: TAFloat,
+    input_close: TAFloat,
+    param_body_percent: TAFloat,
+) -> Result<TAInt, KandError> {
     #[cfg(feature = "deep-check")]
     {
         if input_open.is_nan() || input_high.is_nan() || input_low.is_nan() || input_close.is_nan()
@@ -200,8 +193,7 @@ where
     let dn_shadow = lower_shadow_length(input_low, input_open, input_close);
 
     // Check for Gravestone Doji pattern
-    let is_doji_body = range > T::zero()
-        && body <= range * param_body_percent / T::from(100).ok_or(KandError::ConversionError)?;
+    let is_doji_body = range > 0.0 && body <= range * param_body_percent / 100.0;
     let has_minimal_lower_shadow = dn_shadow <= body;
 
     let output_signal = if is_doji_body && has_minimal_lower_shadow {

@@ -13,18 +13,13 @@ def ad(high, low, close, volume):
     is dominant.
 
     Args:
-        high: High prices as a 1-D NumPy array of type `f64`.
-        low: Low prices as a 1-D NumPy array of type `f64`.
-        close: Close prices as a 1-D NumPy array of type `f64`.
-        volume: Volume data as a 1-D NumPy array of type `f64`.
+        high: High prices as a 1-D NumPy array of type `TAFloat`.
+        low: Low prices as a 1-D NumPy array of type `TAFloat`.
+        close: Close prices as a 1-D NumPy array of type `TAFloat`.
+        volume: Volume data as a 1-D NumPy array of type `TAFloat`.
 
     Returns:
         A new 1-D NumPy array containing the A/D values. The array has the same length as the inputs.
-
-    Note:
-        This function releases the Python GIL during computation using `py.allow_threads()` to enable
-        concurrent Python execution.
-
     Examples:
         ```python
         >>> import numpy as np
@@ -72,19 +67,6 @@ def ad_incremental(high, low, close, volume, prev_ad):
     """
     ...
 
-def add_demo(a: int, b: int) -> int:
-    """
-    Add two numbers together.
-
-    Args:
-        a: First number.
-        b: Second number.
-
-    Returns:
-        The sum of a and b.
-    """
-    ...
-
 def adosc(high, low, close, volume, fast_period, slow_period):
     """
     Calculate Accumulation/Distribution Oscillator (A/D Oscillator or ADOSC)
@@ -93,11 +75,10 @@ def adosc(high, low, close, volume, fast_period, slow_period):
     Accumulation/Distribution Line. It helps identify trend strength and potential reversals.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      high: High prices as a 1-D NumPy array of type `f32`.
-      low: Low prices as a 1-D NumPy array of type `f32`.
-      close: Close prices as a 1-D NumPy array of type `f32`.
-      volume: Volume as a 1-D NumPy array of type `f32`.
+      high: High prices as a 1-D NumPy array of type `TAFloat`.
+      low: Low prices as a 1-D NumPy array of type `TAFloat`.
+      close: Close prices as a 1-D NumPy array of type `TAFloat`.
+      volume: Volume as a 1-D NumPy array of type `TAFloat`.
       fast_period: Fast period for A/D Oscillator calculation.
       slow_period: Slow period for A/D Oscillator calculation.
 
@@ -108,10 +89,6 @@ def adosc(high, low, close, volume, fast_period, slow_period):
       - Fast EMA values
       - Slow EMA values
       Each array has the same length as the input, with the first `slow_period-1` elements containing NaN values.
-
-    Note:
-      This function releases the Python GIL during computation using `py.allow_threads()` to enable
-      concurrent Python execution.
 
     Examples:
       ```python
@@ -173,10 +150,9 @@ def adx(high, low, close, period):
     Values range from 0 to 100, with higher values indicating stronger trends.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      high: High prices as a 1-D NumPy array of type `f64`.
-      low: Low prices as a 1-D NumPy array of type `f64`.
-      close: Close prices as a 1-D NumPy array of type `f64`.
+      high: High prices as a 1-D NumPy array of type `TAFloat`.
+      low: Low prices as a 1-D NumPy array of type `TAFloat`.
+      close: Close prices as a 1-D NumPy array of type `TAFloat`.
       period: Period for ADX calculation (typically 14). Must be positive.
 
     Returns:
@@ -186,10 +162,6 @@ def adx(high, low, close, period):
       - Smoothed -DM values
       - Smoothed TR values
       Each array has the same length as the input, with the first (2*period-1) elements containing NaN values.
-
-    Note:
-      This function releases the Python GIL during computation using `py.allow_threads()` to enable
-      concurrent Python execution.
 
     Examples:
       ```python
@@ -254,10 +226,9 @@ def adxr(high, low, close, period):
     the current ADX value with the ADX value from `period` days ago.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      high: High prices as a 1-D NumPy array of type `f64`.
-      low: Low prices as a 1-D NumPy array of type `f64`.
-      close: Close prices as a 1-D NumPy array of type `f64`.
+      high: High prices as a 1-D NumPy array of type `TAFloat`.
+      low: Low prices as a 1-D NumPy array of type `TAFloat`.
+      close: Close prices as a 1-D NumPy array of type `TAFloat`.
       period: Period for ADX calculation (typically 14).
 
     Returns:
@@ -268,10 +239,6 @@ def adxr(high, low, close, period):
       - Smoothed -DM values
       - Smoothed TR values
       The first (3*period-2) elements of each array contain NaN values.
-
-    Note:
-      This function releases the Python GIL during computation using `py.allow_threads()` to enable
-      concurrent Python execution.
 
     Examples:
       ```python
@@ -290,7 +257,7 @@ def adxr_incremental(high, low, prev_high, prev_low, prev_close, prev_adx, prev_
     Calculate the latest ADXR value incrementally
 
     Args:
-      py: Python interpreter token required for GIL management.
+
       high: Current high price as f64.
       low: Current low price as f64.
       prev_high: Previous high price as f64.
@@ -339,9 +306,8 @@ def aroon(high, low, period):
     relative to a lookback period. It helps identify the start of new trends and trend reversals.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      high: Input high prices as a 1-D NumPy array of type `f32`.
-      low: Input low prices as a 1-D NumPy array of type `f32`.
+      high: Input high prices as a 1-D NumPy array of type `TAFloat`.
+      low: Input low prices as a 1-D NumPy array of type `TAFloat`.
       period: The lookback period for calculations (must be >= 2).
 
     Returns:
@@ -370,7 +336,7 @@ def aroon_incremental(high, low, prev_high, prev_low, days_since_high, days_sinc
     Calculate the next Aroon values incrementally.
 
     Args:
-      py: Python interpreter token required for GIL management.
+
       high: Current period's high price.
       low: Current period's low price.
       prev_high: Previous highest price in period.
@@ -412,9 +378,8 @@ def aroonosc(high, low, period):
     It oscillates between -100 and +100, with positive values indicating an uptrend and negative values a downtrend.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      high: Input high prices as a 1-D NumPy array of type `f64`.
-      low: Input low prices as a 1-D NumPy array of type `f64`.
+      high: Input high prices as a 1-D NumPy array of type `TAFloat`.
+      low: Input low prices as a 1-D NumPy array of type `TAFloat`.
       period: The lookback period for calculations (must be >= 2).
 
     Returns:
@@ -442,7 +407,7 @@ def aroonosc_incremental(high, low, prev_high, prev_low, days_since_high, days_s
     Calculate the next Aroon Oscillator value incrementally.
 
     Args:
-      py: Python interpreter token required for GIL management.
+
       high: Current period's high price.
       low: Current period's low price.
       prev_high: Previous highest price within the period.
@@ -483,19 +448,14 @@ def atr(high, low, close, period):
     by decomposing the entire range of an asset price for a given period.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      high: High prices as a 1-D NumPy array of type `f32`.
-      low: Low prices as a 1-D NumPy array of type `f32`.
-      close: Close prices as a 1-D NumPy array of type `f32`.
+      high: High prices as a 1-D NumPy array of type `TAFloat`.
+      low: Low prices as a 1-D NumPy array of type `TAFloat`.
+      close: Close prices as a 1-D NumPy array of type `TAFloat`.
       period: Window size for ATR calculation. Must be greater than 1.
 
     Returns:
       A new 1-D NumPy array containing the ATR values. The array has the same length as the input,
       with the first `period` elements containing NaN values.
-
-    Note:
-      This function releases the Python GIL during computation using `py.allow_threads()` to enable
-      concurrent Python execution.
 
     Examples:
       ```python
@@ -514,7 +474,7 @@ def atr_incremental(high, low, prev_close, prev_atr, period):
     Calculate the next ATR value incrementally.
 
     Args:
-      py: Python interpreter token required for GIL management.
+
       high: Current period's high price.
       low: Current period's low price.
       prev_close: Previous period's close price.
@@ -548,8 +508,7 @@ def bbands(price, period, dev_up, dev_down):
     - A lower band (K standard deviations below middle band)
 
     Args:
-      py: Python interpreter token required for GIL management.
-      price: Input price values as a 1-D NumPy array of type `f32`.
+      price: Input price values as a 1-D NumPy array of type `TAFloat`.
       period: The time period for calculations (must be >= 2).
       dev_up: Number of standard deviations for upper band.
       dev_down: Number of standard deviations for lower band.
@@ -580,7 +539,7 @@ def bbands_incremental(price, prev_sma, prev_sum, prev_sum_sq, old_price, period
     Calculate the next Bollinger Bands values incrementally.
 
     Args:
-      py: Python interpreter token required for GIL management.
+
       price: The current price value.
       prev_sma: The previous SMA value.
       prev_sum: The previous sum for variance calculation.
@@ -625,11 +584,10 @@ def bop(open, high, low, close):
     normalizing it by the trading range (high - low).
 
     Args:
-      py: Python interpreter token required for GIL management.
-      open: Input opening prices as a 1-D NumPy array of type `f64`.
-      high: Input high prices as a 1-D NumPy array of type `f64`.
-      low: Input low prices as a 1-D NumPy array of type `f64`.
-      close: Input closing prices as a 1-D NumPy array of type `f64`.
+      open: Input opening prices as a 1-D NumPy array of type `TAFloat`.
+      high: Input high prices as a 1-D NumPy array of type `TAFloat`.
+      low: Input low prices as a 1-D NumPy array of type `TAFloat`.
+      close: Input closing prices as a 1-D NumPy array of type `TAFloat`.
 
     Returns:
       A 1-D NumPy array containing the BOP values.
@@ -676,10 +634,9 @@ def cci(high, low, close, period):
     a condition of being overbought or oversold.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      high: High prices as a 1-D NumPy array of type `f32`.
-      low: Low prices as a 1-D NumPy array of type `f32`.
-      close: Close prices as a 1-D NumPy array of type `f32`.
+      high: High prices as a 1-D NumPy array of type `TAFloat`.
+      low: Low prices as a 1-D NumPy array of type `TAFloat`.
+      close: Close prices as a 1-D NumPy array of type `TAFloat`.
       period: Window size for CCI calculation. Must be positive and less than input length.
 
     Returns:
@@ -689,10 +646,6 @@ def cci(high, low, close, period):
       - SMA of typical prices
       - Mean deviation values
       Each array has the same length as the input, with the first `period-1` elements containing NaN values.
-
-    Note:
-      This function releases the Python GIL during computation using `py.allow_threads()` to enable
-      concurrent Python execution.
 
     Examples:
       ```python
@@ -713,7 +666,7 @@ def cci_incremental(prev_sma_tp, new_high, new_low, new_close, old_high, old_low
     Calculates the next CCI value incrementally.
 
     Args:
-      py: Python interpreter token required for GIL management.
+
       prev_sma_tp: Previous SMA value of typical prices.
       new_high: New high price.
       new_low: New low price.
@@ -750,11 +703,10 @@ def cdl_doji(open, high, low, close, body_percent, shadow_equal_percent):
     Detects Doji candlestick patterns in price data.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      open: Opening prices as a 1-D NumPy array of type `f64`.
-      high: High prices as a 1-D NumPy array of type `f64`.
-      low: Low prices as a 1-D NumPy array of type `f64`.
-      close: Close prices as a 1-D NumPy array of type `f64`.
+      open: Opening prices as a 1-D NumPy array of type `TAFloat`.
+      high: High prices as a 1-D NumPy array of type `TAFloat`.
+      low: Low prices as a 1-D NumPy array of type `TAFloat`.
+      close: Close prices as a 1-D NumPy array of type `TAFloat`.
       body_percent: Maximum body size as percentage of range (e.g. 5.0 for 5%).
       shadow_equal_percent: Maximum shadow length difference percentage (e.g. 100.0).
 
@@ -779,7 +731,7 @@ def cdl_doji_incremental(open, high, low, close, body_percent, shadow_equal_perc
     Detects a Doji pattern in a single candlestick.
 
     Args:
-      py: Python interpreter token required for GIL management.
+
       open: Opening price.
       high: High price.
       low: Low price.
@@ -803,11 +755,10 @@ def cdl_dragonfly_doji(open, high, low, close, body_percent):
     Detects Dragonfly Doji candlestick patterns in price data.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      open: Opening prices as a 1-D NumPy array of type `f32`.
-      high: High prices as a 1-D NumPy array of type `f32`.
-      low: Low prices as a 1-D NumPy array of type `f32`.
-      close: Close prices as a 1-D NumPy array of type `f32`.
+      open: Opening prices as a 1-D NumPy array of type `TAFloat`.
+      high: High prices as a 1-D NumPy array of type `TAFloat`.
+      low: Low prices as a 1-D NumPy array of type `TAFloat`.
+      close: Close prices as a 1-D NumPy array of type `TAFloat`.
       body_percent: Maximum body size as percentage of total range (typically 5%).
 
     Returns:
@@ -833,7 +784,7 @@ def cdl_dragonfly_doji_incremental(open, high, low, close, body_percent):
     Detects a Dragonfly Doji pattern in a single candlestick.
 
     Args:
-      py: Python interpreter token required for GIL management.
+
       open: Opening price.
       high: High price.
       low: Low price.
@@ -858,11 +809,10 @@ def cdl_gravestone_doji(open, high, low, close, body_percent):
     Detects Gravestone Doji candlestick patterns in price data.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      open: Opening prices as a 1-D NumPy array of type `f64`.
-      high: High prices as a 1-D NumPy array of type `f64`.
-      low: Low prices as a 1-D NumPy array of type `f64`.
-      close: Close prices as a 1-D NumPy array of type `f64`.
+      open: Opening prices as a 1-D NumPy array of type `TAFloat`.
+      high: High prices as a 1-D NumPy array of type `TAFloat`.
+      low: Low prices as a 1-D NumPy array of type `TAFloat`.
+      close: Close prices as a 1-D NumPy array of type `TAFloat`.
       body_percent: Maximum body size as percentage of total range (typically 5%).
 
     Returns:
@@ -888,7 +838,7 @@ def cdl_gravestone_doji_incremental(open, high, low, close, body_percent):
     Detects a Gravestone Doji pattern in a single candlestick.
 
     Args:
-      py: Python interpreter token required for GIL management.
+
       open: Opening price.
       high: High price.
       low: Low price.
@@ -913,11 +863,10 @@ def cdl_hammer(open, high, low, close, period, factor):
     Detects Hammer candlestick patterns in price data.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      open: Opening prices as a 1-D NumPy array of type `f64`.
-      high: High prices as a 1-D NumPy array of type `f64`.
-      low: Low prices as a 1-D NumPy array of type `f64`.
-      close: Close prices as a 1-D NumPy array of type `f64`.
+      open: Opening prices as a 1-D NumPy array of type `TAFloat`.
+      high: High prices as a 1-D NumPy array of type `TAFloat`.
+      low: Low prices as a 1-D NumPy array of type `TAFloat`.
+      close: Close prices as a 1-D NumPy array of type `TAFloat`.
       period: Period for EMA calculation of body sizes.
       factor: Minimum ratio of lower shadow to body length.
 
@@ -946,7 +895,7 @@ def cdl_hammer_incremental(open, high, low, close, prev_body_avg, period, factor
     Detects a Hammer pattern in a single candlestick.
 
     Args:
-      py: Python interpreter token required for GIL management.
+
       open: Opening price.
       high: High price.
       low: Low price.
@@ -975,11 +924,10 @@ def cdl_inverted_hammer(open, high, low, close, period, factor):
     Detects Inverted Hammer candlestick patterns in price data.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      open: Opening prices as a 1-D NumPy array of type `f32`.
-      high: High prices as a 1-D NumPy array of type `f32`.
-      low: Low prices as a 1-D NumPy array of type `f32`.
-      close: Close prices as a 1-D NumPy array of type `f32`.
+      open: Opening prices as a 1-D NumPy array of type `TAFloat`.
+      high: High prices as a 1-D NumPy array of type `TAFloat`.
+      low: Low prices as a 1-D NumPy array of type `TAFloat`.
+      close: Close prices as a 1-D NumPy array of type `TAFloat`.
       period: Period for EMA calculation of body sizes.
       factor: Minimum ratio of upper shadow to body length.
 
@@ -1008,7 +956,7 @@ def cdl_inverted_hammer_incremental(open, high, low, close, prev_body_avg, perio
     Detects an Inverted Hammer pattern in a single candlestick.
 
     Args:
-      py: Python interpreter token required for GIL management.
+
       open: Opening price.
       high: High price.
       low: Low price.
@@ -1037,11 +985,10 @@ def cdl_long_shadow(open, high, low, close, period, shadow_factor):
     Detects Long Shadow candlestick patterns in price data.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      open: Opening prices as a 1-D NumPy array of type `f32`.
-      high: High prices as a 1-D NumPy array of type `f32`.
-      low: Low prices as a 1-D NumPy array of type `f32`.
-      close: Close prices as a 1-D NumPy array of type `f32`.
+      open: Opening prices as a 1-D NumPy array of type `TAFloat`.
+      high: High prices as a 1-D NumPy array of type `TAFloat`.
+      low: Low prices as a 1-D NumPy array of type `TAFloat`.
+      close: Close prices as a 1-D NumPy array of type `TAFloat`.
       period: Period for EMA calculation of body sizes.
       shadow_factor: Minimum percentage of total range that shadow must be.
 
@@ -1071,7 +1018,7 @@ def cdl_long_shadow_incremental(open, high, low, close, prev_body_avg, period, s
     Detects a Long Shadow pattern in a single candlestick.
 
     Args:
-      py: Python interpreter token required for GIL management.
+
       open: Opening price.
       high: High price.
       low: Low price.
@@ -1101,11 +1048,10 @@ def cdl_marubozu(open, high, low, close, period, shadow_percent):
     Detects Marubozu candlestick patterns in price data.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      open: Opening prices as a 1-D NumPy array of type `f32`.
-      high: High prices as a 1-D NumPy array of type `f32`.
-      low: Low prices as a 1-D NumPy array of type `f32`.
-      close: Close prices as a 1-D NumPy array of type `f32`.
+      open: Opening prices as a 1-D NumPy array of type `TAFloat`.
+      high: High prices as a 1-D NumPy array of type `TAFloat`.
+      low: Low prices as a 1-D NumPy array of type `TAFloat`.
+      close: Close prices as a 1-D NumPy array of type `TAFloat`.
       period: Period for EMA calculation of body sizes.
       shadow_percent: Maximum shadow size as percentage of body.
 
@@ -1135,7 +1081,7 @@ def cdl_marubozu_incremental(open, high, low, close, prev_body_avg, period, shad
     Detects a Marubozu pattern in a single candlestick.
 
     Args:
-      py: Python interpreter token required for GIL management.
+
       open: Opening price.
       high: High price.
       low: Low price.
@@ -1165,8 +1111,7 @@ def dema(input_price, period):
     Calculates Double Exponential Moving Average (DEMA) over NumPy arrays.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      input_price: Price values as a 1-D NumPy array of type `f32`.
+      input_price: Price values as a 1-D NumPy array of type `TAFloat`.
       period: Smoothing period for EMA calculations. Must be >= 2.
 
     Returns:
@@ -1191,7 +1136,7 @@ def dema_incremental(price, prev_ema1, prev_ema2, period):
     Calculates the next DEMA value incrementally.
 
     Args:
-      py: Python interpreter token required for GIL management.
+
       price: Current price value.
       prev_ema1: Previous value of first EMA.
       prev_ema2: Previous value of second EMA.
@@ -1215,10 +1160,9 @@ def dx(high, low, close, period):
     The DX indicator measures the strength of a trend by comparing positive and negative directional movements.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      high: High prices as a 1-D NumPy array of type `f32`.
-      low: Low prices as a 1-D NumPy array of type `f32`.
-      close: Close prices as a 1-D NumPy array of type `f32`.
+      high: High prices as a 1-D NumPy array of type `TAFloat`.
+      low: Low prices as a 1-D NumPy array of type `TAFloat`.
+      close: Close prices as a 1-D NumPy array of type `TAFloat`.
       period: Window size for DX calculation. Must be positive and less than input length.
 
     Returns:
@@ -1228,10 +1172,6 @@ def dx(high, low, close, period):
       - Smoothed -DM values
       - Smoothed TR values
       Each array has the same length as the input, with the first `period` elements containing NaN values.
-
-    Note:
-      This function releases the Python GIL during computation using `py.allow_threads()` to enable
-      concurrent Python execution.
 
     Examples:
       ```python
@@ -1245,7 +1185,7 @@ def dx(high, low, close, period):
     """
     ...
 
-def dx_incremental(input_high, input_low, input_prev_high, input_prev_low, input_prev_close, input_prev_smoothed_plus_dm, input_prev_smoothed_minus_dm, input_prev_smoothed_tr, param_period):
+def dx_incremental(input_high, input_low, prev_high, prev_low, prev_close, prev_smoothed_plus_dm, prev_smoothed_minus_dm, prev_smoothed_tr, param_period):
     """
     Calculates the latest DX value incrementally.
 
@@ -1257,12 +1197,12 @@ def dx_incremental(input_high, input_low, input_prev_high, input_prev_low, input
     Args:
         input_high (float): Current high price.
         input_low (float): Current low price.
-        input_prev_high (float): Previous period's high price.
-        input_prev_low (float): Previous period's low price.
-        input_prev_close (float): Previous period's close price.
-        input_prev_smoothed_plus_dm (float): Previous smoothed +DM value.
-        input_prev_smoothed_minus_dm (float): Previous smoothed -DM value.
-        input_prev_smoothed_tr (float): Previous smoothed TR value.
+        prev_high (float): Previous period's high price.
+        prev_low (float): Previous period's low price.
+        prev_close (float): Previous period's close price.
+        prev_smoothed_plus_dm (float): Previous smoothed +DM value.
+        prev_smoothed_minus_dm (float): Previous smoothed -DM value.
+        prev_smoothed_tr (float): Previous smoothed TR value.
         param_period (int): Period for DX calculation (typically 14).
 
     Returns:
@@ -1295,18 +1235,13 @@ def ecl(high, low, close):
     high, low and close prices.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      high: Input high prices as a 1-D NumPy array of type `f32`.
-      low: Input low prices as a 1-D NumPy array of type `f32`.
-      close: Input close prices as a 1-D NumPy array of type `f32`.
+      high: Input high prices as a 1-D NumPy array of type `TAFloat`.
+      low: Input low prices as a 1-D NumPy array of type `TAFloat`.
+      close: Input close prices as a 1-D NumPy array of type `TAFloat`.
 
     Returns:
       A tuple of ten 1-D NumPy arrays containing the ECL values (H5,H4,H3,H2,H1,L1,L2,L3,L4,L5).
       Each array has the same length as the input, with the first element containing NaN value.
-
-    Note:
-      This function releases the Python GIL during computation using `py.allow_threads()` to enable
-      concurrent Python execution.
 
     Examples:
       ```python
@@ -1328,10 +1263,10 @@ def ecl_incremental(prev_high, prev_low, prev_close):
     reprocessing the entire dataset.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      prev_high: Previous period's high price as `f32`.
-      prev_low: Previous period's low price as `f32`.
-      prev_close: Previous period's close price as `f32`.
+
+      prev_high: Previous period's high price as `TAFloat`.
+      prev_low: Previous period's low price as `TAFloat`.
+      prev_close: Previous period's close price as `TAFloat`.
 
     Returns:
       A tuple of ten values (H5,H4,H3,H2,H1,L1,L2,L3,L4,L5) containing the latest ECL levels.
@@ -1354,18 +1289,13 @@ def ema(data, period, k=None):
     where k is typically 2/(period+1).
 
     Args:
-      py: Python interpreter token required for GIL management.
-      data: Input data as a 1-D NumPy array of type `f32`.
+      data: Input data as a 1-D NumPy array of type `TAFloat`.
       period: Window size for EMA calculation. Must be positive and less than input length.
       k: Optional custom smoothing factor. If None, uses default k = 2/(period+1).
 
     Returns:
       A new 1-D NumPy array containing the EMA values. The array has the same length as the input,
       with the first `period-1` elements containing NaN values.
-
-    Note:
-      This function releases the Python GIL during computation using `py.allow_threads()` to enable
-      concurrent Python execution.
 
     Examples:
       ```python
@@ -1387,14 +1317,14 @@ def ema_incremental(price, prev_ema, period, k=None):
     reprocessing the entire dataset.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      price: Current period's price value as `f32`.
-      prev_ema: Previous period's EMA value as `f32`.
+
+      price: Current period's price value as `TAFloat`.
+      prev_ema: Previous period's EMA value as `TAFloat`.
       period: Window size for EMA calculation. Must be >= 2.
       k: Optional custom smoothing factor. If None, uses default k = 2/(period+1).
 
     Returns:
-      The new EMA value as `f32`.
+      The new EMA value as `TAFloat`.
 
     Examples:
       ```python
@@ -1418,8 +1348,7 @@ def macd(data, fast_period, slow_period, signal_period):
     - Histogram: Difference between MACD line and signal line
 
     Args:
-      py: Python interpreter token required for GIL management.
-      data: Input price data as a 1-D NumPy array of type `f64`.
+      data: Input price data as a 1-D NumPy array of type `TAFloat`.
       fast_period: Period for fast EMA calculation (typically 12).
       slow_period: Period for slow EMA calculation (typically 26).
       signal_period: Period for signal line calculation (typically 9).
@@ -1432,10 +1361,6 @@ def macd(data, fast_period, slow_period, signal_period):
       - Fast EMA values
       - Slow EMA values
       Each array has the same length as the input, with initial elements containing NaN values.
-
-    Note:
-      This function releases the Python GIL during computation using `py.allow_threads()` to enable
-      concurrent Python execution.
 
     Examples:
       ```python
@@ -1455,7 +1380,7 @@ def macd_incremental(price, prev_fast_ema, prev_slow_ema, prev_signal, fast_peri
     previous EMA values instead of recalculating the entire series.
 
     Args:
-      py: Python interpreter token required for GIL management.
+
       price: Current price value as `f64`.
       prev_fast_ema: Previous fast EMA value as `f64`.
       prev_slow_ema: Previous slow EMA value as `f64`.
@@ -1491,16 +1416,11 @@ def max(prices, period):
     Calculate Maximum Value for a NumPy array
 
     Args:
-      py: Python interpreter token required for GIL management.
-      prices: Input prices as a 1-D NumPy array of type `f64`.
+      prices: Input prices as a 1-D NumPy array of type `TAFloat`.
       period: Period for MAX calculation (must be >= 2).
 
     Returns:
       A 1-D NumPy array containing MAX values. The first (period-1) elements contain NaN values.
-
-    Note:
-      This function releases the Python GIL during computation using `py.allow_threads()` to enable
-      concurrent Python execution.
 
     Examples:
       ```python
@@ -1542,9 +1462,8 @@ def medprice(high, low):
     high and low prices for each period.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      high: Array of high prices as a 1-D NumPy array of type `f64`.
-      low: Array of low prices as a 1-D NumPy array of type `f64`.
+      high: Array of high prices as a 1-D NumPy array of type `TAFloat`.
+      low: Array of low prices as a 1-D NumPy array of type `TAFloat`.
 
     Returns:
       A 1-D NumPy array containing the median price values.
@@ -1567,7 +1486,7 @@ def medprice_incremental(high, low):
     Calculates a single Median Price value incrementally.
 
     Args:
-      py: Python interpreter token required for GIL management.
+
       high: Current period's high price as `f64`.
       low: Current period's low price as `f64`.
 
@@ -1592,11 +1511,10 @@ def mfi(high, low, close, volume, period):
     overbought or oversold conditions in an asset.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      high: Array of high prices as a 1-D NumPy array of type `f32`.
-      low: Array of low prices as a 1-D NumPy array of type `f32`.
-      close: Array of close prices as a 1-D NumPy array of type `f32`.
-      volume: Array of volume data as a 1-D NumPy array of type `f32`.
+      high: Array of high prices as a 1-D NumPy array of type `TAFloat`.
+      low: Array of low prices as a 1-D NumPy array of type `TAFloat`.
+      close: Array of close prices as a 1-D NumPy array of type `TAFloat`.
+      volume: Array of volume data as a 1-D NumPy array of type `TAFloat`.
       period: The time period for MFI calculation (typically 14).
 
     Returns:
@@ -1628,8 +1546,7 @@ def midpoint(data, period):
     prices over a specified period.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      data: Input price data as a 1-D NumPy array of type `f64`.
+      data: Input price data as a 1-D NumPy array of type `TAFloat`.
       period: Time period for calculation (must be >= 2).
 
     Returns:
@@ -1657,7 +1574,6 @@ def midpoint_incremental(price, prev_highest, prev_lowest, period):
     without recalculating the entire series.
 
     Args:
-      py: Python interpreter token required for GIL management.
       price: Current price value as `f64`.
       prev_highest: Previous highest value as `f64`.
       prev_lowest: Previous lowest value as `f64`.
@@ -1690,9 +1606,8 @@ def midprice(high, low, period):
     and lowest low prices over a specified period.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      high: Input high price data as a 1-D NumPy array of type `f32`.
-      low: Input low price data as a 1-D NumPy array of type `f32`.
+      high: Input high price data as a 1-D NumPy array of type `TAFloat`.
+      low: Input low price data as a 1-D NumPy array of type `TAFloat`.
       period: Time period for calculation (must be >= 2).
 
     Returns:
@@ -1721,11 +1636,11 @@ def midprice_incremental(high, low, prev_highest, prev_lowest, period):
     without recalculating the entire series.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      high: Current high price value as `f32`.
-      low: Current low price value as `f32`.
-      prev_highest: Previous highest high value as `f32`.
-      prev_lowest: Previous lowest low value as `f32`.
+
+      high: Current high price value as `TAFloat`.
+      low: Current low price value as `TAFloat`.
+      prev_highest: Previous highest high value as `TAFloat`.
+      prev_lowest: Previous lowest low value as `TAFloat`.
       period: Time period for calculation (must be >= 2).
 
     Returns:
@@ -1755,8 +1670,7 @@ def min(prices, period):
     The MIN indicator finds the lowest price value within a given time period.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      prices: Input prices as a 1-D NumPy array of type `f64`.
+      prices: Input prices as a 1-D NumPy array of type `TAFloat`.
       period: Period for MIN calculation (must be >= 2).
 
     Returns:
@@ -1802,10 +1716,9 @@ def minus_di(high, low, close, period):
     the Average Directional Index (ADX), which helps determine trend strength.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      high: High prices as a 1-D NumPy array of type `f32`.
-      low: Low prices as a 1-D NumPy array of type `f32`.
-      close: Close prices as a 1-D NumPy array of type `f32`.
+      high: High prices as a 1-D NumPy array of type `TAFloat`.
+      low: Low prices as a 1-D NumPy array of type `TAFloat`.
+      close: Close prices as a 1-D NumPy array of type `TAFloat`.
       period: Window size for -DI calculation. Must be positive and less than input length.
 
     Returns:
@@ -1814,10 +1727,6 @@ def minus_di(high, low, close, period):
       - The smoothed -DM values
       - The smoothed TR values
       Each array has the same length as the input, with the first `period` elements containing NaN values.
-
-    Note:
-      This function releases the Python GIL during computation using `py.allow_threads()` to enable
-      concurrent Python execution.
 
     Examples:
       ```python
@@ -1841,18 +1750,13 @@ def minus_dm(high, low, period):
     Directional Movement System developed by J. Welles Wilder.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      high: Input high prices as a 1-D NumPy array of type `f32`.
-      low: Input low prices as a 1-D NumPy array of type `f32`.
+      high: Input high prices as a 1-D NumPy array of type `TAFloat`.
+      low: Input low prices as a 1-D NumPy array of type `TAFloat`.
       period: Window size for -DM calculation. Must be positive and less than input length.
 
     Returns:
       A new 1-D NumPy array containing the -DM values. The array has the same length as the input,
       with the first `period-1` elements containing NaN values.
-
-    Note:
-      This function releases the Python GIL during computation using `py.allow_threads()` to enable
-      concurrent Python execution.
 
     Examples:
       ```python
@@ -1872,17 +1776,12 @@ def mom(data, period):
     Momentum measures the change in price between the current price and the price n periods ago.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      data: Input data as a 1-D NumPy array of type `f32`.
+      data: Input data as a 1-D NumPy array of type `TAFloat`.
       period: Window size for momentum calculation. Must be positive and less than input length.
 
     Returns:
       A new 1-D NumPy array containing the momentum values. The array has the same length as the input,
       with the first `period` elements containing NaN values.
-
-    Note:
-      This function releases the Python GIL during computation using `py.allow_threads()` to enable
-      concurrent Python execution.
 
     Examples:
       ```python
@@ -1904,7 +1803,7 @@ def mom_incremental(current_price, old_price):
     when streaming data is available, without needing the full price history.
 
     Args:
-      py: Python interpreter token required for GIL management.
+
       current_price: The current period's price value.
       old_price: The price value from n periods ago.
 
@@ -1929,19 +1828,14 @@ def natr(high, low, close, period):
     It expresses the ATR as a percentage of the closing price.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      high: High prices as a 1-D NumPy array of type `f32`.
-      low: Low prices as a 1-D NumPy array of type `f32`.
-      close: Close prices as a 1-D NumPy array of type `f32`.
+      high: High prices as a 1-D NumPy array of type `TAFloat`.
+      low: Low prices as a 1-D NumPy array of type `TAFloat`.
+      close: Close prices as a 1-D NumPy array of type `TAFloat`.
       period: Window size for NATR calculation. Must be positive and less than input length.
 
     Returns:
       A new 1-D NumPy array containing the NATR values. The array has the same length as the input,
       with the first `period` elements containing NaN values.
-
-    Note:
-      This function releases the Python GIL during computation using `py.allow_threads()` to enable
-      concurrent Python execution.
 
     Examples:
       ```python
@@ -1963,7 +1857,7 @@ def natr_incremental(high, low, close, prev_close, prev_atr, period):
     using the previous ATR value and current price data, without recalculating the entire series.
 
     Args:
-      py: Python interpreter token required for GIL management.
+
       high: Current period's high price.
       low: Current period's low price.
       close: Current period's closing price.
@@ -1998,16 +1892,11 @@ def obv(close, volume):
     When volume decreases without a significant price change, the price will eventually jump downward.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      close: Close prices as a 1-D NumPy array of type `f64`.
-      volume: Volume data as a 1-D NumPy array of type `f64`.
+      close: Close prices as a 1-D NumPy array of type `TAFloat`.
+      volume: Volume data as a 1-D NumPy array of type `TAFloat`.
 
     Returns:
       A new 1-D NumPy array containing the OBV values. The array has the same length as the input.
-
-    Note:
-      This function releases the Python GIL during computation using `py.allow_threads()` to enable
-      concurrent Python execution.
 
     Examples:
       ```python
@@ -2060,10 +1949,9 @@ def plus_di(high, low, close, period):
     the Average Directional Index (ADX), which helps determine trend strength.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      high: High prices as a 1-D NumPy array of type `f32`.
-      low: Low prices as a 1-D NumPy array of type `f32`.
-      close: Close prices as a 1-D NumPy array of type `f32`.
+      high: High prices as a 1-D NumPy array of type `TAFloat`.
+      low: Low prices as a 1-D NumPy array of type `TAFloat`.
+      close: Close prices as a 1-D NumPy array of type `TAFloat`.
       period: Window size for +DI calculation. Must be positive and less than input length.
 
     Returns:
@@ -2072,10 +1960,6 @@ def plus_di(high, low, close, period):
       - Smoothed +DM values
       - Smoothed TR values
       Each array has the same length as the input, with the first `period` elements containing NaN values.
-
-    Note:
-      This function releases the Python GIL during computation using `py.allow_threads()` to enable
-      concurrent Python execution.
 
     Examples:
       ```python
@@ -2097,13 +1981,13 @@ def plus_di_incremental(high, low, prev_high, prev_low, prev_close, prev_smoothe
     and current price data, avoiding the need to recalculate the entire series.
 
     Args:
-      high: Current high price as `f32`.
-      low: Current low price as `f32`.
-      prev_high: Previous high price as `f32`.
-      prev_low: Previous low price as `f32`.
-      prev_close: Previous close price as `f32`.
-      prev_smoothed_plus_dm: Previous smoothed +DM value as `f32`.
-      prev_smoothed_tr: Previous smoothed TR value as `f32`.
+      high: Current high price as `TAFloat`.
+      low: Current low price as `TAFloat`.
+      prev_high: Previous high price as `TAFloat`.
+      prev_low: Previous low price as `TAFloat`.
+      prev_close: Previous close price as `TAFloat`.
+      prev_smoothed_plus_dm: Previous smoothed +DM value as `TAFloat`.
+      prev_smoothed_tr: Previous smoothed TR value as `TAFloat`.
       period: Smoothing period (>= 2).
 
     Returns:
@@ -2134,18 +2018,13 @@ def plus_dm(high, low, period):
     Directional Movement System developed by J. Welles Wilder.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      high: Input high prices as a 1-D NumPy array of type `f32`.
-      low: Input low prices as a 1-D NumPy array of type `f32`.
+      high: Input high prices as a 1-D NumPy array of type `TAFloat`.
+      low: Input low prices as a 1-D NumPy array of type `TAFloat`.
       period: Window size for +DM calculation. Must be positive and less than input length.
 
     Returns:
       A new 1-D NumPy array containing the +DM values. The array has the same length as the input,
       with the first `period-1` elements containing NaN values.
-
-    Note:
-      This function releases the Python GIL during computation using `py.allow_threads()` to enable
-      concurrent Python execution.
 
     Examples:
       ```python
@@ -2166,11 +2045,11 @@ def plus_dm_incremental(high, prev_high, low, prev_low, prev_plus_dm, period):
     and current price data, avoiding the need to recalculate the entire series.
 
     Args:
-      high: Current high price as `f32`.
-      prev_high: Previous high price as `f32`.
-      low: Current low price as `f32`.
-      prev_low: Previous low price as `f32`.
-      prev_plus_dm: Previous Plus DM value as `f32`.
+      high: Current high price as `TAFloat`.
+      prev_high: Previous high price as `TAFloat`.
+      low: Current low price as `TAFloat`.
+      prev_low: Previous low price as `TAFloat`.
+      prev_plus_dm: Previous Plus DM value as `TAFloat`.
       period: Smoothing period (>= 2).
 
     Returns:
@@ -2200,17 +2079,12 @@ def rma(data, period):
     with weights determined by the period size.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      data: Input data as a 1-D NumPy array of type `f64`.
+      data: Input data as a 1-D NumPy array of type `TAFloat`.
       period: Window size for RMA calculation. Must be positive and less than input length.
 
     Returns:
       A new 1-D NumPy array containing the RMA values. The array has the same length as the input,
       with the first `period-1` elements containing NaN values.
-
-    Note:
-      This function releases the Python GIL during computation using `py.allow_threads()` to enable
-      concurrent Python execution.
 
     Examples:
       ```python
@@ -2255,8 +2129,7 @@ def roc(data, period):
     between the current price and the price n periods ago.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      data: Input price data as a 1-D NumPy array of type `f64`.
+      data: Input price data as a 1-D NumPy array of type `TAFloat`.
       period: Number of periods to look back. Must be positive.
 
     Returns:
@@ -2307,8 +2180,7 @@ def rocp(data, period):
     between the current price and the price n periods ago.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      data: Input price data as a 1-D NumPy array of type `f64`.
+      data: Input price data as a 1-D NumPy array of type `TAFloat`.
       period: Number of periods to look back. Must be positive.
 
     Returns:
@@ -2359,8 +2231,7 @@ def rocr(data, period):
     the current price and the price n periods ago.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      data: Input price data as a 1-D NumPy array of type `f64`.
+      data: Input price data as a 1-D NumPy array of type `TAFloat`.
       period: Number of periods to look back. Must be >= 2.
 
     Returns:
@@ -2388,8 +2259,7 @@ def rocr100(data, period):
     Values above 100 indicate price increases, while values below 100 indicate price decreases.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      data: Input price data as a 1-D NumPy array of type `f64`.
+      data: Input price data as a 1-D NumPy array of type `TAFloat`.
       period: Number of periods to look back. Must be >= 2.
 
     Returns:
@@ -2464,8 +2334,7 @@ def rsi(prices, period):
     to evaluate overbought or oversold conditions.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      prices: Input prices as a 1-D NumPy array of type `f64`.
+      prices: Input prices as a 1-D NumPy array of type `TAFloat`.
       period: Window size for RSI calculation. Must be positive and less than input length.
 
     Returns:
@@ -2474,10 +2343,6 @@ def rsi(prices, period):
       - Average gain values
       - Average loss values
       Each array has the same length as the input, with the first `period` elements containing NaN values.
-
-    Note:
-      This function releases the Python GIL during computation using `py.allow_threads()` to enable
-      concurrent Python execution.
 
     Examples:
       ```python
@@ -2519,9 +2384,8 @@ def sar(high, low, acceleration, maximum):
     Calculates the Parabolic SAR (Stop And Reverse) indicator over NumPy arrays.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      high: Input high prices as a 1-D NumPy array of type `f32`.
-      low: Input low prices as a 1-D NumPy array of type `f32`.
+      high: Input high prices as a 1-D NumPy array of type `TAFloat`.
+      low: Input low prices as a 1-D NumPy array of type `TAFloat`.
       acceleration: Initial acceleration factor (e.g. 0.02).
       maximum: Maximum acceleration factor (e.g. 0.2).
 
@@ -2582,17 +2446,12 @@ def sma(data, period):
     and divides by the period size.
 
     Args:
-        py: Python interpreter token required for GIL management.
-        data: Input data as a 1-D NumPy array of type `f64`.
+        data: Input data as a 1-D NumPy array of type `TAFloat`.
         period: Window size for SMA calculation. Must be positive and less than input length.
 
     Returns:
         A new 1-D NumPy array containing the SMA values. The array has the same length as the input,
         with the first `period-1` elements containing NaN values.
-
-    Note:
-        This function releases the Python GIL during computation using `py.allow_threads()` to enable
-        concurrent Python execution.
 
     Examples:
         ```python
@@ -2644,8 +2503,7 @@ def stddev(input, period):
     It is calculated by taking the square root of the variance.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      input: Input values as a 1-D NumPy array of type `f64`.
+      input: Input values as a 1-D NumPy array of type `TAFloat`.
       period: Period for calculation (must be >= 2).
 
     Returns:
@@ -2654,10 +2512,6 @@ def stddev(input, period):
       - Running sum values
       - Running sum of squares values
       Each array has the same length as the input, with the first (period-1) elements containing NaN values.
-
-    Note:
-      This function releases the Python GIL during computation using `py.allow_threads()` to enable
-      concurrent Python execution.
 
     Examples:
       ```python
@@ -2710,10 +2564,9 @@ def stoch(high, low, close, k_period, k_slow_period, d_period):
     two lines: %K (the fast line) and %D (the slow line).
 
     Args:
-        py: Python interpreter token required for GIL management.
-        high: High prices as a 1-D NumPy array of type `f32`.
-        low: Low prices as a 1-D NumPy array of type `f32`.
-        close: Close prices as a 1-D NumPy array of type `f32`.
+        high: High prices as a 1-D NumPy array of type `TAFloat`.
+        low: Low prices as a 1-D NumPy array of type `TAFloat`.
+        close: Close prices as a 1-D NumPy array of type `TAFloat`.
         k_period: Period for %K calculation. Must be >= 2.
         k_slow_period: Smoothing period for slow %K. Must be >= 2.
         d_period: Period for %D calculation. Must be >= 2.
@@ -2744,17 +2597,12 @@ def sum(input, period):
     Calculates the rolling sum of values over a specified period.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      input: Input values as a 1-D NumPy array of type `f64`.
+      input: Input values as a 1-D NumPy array of type `TAFloat`.
       period: Period for sum calculation (must be >= 2).
 
     Returns:
       A 1-D NumPy array containing the sum values.
       The first (period-1) elements contain NaN values.
-
-    Note:
-      This function releases the Python GIL during computation using `py.allow_threads()` to enable
-      concurrent Python execution.
 
     Examples:
       ```python
@@ -2799,10 +2647,9 @@ def supertrend(high, low, close, period, multiplier):
     with basic upper and lower bands to identify trend direction and potential reversal points.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      high: High prices as a 1-D NumPy array of type `f64`.
-      low: Low prices as a 1-D NumPy array of type `f64`.
-      close: Close prices as a 1-D NumPy array of type `f64`.
+      high: High prices as a 1-D NumPy array of type `TAFloat`.
+      low: Low prices as a 1-D NumPy array of type `TAFloat`.
+      close: Close prices as a 1-D NumPy array of type `TAFloat`.
       period: Period for ATR calculation (typically 7-14). Must be positive.
       multiplier: ATR multiplier (typically 2-4).
 
@@ -2814,10 +2661,6 @@ def supertrend(high, low, close, period, multiplier):
       - upper: Array containing upper band values
       - lower: Array containing lower band values
       All arrays have the same length as the input, with the first `period-1` elements containing NaN values.
-
-    Note:
-      This function releases the Python GIL during computation using `py.allow_threads()` to enable
-      concurrent Python execution.
 
     Examples:
       ```python
@@ -2885,8 +2728,7 @@ def t3(data, period, vfactor):
     It combines six EMAs with optimized weightings to produce a responsive yet smooth indicator.
 
     Args:
-        py: Python interpreter token required for GIL management.
-        data: Input data as a 1-D NumPy array of type `f32`.
+        data: Input data as a 1-D NumPy array of type `TAFloat`.
         period: Smoothing period for EMAs (must be >= 2).
         vfactor: Volume factor controlling smoothing (typically 0-1).
 
@@ -2965,8 +2807,7 @@ def tema(prices, period):
     It applies triple exponential smoothing to put more weight on recent data and less on older data.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      prices: Input prices as a 1-D NumPy array of type `f64`.
+      prices: Input prices as a 1-D NumPy array of type `TAFloat`.
       period: Smoothing period for calculations (must be >= 2).
 
     Returns:
@@ -3027,19 +2868,13 @@ def trange(high, low, close):
     and the previous close price.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      high: High prices as a 1-D NumPy array of type `f32`.
-      low: Low prices as a 1-D NumPy array of type `f32`.
-      close: Close prices as a 1-D NumPy array of type `f32`.
+      high: High prices as a 1-D NumPy array of type `TAFloat`.
+      low: Low prices as a 1-D NumPy array of type `TAFloat`.
+      close: Close prices as a 1-D NumPy array of type `TAFloat`.
 
     Returns:
       A new 1-D NumPy array containing the TR values. The array has the same length as the input,
       with the first element containing NaN value.
-
-    Note:
-      This function releases the Python GIL during computation using `py.allow_threads()` to enable
-      concurrent Python execution.
-
     Examples:
       ```python
       >>> import numpy as np
@@ -3085,8 +2920,7 @@ def trima(prices, period):
     Simple Moving Average (SMA).
 
     Args:
-      py: Python interpreter token required for GIL management.
-      prices: Input prices as a 1-D NumPy array of type `f64`.
+      prices: Input prices as a 1-D NumPy array of type `TAFloat`.
       period: Smoothing period for calculations (must be >= 2).
 
     Returns:
@@ -3145,8 +2979,7 @@ def trix(prices, period):
     It helps identify oversold and overbought conditions and potential trend reversals through divergences.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      prices: Input prices as a 1-D NumPy array of type `f64`.
+      prices: Input prices as a 1-D NumPy array of type `TAFloat`.
       period: Period for EMA calculations (must be >= 2).
 
     Returns:
@@ -3207,17 +3040,12 @@ def typprice(high, low, close):
     for each period.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      high: Input high prices as a 1-D NumPy array of type `f32`.
-      low: Input low prices as a 1-D NumPy array of type `f32`.
-      close: Input close prices as a 1-D NumPy array of type `f32`.
+      high: Input high prices as a 1-D NumPy array of type `TAFloat`.
+      low: Input low prices as a 1-D NumPy array of type `TAFloat`.
+      close: Input close prices as a 1-D NumPy array of type `TAFloat`.
 
     Returns:
       A new 1-D NumPy array containing the Typical Price values. The array has the same length as the inputs.
-
-    Note:
-      This function releases the Python GIL during computation using `py.allow_threads()` to enable
-      concurrent Python execution.
 
     Examples:
       ```python
@@ -3262,8 +3090,7 @@ def var(prices, period):
     Variance measures the average squared deviation of data points from their mean over a specified period.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      prices: Input prices as a 1-D NumPy array of type `f64`.
+      prices: Input prices as a 1-D NumPy array of type `TAFloat`.
       period: Period for Variance calculation (must be >= 2).
 
     Returns:
@@ -3272,10 +3099,6 @@ def var(prices, period):
       - Running sum values
       - Running sum of squares values
       Each array has the same length as the input, with the first (period-1) elements containing NaN values.
-
-    Note:
-      This function releases the Python GIL during computation using `py.allow_threads()` to enable
-      concurrent Python execution.
 
     Examples:
       ```python
@@ -3326,8 +3149,7 @@ def vegas(prices):
     VEGAS is a trend following indicator that uses multiple EMAs to define channels and boundaries.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      prices: Input prices as a 1-D NumPy array of type `f64`.
+      prices: Input prices as a 1-D NumPy array of type `TAFloat`.
 
     Returns:
       A tuple of four 1-D NumPy arrays containing:
@@ -3336,10 +3158,6 @@ def vegas(prices):
       - Boundary Upper (EMA 576)
       - Boundary Lower (EMA 676)
       Each array has the same length as the input, with the first 675 elements containing NaN values.
-
-    Note:
-      This function releases the Python GIL during computation using `py.allow_threads()` to enable
-      concurrent Python execution.
 
     Examples:
       ```python
@@ -3390,11 +3208,10 @@ def vwap(high, low, close, volume):
     Calculates Volume Weighted Average Price (VWAP) for a series of price data.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      high: High prices as a 1-D NumPy array of type `f32`.
-      low: Low prices as a 1-D NumPy array of type `f32`.
-      close: Close prices as a 1-D NumPy array of type `f32`.
-      volume: Volume data as a 1-D NumPy array of type `f32`.
+      high: High prices as a 1-D NumPy array of type `TAFloat`.
+      low: Low prices as a 1-D NumPy array of type `TAFloat`.
+      close: Close prices as a 1-D NumPy array of type `TAFloat`.
+      volume: Volume data as a 1-D NumPy array of type `TAFloat`.
 
     Returns:
       A tuple of three 1-D NumPy arrays containing:
@@ -3420,12 +3237,12 @@ def vwap_incremental(high, low, close, volume, prev_cum_pv, prev_cum_vol):
     Calculates a single VWAP value from the latest price and volume data.
 
     Args:
-      high: Latest high price value as `f32`.
-      low: Latest low price value as `f32`.
-      close: Latest close price value as `f32`.
-      volume: Latest volume value as `f32`.
-      prev_cum_pv: Previous cumulative price-volume product as `f32`.
-      prev_cum_vol: Previous cumulative volume as `f32`.
+      high: Latest high price value as `TAFloat`.
+      low: Latest low price value as `TAFloat`.
+      close: Latest close price value as `TAFloat`.
+      volume: Latest volume value as `TAFloat`.
+      prev_cum_pv: Previous cumulative price-volume product as `TAFloat`.
+      prev_cum_vol: Previous cumulative volume as `TAFloat`.
 
     Returns:
       A tuple containing (new cumulative PV, new cumulative volume, new VWAP).
@@ -3447,10 +3264,9 @@ def wclprice(high, low, close):
     with emphasis on the closing price.
 
     Args:
-      py: Python interpreter token required for GIL management.
-      high: High prices as a 1-D NumPy array of type `f32`.
-      low: Low prices as a 1-D NumPy array of type `f32`.
-      close: Close prices as a 1-D NumPy array of type `f32`.
+      high: High prices as a 1-D NumPy array of type `TAFloat`.
+      low: Low prices as a 1-D NumPy array of type `TAFloat`.
+      close: Close prices as a 1-D NumPy array of type `TAFloat`.
 
     Returns:
       A 1-D NumPy array containing the WCLPRICE values.
@@ -3472,9 +3288,9 @@ def wclprice_incremental(high, low, close):
     Calculates a single Weighted Close Price (WCLPRICE) value from the latest price data.
 
     Args:
-      high: Latest high price value as `f32`.
-      low: Latest low price value as `f32`.
-      close: Latest close price value as `f32`.
+      high: Latest high price value as `TAFloat`.
+      low: Latest low price value as `TAFloat`.
+      close: Latest close price value as `TAFloat`.
 
     Returns:
       The calculated WCLPRICE value.
@@ -3496,10 +3312,9 @@ def willr(high, low, close, period):
     between 0 and -100.
 
     Args:
-        py: Python interpreter token required for GIL management.
-        high: Input high prices as a 1-D NumPy array of type `f64`.
-        low: Input low prices as a 1-D NumPy array of type `f64`.
-        close: Input closing prices as a 1-D NumPy array of type `f64`.
+        high: Input high prices as a 1-D NumPy array of type `TAFloat`.
+        low: Input low prices as a 1-D NumPy array of type `TAFloat`.
+        close: Input closing prices as a 1-D NumPy array of type `TAFloat`.
         period: Lookback period for calculations. Must be >= 2.
 
     Returns:
@@ -3559,17 +3374,12 @@ def wma(data, period):
     giving more importance to recent prices and less to older ones.
 
     Args:
-        py: Python interpreter token required for GIL management.
-        data: Input data as a 1-D NumPy array of type `f32`.
+        data: Input data as a 1-D NumPy array of type `TAFloat`.
         period: Window size for WMA calculation. Must be >= 2.
 
     Returns:
         A new 1-D NumPy array containing the WMA values. The array has the same length as the input,
         with the first `period-1` elements containing NaN values.
-
-    Note:
-        This function releases the Python GIL during computation using `py.allow_threads()` to enable
-        concurrent Python execution.
 
     Examples:
         ```python

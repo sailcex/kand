@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::{KandError, ta::ohlcv::ema};
+use crate::{KandError, TAFloat, ta::ohlcv::ema};
 
 /// Calculates the lookback period required for Triple Exponential Moving Average (TEMA)
 ///
@@ -93,17 +91,14 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// )
 /// .unwrap();
 /// ```
-pub fn tema<T>(
-    input: &[T],
+pub fn tema(
+    input: &[TAFloat],
     param_period: usize,
-    output_tema: &mut [T],
-    output_ema1: &mut [T],
-    output_ema2: &mut [T],
-    output_ema3: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_tema: &mut [TAFloat],
+    output_ema1: &mut [TAFloat],
+    output_ema2: &mut [TAFloat],
+    output_ema3: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input.len();
     let lookback = lookback(param_period)?;
 
@@ -159,17 +154,17 @@ where
     )?;
 
     // Calculate TEMA and store it in the output array (valid only after lookback)
-    let three = T::from_f64(3.0).ok_or(KandError::ConversionError)?;
+    let three = 3.0;
     for i in lookback..len {
         output_tema[i] = three * output_ema1[i] - three * output_ema2[i] + output_ema3[i];
     }
 
     // Fill initial periods with NAN for all outputs
     for i in 0..lookback {
-        output_tema[i] = T::nan();
-        output_ema1[i] = T::nan();
-        output_ema2[i] = T::nan();
-        output_ema3[i] = T::nan();
+        output_tema[i] = TAFloat::NAN;
+        output_ema1[i] = TAFloat::NAN;
+        output_ema2[i] = TAFloat::NAN;
+        output_ema3[i] = TAFloat::NAN;
     }
 
     Ok(())
@@ -189,7 +184,7 @@ where
 /// * `param_period` - Smoothing period for calculations (must be >= 2)
 ///
 /// # Returns
-/// * `Result<(T, T, T, T), KandError>` - Tuple containing:
+/// * `Result<(TAFloat, TAFloat, TAFloat, TAFloat), KandError>` - Tuple containing:
 ///   - Current TEMA value
 ///   - Updated first EMA
 ///   - Updated second EMA
@@ -212,16 +207,13 @@ where
 /// let (tema, ema1, ema2, ema3) =
 ///     tema_incremental(new_price, prev_ema1, prev_ema2, prev_ema3, period).unwrap();
 /// ```
-pub fn tema_incremental<T>(
-    input: T,
-    prev_ema1: T,
-    prev_ema2: T,
-    prev_ema3: T,
+pub fn tema_incremental(
+    input: TAFloat,
+    prev_ema1: TAFloat,
+    prev_ema2: TAFloat,
+    prev_ema3: TAFloat,
     param_period: usize,
-) -> Result<(T, T, T, T), KandError>
-where
-    T: Float + FromPrimitive,
-{
+) -> Result<(TAFloat, TAFloat, TAFloat, TAFloat), KandError> {
     #[cfg(feature = "check")]
     {
         if param_period < 2 {
@@ -239,7 +231,7 @@ where
     let ema1 = ema::ema_incremental(input, prev_ema1, param_period, None)?;
     let ema2 = ema::ema_incremental(ema1, prev_ema2, param_period, None)?;
     let ema3 = ema::ema_incremental(ema2, prev_ema3, param_period, None)?;
-    let three = T::from_f64(3.0).ok_or(KandError::ConversionError)?;
+    let three = 3.0;
     let tema = three * ema1 - three * ema2 + ema3;
 
     Ok((tema, ema1, ema2, ema3))

@@ -9,11 +9,10 @@ use pyo3::prelude::*;
 /// normalizing it by the trading range (high - low).
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   open: Input opening prices as a 1-D NumPy array of type `f64`.
-///   high: Input high prices as a 1-D NumPy array of type `f64`.
-///   low: Input low prices as a 1-D NumPy array of type `f64`.
-///   close: Input closing prices as a 1-D NumPy array of type `f64`.
+///   open: Input opening prices as a 1-D NumPy array of type `TAFloat`.
+///   high: Input high prices as a 1-D NumPy array of type `TAFloat`.
+///   low: Input low prices as a 1-D NumPy array of type `TAFloat`.
+///   close: Input closing prices as a 1-D NumPy array of type `TAFloat`.
 ///
 /// Returns:
 ///   A 1-D NumPy array containing the BOP values.

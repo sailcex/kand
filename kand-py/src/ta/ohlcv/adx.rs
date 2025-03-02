@@ -8,10 +8,9 @@ use pyo3::prelude::*;
 /// Values range from 0 to 100, with higher values indicating stronger trends.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   high: High prices as a 1-D NumPy array of type `f64`.
-///   low: Low prices as a 1-D NumPy array of type `f64`.
-///   close: Close prices as a 1-D NumPy array of type `f64`.
+///   high: High prices as a 1-D NumPy array of type `TAFloat`.
+///   low: Low prices as a 1-D NumPy array of type `TAFloat`.
+///   close: Close prices as a 1-D NumPy array of type `TAFloat`.
 ///   period: Period for ADX calculation (typically 14). Must be positive.
 ///
 /// Returns:
@@ -21,10 +20,6 @@ use pyo3::prelude::*;
 ///   - Smoothed -DM values
 ///   - Smoothed TR values
 ///   Each array has the same length as the input, with the first (2*period-1) elements containing NaN values.
-///
-/// Note:
-///   This function releases the Python GIL during computation using `py.allow_threads()` to enable
-///   concurrent Python execution.
 ///
 /// Examples:
 ///   ```python

@@ -1,7 +1,5 @@
-use num_traits::{Float, FromPrimitive};
-
 use super::atr;
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Returns the lookback period required for NATR calculation
 ///
@@ -82,16 +80,13 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 ///
 /// natr::natr(&high, &low, &close, period, &mut natr).unwrap();
 /// ```
-pub fn natr<T>(
-    input_high: &[T],
-    input_low: &[T],
-    input_close: &[T],
+pub fn natr(
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
+    input_close: &[TAFloat],
     param_period: usize,
-    output_natr: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_natr: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_high.len();
     let lookback = lookback(param_period)?;
 
@@ -124,7 +119,7 @@ where
     }
 
     // Calculate ATR first
-    let mut atr_values = vec![T::zero(); len];
+    let mut atr_values = vec![0.0; len];
     atr::atr(
         input_high,
         input_low,
@@ -134,14 +129,13 @@ where
     )?;
 
     // Calculate NATR = (ATR / Close) * 100
-    let hundred = T::from_f64(100.0).ok_or(KandError::ConversionError)?;
     for i in lookback..len {
-        output_natr[i] = (atr_values[i] / input_close[i]) * hundred;
+        output_natr[i] = (atr_values[i] / input_close[i]) * 100.0;
     }
 
     // Fill initial values with NAN up to lookback period
     for value in output_natr.iter_mut().take(lookback) {
-        *value = T::nan();
+        *value = TAFloat::NAN;
     }
 
     Ok(())
@@ -164,12 +158,12 @@ where
 /// * `input_high` - Current period's high price
 /// * `input_low` - Current period's low price
 /// * `input_close` - Current period's closing price
-/// * `input_prev_close` - Previous period's closing price
-/// * `input_prev_atr` - Previous period's ATR value
+/// * `prev_close` - Previous period's closing price
+/// * `prev_atr` - Previous period's ATR value
 /// * `param_period` - Period for NATR calculation (must be >= 2)
 ///
 /// # Returns
-/// * `Result<T, KandError>` - The calculated NATR value
+/// * `Result<TAFloat, KandError>` - The calculated NATR value
 ///
 /// # Errors
 /// * `KandError::InvalidParameter` - If `param_period` < 2
@@ -188,17 +182,14 @@ where
 ///
 /// let natr = natr::natr_incremental(high, low, close, prev_close, prev_atr, period).unwrap();
 /// ```
-pub fn natr_incremental<T>(
-    input_high: T,
-    input_low: T,
-    input_close: T,
-    input_prev_close: T,
-    input_prev_atr: T,
+pub fn natr_incremental(
+    input_high: TAFloat,
+    input_low: TAFloat,
+    input_close: TAFloat,
+    prev_close: TAFloat,
+    prev_atr: TAFloat,
     param_period: usize,
-) -> Result<T, KandError>
-where
-    T: Float + FromPrimitive,
-{
+) -> Result<TAFloat, KandError> {
     #[cfg(feature = "check")]
     {
         // Parameter range check
@@ -213,21 +204,16 @@ where
         if input_high.is_nan()
             || input_low.is_nan()
             || input_close.is_nan()
-            || input_prev_close.is_nan()
-            || input_prev_atr.is_nan()
+            || prev_close.is_nan()
+            || prev_atr.is_nan()
         {
             return Err(KandError::NaNDetected);
         }
     }
 
-    let output_atr = atr::atr_incremental(
-        input_high,
-        input_low,
-        input_prev_close,
-        input_prev_atr,
-        param_period,
-    )?;
-    Ok((output_atr / input_close) * T::from(100).ok_or(KandError::ConversionError)?)
+    let output_atr =
+        atr::atr_incremental(input_high, input_low, prev_close, prev_atr, param_period)?;
+    Ok((output_atr / input_close) * 100.0)
 }
 
 #[cfg(test)]

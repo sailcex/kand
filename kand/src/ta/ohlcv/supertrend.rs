@@ -1,7 +1,5 @@
-use num_traits::{Float, FromPrimitive};
-
 use super::atr;
-use crate::{KandError, TAInt, types::Signal};
+use crate::{KandError, TAFloat, TAInt, types::Signal};
 
 /// Returns the lookback period required for Supertrend calculation
 ///
@@ -93,21 +91,18 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// * `KandError::InsufficientData` - Input length less than required lookback
 /// * `KandError::NaNDetected` - NaN values in input (with `deep-check` feature)
 /// * `KandError::ConversionError` - Numeric conversion error
-pub fn supertrend<T>(
-    input_high: &[T],
-    input_low: &[T],
-    input_close: &[T],
+pub fn supertrend(
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
+    input_close: &[TAFloat],
     param_period: usize,
-    param_multiplier: T,
+    param_multiplier: TAFloat,
     output_trend: &mut [TAInt],
-    output_supertrend: &mut [T],
-    output_atr: &mut [T],
-    output_upper: &mut [T],
-    output_lower: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_supertrend: &mut [TAFloat],
+    output_atr: &mut [TAFloat],
+    output_upper: &mut [TAFloat],
+    output_lower: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_high.len();
     let lookback = lookback(param_period)?;
 
@@ -149,8 +144,8 @@ where
     // Calculate ATR
     atr::atr(input_high, input_low, input_close, param_period, output_atr)?;
 
-    let mut basic_upper = vec![T::zero(); len];
-    let mut basic_lower = vec![T::zero(); len];
+    let mut basic_upper = vec![0.0; len];
+    let mut basic_lower = vec![0.0; len];
 
     // Convert trend direction values
     let up_trend = Signal::Bullish.into();
@@ -159,7 +154,7 @@ where
 
     // Calculate basic bands
     for i in lookback..len {
-        let hl2 = (input_high[i] + input_low[i]) / T::from(2).ok_or(KandError::ConversionError)?;
+        let hl2 = (input_high[i] + input_low[i]) / 2.0;
         basic_upper[i] = hl2 + param_multiplier * output_atr[i];
         basic_lower[i] = hl2 - param_multiplier * output_atr[i];
     }
@@ -207,14 +202,15 @@ where
     // Fill initial values with 0 (matching Python's initialization)
     for i in 0..lookback {
         output_trend[i] = no_trend;
-        output_supertrend[i] = T::nan();
-        output_atr[i] = T::nan();
-        output_upper[i] = T::nan();
-        output_lower[i] = T::nan();
+        output_supertrend[i] = TAFloat::NAN;
+        output_atr[i] = TAFloat::NAN;
+        output_upper[i] = TAFloat::NAN;
+        output_lower[i] = TAFloat::NAN;
     }
 
     Ok(())
 }
+
 /// Calculates a single Supertrend value incrementally
 ///
 /// # Description
@@ -245,16 +241,16 @@ where
 /// * `input_high` - Current period's high price
 /// * `input_low` - Current period's low price
 /// * `input_close` - Current period's close price
-/// * `input_prev_close` - Previous period's close price
-/// * `input_prev_atr` - Previous period's ATR value
-/// * `input_prev_trend` - Previous period's trend (1: up, -1: down)
-/// * `input_prev_upper` - Previous period's upper band
-/// * `input_prev_lower` - Previous period's lower band
+/// * `prev_close` - Previous period's close price
+/// * `prev_atr` - Previous period's ATR value
+/// * `prev_trend` - Previous period's trend (1: up, -1: down)
+/// * `prev_upper` - Previous period's upper band
+/// * `prev_lower` - Previous period's lower band
 /// * `param_period` - ATR calculation period (typically 7-14)
 /// * `param_multiplier` - ATR multiplier (typically 2-4)
 ///
 /// # Returns
-/// * `Ok((TAInt, T, T, T, T))` - Tuple containing:
+/// * `Ok((TAInt, TAFloat, TAFloat, TAFloat, TAFloat))` - Tuple containing:
 ///   - Current trend signal (1: uptrend, -1: downtrend)
 ///   - Current Supertrend value (support/resistance level)
 ///   - Current ATR value
@@ -265,21 +261,18 @@ where
 /// * `KandError::InvalidParameter` - Invalid `param_period` (<2)
 /// * `KandError::NaNDetected` - NaN values in input (with `deep-check` feature)
 /// * `KandError::ConversionError` - Numeric conversion error
-pub fn supertrend_incremental<T>(
-    input_high: T,
-    input_low: T,
-    input_close: T,
-    input_prev_close: T,
-    input_prev_atr: T,
-    input_prev_trend: TAInt,
-    input_prev_upper: T,
-    input_prev_lower: T,
+pub fn supertrend_incremental(
+    input_high: TAFloat,
+    input_low: TAFloat,
+    input_close: TAFloat,
+    prev_close: TAFloat,
+    prev_atr: TAFloat,
+    prev_trend: TAInt,
+    prev_upper: TAFloat,
+    prev_lower: TAFloat,
     param_period: usize,
-    param_multiplier: T,
-) -> Result<(TAInt, T, T, T, T), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    param_multiplier: TAFloat,
+) -> Result<(TAInt, TAFloat, TAFloat, TAFloat, TAFloat), KandError> {
     #[cfg(feature = "check")]
     {
         if param_period < 2 {
@@ -292,36 +285,31 @@ where
         if input_high.is_nan()
             || input_low.is_nan()
             || input_close.is_nan()
-            || input_prev_close.is_nan()
-            || input_prev_atr.is_nan()
-            || input_prev_upper.is_nan()
-            || input_prev_lower.is_nan()
+            || prev_close.is_nan()
+            || prev_atr.is_nan()
+            || prev_upper.is_nan()
+            || prev_lower.is_nan()
             || param_multiplier.is_nan()
         {
             return Err(KandError::NaNDetected);
         }
     }
 
-    let output_atr = atr::atr_incremental(
-        input_high,
-        input_low,
-        input_prev_close,
-        input_prev_atr,
-        param_period,
-    )?;
+    let output_atr =
+        atr::atr_incremental(input_high, input_low, prev_close, prev_atr, param_period)?;
 
-    let hl2 = (input_high + input_low) / T::from(2).ok_or(KandError::ConversionError)?;
+    let hl2 = (input_high + input_low) / 2.0;
     let basic_upper = hl2 + param_multiplier * output_atr;
     let basic_lower = hl2 - param_multiplier * output_atr;
 
-    let output_upper = if input_prev_close <= input_prev_upper {
-        basic_upper.min(input_prev_upper)
+    let output_upper = if prev_close <= prev_upper {
+        basic_upper.min(prev_upper)
     } else {
         basic_upper
     };
 
-    let output_lower = if input_prev_close >= input_prev_lower {
-        basic_lower.max(input_prev_lower)
+    let output_lower = if prev_close >= prev_lower {
+        basic_lower.max(prev_lower)
     } else {
         basic_lower
     };
@@ -329,7 +317,7 @@ where
     let up_trend = Signal::Bullish.into();
     let down_trend = Signal::Bearish.into();
 
-    let (output_trend, output_supertrend) = if input_prev_trend == up_trend {
+    let (output_trend, output_supertrend) = if prev_trend == up_trend {
         if input_close < output_lower {
             (down_trend, output_upper)
         } else {

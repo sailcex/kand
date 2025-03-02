@@ -5,11 +5,10 @@ use pyo3::prelude::*;
 /// Detects Dragonfly Doji candlestick patterns in price data.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   open: Opening prices as a 1-D NumPy array of type `f32`.
-///   high: High prices as a 1-D NumPy array of type `f32`.
-///   low: Low prices as a 1-D NumPy array of type `f32`.
-///   close: Close prices as a 1-D NumPy array of type `f32`.
+///   open: Opening prices as a 1-D NumPy array of type `TAFloat`.
+///   high: High prices as a 1-D NumPy array of type `TAFloat`.
+///   low: Low prices as a 1-D NumPy array of type `TAFloat`.
+///   close: Close prices as a 1-D NumPy array of type `TAFloat`.
 ///   body_percent: Maximum body size as percentage of total range (typically 5%).
 ///
 /// Returns:
@@ -63,7 +62,7 @@ pub fn cdl_dragonfly_doji_py(
 /// Detects a Dragonfly Doji pattern in a single candlestick.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
+///
 ///   open: Opening price.
 ///   high: High price.
 ///   low: Low price.

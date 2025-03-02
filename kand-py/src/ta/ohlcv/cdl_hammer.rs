@@ -5,11 +5,10 @@ use pyo3::prelude::*;
 /// Detects Hammer candlestick patterns in price data.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   open: Opening prices as a 1-D NumPy array of type `f64`.
-///   high: High prices as a 1-D NumPy array of type `f64`.
-///   low: Low prices as a 1-D NumPy array of type `f64`.
-///   close: Close prices as a 1-D NumPy array of type `f64`.
+///   open: Opening prices as a 1-D NumPy array of type `TAFloat`.
+///   high: High prices as a 1-D NumPy array of type `TAFloat`.
+///   low: Low prices as a 1-D NumPy array of type `TAFloat`.
+///   close: Close prices as a 1-D NumPy array of type `TAFloat`.
 ///   period: Period for EMA calculation of body sizes.
 ///   factor: Minimum ratio of lower shadow to body length.
 ///
@@ -73,7 +72,7 @@ pub fn cdl_hammer_py(
 /// Detects a Hammer pattern in a single candlestick.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
+///
 ///   open: Opening price.
 ///   high: High price.
 ///   low: Low price.

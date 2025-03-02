@@ -8,8 +8,7 @@ use pyo3::prelude::*;
 /// It is calculated by taking the square root of the variance.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   input: Input values as a 1-D NumPy array of type `f64`.
+///   input: Input values as a 1-D NumPy array of type `TAFloat`.
 ///   period: Period for calculation (must be >= 2).
 ///
 /// Returns:
@@ -18,10 +17,6 @@ use pyo3::prelude::*;
 ///   - Running sum values
 ///   - Running sum of squares values
 ///   Each array has the same length as the input, with the first (period-1) elements containing NaN values.
-///
-/// Note:
-///   This function releases the Python GIL during computation using `py.allow_threads()` to enable
-///   concurrent Python execution.
 ///
 /// Examples:
 ///   ```python

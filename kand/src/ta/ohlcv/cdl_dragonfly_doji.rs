@@ -1,7 +1,6 @@
-use num_traits::{Float, FromPrimitive};
-
 use crate::{
     KandError,
+    TAFloat,
     TAInt,
     helper::{real_body_length, upper_shadow_length},
     types::Signal,
@@ -85,17 +84,14 @@ pub const fn lookback() -> Result<usize, KandError> {
 /// )
 /// .unwrap();
 /// ```
-pub fn cdl_dragonfly_doji<T>(
-    input_open: &[T],
-    input_high: &[T],
-    input_low: &[T],
-    input_close: &[T],
-    param_body_percent: T,
+pub fn cdl_dragonfly_doji(
+    input_open: &[TAFloat],
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
+    input_close: &[TAFloat],
+    param_body_percent: TAFloat,
     output_signals: &mut [TAInt],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+) -> Result<(), KandError> {
     let len = input_open.len();
 
     #[cfg(feature = "check")]
@@ -110,7 +106,7 @@ where
         }
 
         // Check parameters
-        if param_body_percent <= T::zero() {
+        if param_body_percent <= 0.0 {
             return Err(KandError::InvalidParameter);
         }
     }
@@ -130,7 +126,7 @@ where
 
     // Process each candle
     for i in 0..len {
-        output_signals[i] = cdl_dragonfly_doji_incremental::<T>(
+        output_signals[i] = cdl_dragonfly_doji_incremental(
             input_open[i],
             input_high[i],
             input_low[i],
@@ -184,20 +180,17 @@ where
 /// )
 /// .unwrap();
 /// ```
-pub fn cdl_dragonfly_doji_incremental<T>(
-    input_open: T,
-    input_high: T,
-    input_low: T,
-    input_close: T,
-    param_body_percent: T,
-) -> Result<TAInt, KandError>
-where
-    T: Float + FromPrimitive,
-{
+pub fn cdl_dragonfly_doji_incremental(
+    input_open: TAFloat,
+    input_high: TAFloat,
+    input_low: TAFloat,
+    input_close: TAFloat,
+    param_body_percent: TAFloat,
+) -> Result<TAInt, KandError> {
     #[cfg(feature = "check")]
     {
         // Check parameters
-        if param_body_percent <= T::zero() {
+        if param_body_percent <= 0.0 {
             return Err(KandError::InvalidParameter);
         }
     }
@@ -215,8 +208,7 @@ where
     let up_shadow = upper_shadow_length(input_high, input_open, input_close);
 
     // Check for Dragonfly Doji pattern
-    let is_doji_body = range > T::zero()
-        && body <= range * param_body_percent / T::from(100).ok_or(KandError::ConversionError)?;
+    let is_doji_body = range > 0.0 && body <= range * param_body_percent / 100.0;
     let has_minimal_upper_shadow = up_shadow <= body;
 
     let signal = if is_doji_body && has_minimal_upper_shadow {

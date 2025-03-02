@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Calculates the lookback period required for RSI (Relative Strength Index) calculation.
 ///
@@ -98,16 +96,13 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// )
 /// .unwrap();
 /// ```
-pub fn rsi<T>(
-    input_prices: &[T],
+pub fn rsi(
+    input_prices: &[TAFloat],
     param_period: usize,
-    output_rsi: &mut [T],
-    output_avg_gain: &mut [T],
-    output_avg_loss: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_rsi: &mut [TAFloat],
+    output_avg_gain: &mut [TAFloat],
+    output_avg_loss: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_prices.len();
     let lookback = lookback(param_period)?;
 
@@ -139,67 +134,57 @@ where
         }
     }
 
-    let mut gains = T::zero();
-    let mut losses = T::zero();
+    let mut gains = 0.0;
+    let mut losses = 0.0;
 
     // Calculate initial gains/losses sum
     for i in 1..=lookback {
         let diff = input_prices[i] - input_prices[i - 1];
-        if diff > T::zero() {
-            gains = gains + diff;
+        if diff > 0.0 {
+            gains += diff;
         } else {
-            losses = losses + diff.abs();
+            losses += diff.abs();
         }
     }
 
     // Calculate first RSI value
-    let first_avg_gain = gains / T::from(param_period).ok_or(KandError::ConversionError)?;
-    let first_avg_loss = losses / T::from(param_period).ok_or(KandError::ConversionError)?;
+    let first_avg_gain = gains / param_period as TAFloat;
+    let first_avg_loss = losses / param_period as TAFloat;
 
     output_avg_gain[lookback] = first_avg_gain;
     output_avg_loss[lookback] = first_avg_loss;
 
-    if first_avg_loss == T::zero() {
-        output_rsi[lookback] = T::from(100).ok_or(KandError::ConversionError)?;
+    if first_avg_loss == 0.0 {
+        output_rsi[lookback] = 100.0;
     } else {
         let rs = first_avg_gain / first_avg_loss;
-        output_rsi[lookback] = T::from(100).ok_or(KandError::ConversionError)?
-            - (T::from(100).ok_or(KandError::ConversionError)?
-                / (T::from(1).ok_or(KandError::ConversionError)? + rs));
+        output_rsi[lookback] = 100.0 - (100.0 / (1.0 + rs));
     }
 
     // Calculate remaining RSI values using smoothed averages
     let mut prev_avg_gain = first_avg_gain;
     let mut prev_avg_loss = first_avg_loss;
-    let smoothing = T::from(param_period).ok_or(KandError::ConversionError)?;
+    let smoothing = param_period as TAFloat;
 
     for i in lookback + 1..len {
         let diff = input_prices[i] - input_prices[i - 1];
-        let (curr_gain, curr_loss) = if diff > T::zero() {
-            (diff, T::zero())
+        let (curr_gain, curr_loss) = if diff > 0.0 {
+            (diff, 0.0)
         } else {
-            (T::zero(), diff.abs())
+            (0.0, diff.abs())
         };
 
-        let curr_avg_gain = (prev_avg_gain
-            * (smoothing - T::from(1).ok_or(KandError::ConversionError)?)
-            + curr_gain)
-            / smoothing;
-        let curr_avg_loss = (prev_avg_loss
-            * (smoothing - T::from(1).ok_or(KandError::ConversionError)?)
-            + curr_loss)
-            / smoothing;
+        let curr_avg_gain = (prev_avg_gain * (smoothing - 1.0) + curr_gain) / smoothing;
+        let curr_avg_loss = (prev_avg_loss * (smoothing - 1.0) + curr_loss) / smoothing;
 
         output_avg_gain[i] = curr_avg_gain;
         output_avg_loss[i] = curr_avg_loss;
 
-        if curr_avg_loss == T::zero() {
-            output_rsi[i] = T::from(100).ok_or(KandError::ConversionError)?;
+        if curr_avg_loss == 0.0 {
+            output_rsi[i] = 100.0;
         } else {
             let rs = curr_avg_gain / curr_avg_loss;
-            output_rsi[i] = T::from(100).ok_or(KandError::ConversionError)?
-                - (T::from(100).ok_or(KandError::ConversionError)?
-                    / (T::from(1).ok_or(KandError::ConversionError)? + rs));
+            output_rsi[i] = 100.0 - (100.0 / (1.0 + rs));
         }
 
         prev_avg_gain = curr_avg_gain;
@@ -208,9 +193,9 @@ where
 
     // Fill initial values with NAN
     for i in 0..lookback {
-        output_rsi[i] = T::nan();
-        output_avg_gain[i] = T::nan();
-        output_avg_loss[i] = T::nan();
+        output_rsi[i] = TAFloat::NAN;
+        output_avg_gain[i] = TAFloat::NAN;
+        output_avg_loss[i] = TAFloat::NAN;
     }
 
     Ok(())
@@ -232,13 +217,13 @@ where
 ///
 /// # Arguments
 /// * `input_curr_price` - Current period's price value
-/// * `input_prev_price` - Previous period's price value
-/// * `input_prev_avg_gain` - Previous period's average gain
-/// * `input_prev_avg_loss` - Previous period's average loss
+/// * `prev_price` - Previous period's price value
+/// * `prev_avg_gain` - Previous period's average gain
+/// * `prev_avg_loss` - Previous period's average loss
 /// * `param_period` - The time period for RSI calculation
 ///
 /// # Returns
-/// * `Result<(T, T, T), KandError>` - Tuple containing (RSI value, new average gain, new average loss)
+/// * `Result<(TAFloat, TAFloat, TAFloat), KandError>` - Tuple containing (RSI value, new average gain, new average loss)
 ///
 /// # Errors
 /// * `KandError::InvalidParameter` - If `param_period` is less than 2
@@ -257,16 +242,13 @@ where
 /// )
 /// .unwrap();
 /// ```
-pub fn rsi_incremental<T>(
-    input_curr_price: T,
-    input_prev_price: T,
-    input_prev_avg_gain: T,
-    input_prev_avg_loss: T,
+pub fn rsi_incremental(
+    input_curr_price: TAFloat,
+    prev_price: TAFloat,
+    prev_avg_gain: TAFloat,
+    prev_avg_loss: TAFloat,
     param_period: usize,
-) -> Result<(T, T, T), KandError>
-where
-    T: Float + FromPrimitive,
-{
+) -> Result<(TAFloat, TAFloat, TAFloat), KandError> {
     #[cfg(feature = "check")]
     {
         // Parameter range check
@@ -279,38 +261,30 @@ where
     {
         // NaN check
         if input_curr_price.is_nan()
-            || input_prev_price.is_nan()
-            || input_prev_avg_gain.is_nan()
-            || input_prev_avg_loss.is_nan()
+            || prev_price.is_nan()
+            || prev_avg_gain.is_nan()
+            || prev_avg_loss.is_nan()
         {
             return Err(KandError::NaNDetected);
         }
     }
 
-    let diff = input_curr_price - input_prev_price;
-    let (curr_gain, curr_loss) = if diff > T::zero() {
-        (diff, T::zero())
+    let diff = input_curr_price - prev_price;
+    let (curr_gain, curr_loss) = if diff > 0.0 {
+        (diff, 0.0)
     } else {
-        (T::zero(), diff.abs())
+        (0.0, diff.abs())
     };
 
-    let smoothing = T::from(param_period).ok_or(KandError::ConversionError)?;
-    let output_avg_gain = (input_prev_avg_gain
-        * (smoothing - T::from(1).ok_or(KandError::ConversionError)?)
-        + curr_gain)
-        / smoothing;
-    let output_avg_loss = (input_prev_avg_loss
-        * (smoothing - T::from(1).ok_or(KandError::ConversionError)?)
-        + curr_loss)
-        / smoothing;
+    let smoothing = param_period as TAFloat;
+    let output_avg_gain = (prev_avg_gain * (smoothing - 1.0) + curr_gain) / smoothing;
+    let output_avg_loss = (prev_avg_loss * (smoothing - 1.0) + curr_loss) / smoothing;
 
-    let output_rsi = if output_avg_loss == T::zero() {
-        T::from(100).ok_or(KandError::ConversionError)?
+    let output_rsi = if output_avg_loss == 0.0 {
+        100.0
     } else {
         let rs = output_avg_gain / output_avg_loss;
-        T::from(100).ok_or(KandError::ConversionError)?
-            - (T::from(100).ok_or(KandError::ConversionError)?
-                / (T::from(1).ok_or(KandError::ConversionError)? + rs))
+        100.0 - (100.0 / (1.0 + rs))
     };
 
     Ok((output_rsi, output_avg_gain, output_avg_loss))

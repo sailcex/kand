@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Returns the lookback period required for ROC (Rate of Change) calculation
 ///
@@ -55,9 +53,9 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// 2. Initial values within lookback period are set to NaN
 ///
 /// # Parameters
-/// * `input_price` - Array of price values (slice of type T)
+/// * `input_price` - Array of price values (slice of type TAFloat)
 /// * `param_period` - Number of periods to look back (usize)
-/// * `output_roc` - Array to store calculated ROC values, must be same length as `input_price` (mutable slice of type T)
+/// * `output_roc` - Array to store calculated ROC values, must be same length as `input_price` (mutable slice of type TAFloat)
 ///
 /// # Returns
 /// * `Result<(), KandError>` - Ok(()) if calculation succeeds
@@ -80,14 +78,11 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 ///
 /// roc::roc(&input_price, param_period, &mut output_roc).unwrap();
 /// ```
-pub fn roc<T>(
-    input_price: &[T],
+pub fn roc(
+    input_price: &[TAFloat],
     param_period: usize,
-    output_roc: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_roc: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_price.len();
     let lookback = lookback(param_period)?;
 
@@ -125,18 +120,17 @@ where
 
         #[cfg(feature = "deep-check")]
         {
-            if prev_price == T::zero() {
+            if prev_price == 0.0 {
                 return Err(KandError::InvalidData);
             }
         }
 
-        output_roc[i] = (current_price - prev_price) / prev_price
-            * T::from(100).ok_or(KandError::ConversionError)?;
+        output_roc[i] = (current_price - prev_price) / prev_price * 100.0;
     }
 
     // Fill initial values with NAN
     for value in output_roc.iter_mut().take(lookback) {
-        *value = T::nan();
+        *value = TAFloat::NAN;
     }
 
     Ok(())
@@ -155,11 +149,11 @@ where
 /// ```
 ///
 /// # Parameters
-/// * `current_price` - The most recent price value (type T)
-/// * `prev_price` - The price from n periods ago (type T)
+/// * `current_price` - The most recent price value (type TAFloat)
+/// * `prev_price` - The price from n periods ago (type TAFloat)
 ///
 /// # Returns
-/// * `Result<T, KandError>` - The calculated ROC value if successful
+/// * `Result<TAFloat, KandError>` - The calculated ROC value if successful
 ///
 /// # Errors
 /// * `KandError::NaNDetected` - If either input is NaN (with "`deep-check`")
@@ -175,8 +169,7 @@ where
 /// let roc_value = roc_incremental(current_price, prev_price).unwrap();
 /// assert_eq!(roc_value, 15.0); // ((11.5 - 10.0) / 10.0) * 100
 /// ```
-pub fn roc_incremental<T>(current_price: T, prev_price: T) -> Result<T, KandError>
-where T: Float + FromPrimitive {
+pub fn roc_incremental(current_price: TAFloat, prev_price: TAFloat) -> Result<TAFloat, KandError> {
     #[cfg(feature = "deep-check")]
     {
         // NaN check
@@ -184,13 +177,12 @@ where T: Float + FromPrimitive {
             return Err(KandError::NaNDetected);
         }
         // Division by zero check
-        if prev_price == T::zero() {
+        if prev_price == 0.0 {
             return Err(KandError::InvalidData);
         }
     }
 
-    Ok((current_price - prev_price) / prev_price
-        * T::from(100).ok_or(KandError::ConversionError)?)
+    Ok((current_price - prev_price) / prev_price * 100.0)
 }
 
 #[cfg(test)]

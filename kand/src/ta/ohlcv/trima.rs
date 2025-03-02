@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Returns the lookback period required for Triangular Moving Average (TRIMA) calculation.
 ///
@@ -86,15 +84,12 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 ///
 /// trima::trima(&input, period, &mut output_sma1, &mut output_sma2).unwrap();
 /// ```
-pub fn trima<T>(
-    input: &[T],
+pub fn trima(
+    input: &[TAFloat],
     param_period: usize,
-    output_sma1: &mut [T],
-    output_sma2: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_sma1: &mut [TAFloat],
+    output_sma2: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input.len();
     let lookback = lookback(param_period)?;
 
@@ -135,33 +130,33 @@ where
     };
 
     // First SMA calculation
-    let mut sum = T::zero();
+    let mut sum = 0.0;
     for value in input.iter().take(n) {
-        sum = sum + *value;
+        sum += *value;
     }
-    output_sma1[n - 1] = sum / T::from(n).ok_or(KandError::ConversionError)?;
+    output_sma1[n - 1] = sum / (n as TAFloat);
 
     for i in n..len {
         sum = sum + input[i] - input[i - n];
-        output_sma1[i] = sum / T::from(n).ok_or(KandError::ConversionError)?;
+        output_sma1[i] = sum / (n as TAFloat);
     }
 
     // Second SMA calculation
-    sum = T::zero();
+    sum = 0.0;
     for value in output_sma1.iter().take(m) {
-        sum = sum + *value;
+        sum += *value;
     }
-    output_sma2[m - 1] = sum / T::from(m).ok_or(KandError::ConversionError)?;
+    output_sma2[m - 1] = sum / (m as TAFloat);
 
     for i in m..len {
         sum = sum + output_sma1[i] - output_sma1[i - m];
-        output_sma2[i] = sum / T::from(m).ok_or(KandError::ConversionError)?;
+        output_sma2[i] = sum / (m as TAFloat);
     }
 
     // Fill initial values with NAN
     for i in 0..lookback {
-        output_sma1[i] = T::nan();
-        output_sma2[i] = T::nan();
+        output_sma1[i] = TAFloat::NAN;
+        output_sma2[i] = TAFloat::NAN;
     }
 
     Ok(())
@@ -188,15 +183,15 @@ where
 /// ```
 ///
 /// # Arguments
-/// * `input_prev_sma1` - Previous first SMA value
-/// * `input_prev_sma2` - Previous TRIMA value
+/// * `prev_sma1` - Previous first SMA value
+/// * `prev_sma2` - Previous TRIMA value
 /// * `input_new_price` - Latest price to include in calculation
 /// * `input_old_price` - Price dropping out of first window
 /// * `input_old_sma1` - SMA1 value dropping out of second window
 /// * `param_period` - The smoothing period for calculations (must be >= 2)
 ///
 /// # Returns
-/// * `Result<(T, T), KandError>` - Tuple of (`new_sma1`, `new_trima`) on success
+/// * `Result<(TAFloat, TAFloat), KandError>` - Tuple of (`new_sma1`, `new_trima`) on success
 ///
 /// # Errors
 /// * `KandError::InvalidParameter` - Period is less than 2
@@ -218,17 +213,14 @@ where
 ///     trima::trima_incremental(prev_sma1, prev_sma2, new_price, old_price, old_sma1, period)
 ///         .unwrap();
 /// ```
-pub fn trima_incremental<T>(
-    input_prev_sma1: T,
-    input_prev_sma2: T,
-    input_new_price: T,
-    input_old_price: T,
-    input_old_sma1: T,
+pub fn trima_incremental(
+    prev_sma1: TAFloat,
+    prev_sma2: TAFloat,
+    input_new_price: TAFloat,
+    input_old_price: TAFloat,
+    input_old_sma1: TAFloat,
     param_period: usize,
-) -> Result<(T, T), KandError>
-where
-    T: Float + FromPrimitive,
-{
+) -> Result<(TAFloat, TAFloat), KandError> {
     #[cfg(feature = "check")]
     {
         if param_period < 2 {
@@ -238,8 +230,8 @@ where
 
     #[cfg(feature = "deep-check")]
     {
-        if input_prev_sma1.is_nan()
-            || input_prev_sma2.is_nan()
+        if prev_sma1.is_nan()
+            || prev_sma2.is_nan()
             || input_new_price.is_nan()
             || input_old_price.is_nan()
             || input_old_sma1.is_nan()
@@ -257,14 +249,14 @@ where
         (n, m)
     };
 
-    let n_t = T::from(n).ok_or(KandError::ConversionError)?;
-    let m_t = T::from(m).ok_or(KandError::ConversionError)?;
+    let n_t = n as TAFloat;
+    let m_t = m as TAFloat;
 
     // Incremental update for the first SMA using the correct window length (n)
-    let new_sma1 = input_prev_sma1 + (input_new_price - input_old_price) / n_t;
+    let new_sma1 = prev_sma1 + (input_new_price - input_old_price) / n_t;
 
     // Incremental update for the second SMA using the correct window length (m)
-    let new_sma2 = input_prev_sma2 + (new_sma1 - input_old_sma1) / m_t;
+    let new_sma2 = prev_sma2 + (new_sma1 - input_old_sma1) / m_t;
 
     Ok((new_sma1, new_sma2))
 }

@@ -5,11 +5,10 @@ use pyo3::prelude::*;
 /// Detects Doji candlestick patterns in price data.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   open: Opening prices as a 1-D NumPy array of type `f64`.
-///   high: High prices as a 1-D NumPy array of type `f64`.
-///   low: Low prices as a 1-D NumPy array of type `f64`.
-///   close: Close prices as a 1-D NumPy array of type `f64`.
+///   open: Opening prices as a 1-D NumPy array of type `TAFloat`.
+///   high: High prices as a 1-D NumPy array of type `TAFloat`.
+///   low: Low prices as a 1-D NumPy array of type `TAFloat`.
+///   close: Close prices as a 1-D NumPy array of type `TAFloat`.
 ///   body_percent: Maximum body size as percentage of range (e.g. 5.0 for 5%).
 ///   shadow_equal_percent: Maximum shadow length difference percentage (e.g. 100.0).
 ///
@@ -64,7 +63,7 @@ pub fn cdl_doji_py(
 /// Detects a Doji pattern in a single candlestick.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
+///
 ///   open: Opening price.
 ///   high: High price.
 ///   low: Low price.

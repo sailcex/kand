@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Calculates the lookback period required for MEDPRICE calculation.
 ///
@@ -65,14 +63,11 @@ pub const fn lookback() -> Result<usize, KandError> {
 /// medprice::medprice(&high, &low, &mut output).unwrap();
 /// assert_eq!(output, vec![9.0, 10.0, 11.0]);
 /// ```
-pub fn medprice<T>(
-    input_high: &[T],
-    input_low: &[T],
-    output_medprice: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+pub fn medprice(
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
+    output_medprice: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_high.len();
 
     #[cfg(feature = "check")]
@@ -97,9 +92,8 @@ where
         }
     }
 
-    let two = T::from(2.0).ok_or(KandError::ConversionError)?;
     for i in 0..len {
-        output_medprice[i] = (input_high[i] + input_low[i]) / two;
+        output_medprice[i] = (input_high[i] + input_low[i]) / 2.0;
     }
 
     Ok(())
@@ -116,7 +110,7 @@ where
 /// * `input_low` - Current period's low price
 ///
 /// # Returns
-/// * `Result<T, KandError>` - Returns calculated median price on success
+/// * `Result<TAFloat, KandError>` - Returns calculated median price on success
 ///
 /// # Errors
 /// * `KandError::NaNDetected` - Input contains NaN values (when "`deep-check`" feature enabled)
@@ -130,8 +124,7 @@ where
 /// let result = medprice::medprice_incremental(high, low).unwrap();
 /// assert_eq!(result, 9.0);
 /// ```
-pub fn medprice_incremental<T>(input_high: T, input_low: T) -> Result<T, KandError>
-where T: Float + FromPrimitive {
+pub fn medprice_incremental(input_high: TAFloat, input_low: TAFloat) -> Result<TAFloat, KandError> {
     #[cfg(feature = "deep-check")]
     {
         if input_high.is_nan() || input_low.is_nan() {
@@ -139,7 +132,7 @@ where T: Float + FromPrimitive {
         }
     }
 
-    Ok((input_high + input_low) / T::from(2.0).ok_or(KandError::ConversionError)?)
+    Ok((input_high + input_low) / 2.0)
 }
 
 #[cfg(test)]

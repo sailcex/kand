@@ -7,8 +7,7 @@ use pyo3::prelude::*;
 /// VEGAS is a trend following indicator that uses multiple EMAs to define channels and boundaries.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   prices: Input prices as a 1-D NumPy array of type `f64`.
+///   prices: Input prices as a 1-D NumPy array of type `TAFloat`.
 ///
 /// Returns:
 ///   A tuple of four 1-D NumPy arrays containing:
@@ -17,10 +16,6 @@ use pyo3::prelude::*;
 ///   - Boundary Upper (EMA 576)
 ///   - Boundary Lower (EMA 676)
 ///   Each array has the same length as the input, with the first 675 elements containing NaN values.
-///
-/// Note:
-///   This function releases the Python GIL during computation using `py.allow_threads()` to enable
-///   concurrent Python execution.
 ///
 /// Examples:
 ///   ```python

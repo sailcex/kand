@@ -1,7 +1,6 @@
-use num_traits::{Float, FromPrimitive};
-
 use crate::{
     KandError,
+    TAFloat,
     helper::{highest_bars, lowest_bars},
 };
 
@@ -96,18 +95,15 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// )
 /// .unwrap();
 /// ```
-pub fn willr<T>(
-    input_high: &[T],
-    input_low: &[T],
-    input_close: &[T],
+pub fn willr(
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
+    input_close: &[TAFloat],
     param_period: usize,
-    output: &mut [T],
-    output_highest_high: &mut [T],
-    output_lowest_low: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output: &mut [TAFloat],
+    output_highest_high: &mut [TAFloat],
+    output_lowest_low: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_high.len();
     let lookback = lookback(param_period)?;
 
@@ -149,18 +145,17 @@ where
         output_lowest_low[i] = lowest_low;
 
         let denom = highest_high - lowest_low;
-        if denom.is_zero() {
-            output[i] = T::zero();
+        if denom == 0.0 {
+            output[i] = 0.0;
         } else {
-            output[i] = (highest_high - input_close[i]) / denom
-                * T::from(-100).ok_or(KandError::ConversionError)?;
+            output[i] = (highest_high - input_close[i]) / denom * -100.0;
         }
     }
 
     for i in 0..lookback {
-        output[i] = T::nan();
-        output_highest_high[i] = T::nan();
-        output_lowest_low[i] = T::nan();
+        output[i] = TAFloat::NAN;
+        output_highest_high[i] = TAFloat::NAN;
+        output_lowest_low[i] = TAFloat::NAN;
     }
 
     Ok(())
@@ -183,7 +178,7 @@ where
 /// * `input_low` - Current period's low price
 ///
 /// # Returns
-/// * `Result<(T, T, T), KandError>` - Tuple containing:
+/// * `Result<(TAFloat, TAFloat, TAFloat), KandError>` - Tuple containing:
 ///   - Current Williams %R value
 ///   - New highest high
 ///   - New lowest low
@@ -214,18 +209,15 @@ where
 /// )
 /// .unwrap();
 /// ```
-pub fn willr_incremental<T>(
-    prev_highest_high: T,
-    prev_lowest_low: T,
-    prev_high: T,
-    prev_low: T,
-    input_close: T,
-    input_high: T,
-    input_low: T,
-) -> Result<(T, T, T), KandError>
-where
-    T: Float + FromPrimitive,
-{
+pub fn willr_incremental(
+    prev_highest_high: TAFloat,
+    prev_lowest_low: TAFloat,
+    prev_high: TAFloat,
+    prev_low: TAFloat,
+    input_close: TAFloat,
+    input_high: TAFloat,
+    input_low: TAFloat,
+) -> Result<(TAFloat, TAFloat, TAFloat), KandError> {
     #[cfg(feature = "deep-check")]
     {
         if prev_highest_high.is_nan()
@@ -261,11 +253,10 @@ where
     };
 
     let denom = new_highest_high - new_lowest_low;
-    let willr = if denom.is_zero() {
-        T::zero()
+    let willr = if denom == 0.0 {
+        0.0
     } else {
-        (new_highest_high - input_close) / denom
-            * T::from(-100).ok_or(KandError::ConversionError)?
+        (new_highest_high - input_close) / denom * -100.0
     };
 
     Ok((willr, new_highest_high, new_lowest_low))

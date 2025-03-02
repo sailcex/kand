@@ -8,11 +8,10 @@ use pyo3::prelude::*;
 /// Accumulation/Distribution Line. It helps identify trend strength and potential reversals.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   high: High prices as a 1-D NumPy array of type `f32`.
-///   low: Low prices as a 1-D NumPy array of type `f32`.
-///   close: Close prices as a 1-D NumPy array of type `f32`.
-///   volume: Volume as a 1-D NumPy array of type `f32`.
+///   high: High prices as a 1-D NumPy array of type `TAFloat`.
+///   low: Low prices as a 1-D NumPy array of type `TAFloat`.
+///   close: Close prices as a 1-D NumPy array of type `TAFloat`.
+///   volume: Volume as a 1-D NumPy array of type `TAFloat`.
 ///   fast_period: Fast period for A/D Oscillator calculation.
 ///   slow_period: Slow period for A/D Oscillator calculation.
 ///
@@ -23,10 +22,6 @@ use pyo3::prelude::*;
 ///   - Fast EMA values
 ///   - Slow EMA values
 ///   Each array has the same length as the input, with the first `slow_period-1` elements containing NaN values.
-///
-/// Note:
-///   This function releases the Python GIL during computation using `py.allow_threads()` to enable
-///   concurrent Python execution.
 ///
 /// Examples:
 ///   ```python

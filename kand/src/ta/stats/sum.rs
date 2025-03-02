@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Calculates the lookback period required for Sum calculation.
 ///
@@ -76,14 +74,11 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// sum::sum(&input, period, &mut output).unwrap();
 /// // output = [NaN, NaN, 6.0, 9.0, 12.0]
 /// ```
-pub fn sum<T>(
-    input_prices: &[T],
+pub fn sum(
+    input_prices: &[TAFloat],
     param_period: usize,
-    output_sum: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_sum: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_prices.len();
     let lookback = lookback(param_period)?;
 
@@ -121,9 +116,9 @@ where
     }
 
     // Calculate initial sum
-    let mut sum_val = T::zero();
+    let mut sum_val = 0.0;
     for price in input_prices.iter().take(param_period) {
-        sum_val = sum_val + *price;
+        sum_val += *price;
     }
     output_sum[lookback] = sum_val;
 
@@ -135,7 +130,7 @@ where
 
     // Fill initial values with NAN
     for value in output_sum.iter_mut().take(lookback) {
-        *value = T::nan();
+        *value = TAFloat::NAN;
     }
 
     Ok(())
@@ -149,10 +144,10 @@ where
 /// # Arguments
 /// * `input_new_price` - The newest price value to add to the sum
 /// * `input_old_price` - The oldest price value to remove from the sum
-/// * `input_prev_sum` - The previous sum value
+/// * `prev_sum` - The previous sum value
 ///
 /// # Returns
-/// * `Result<T, KandError>` - The new sum value on success, or error on failure
+/// * `Result<TAFloat, KandError>` - The new sum value on success, or error on failure
 ///
 /// # Errors
 /// * Returns `KandError::NaNDetected` if any input contains NaN (with "`deep-check`" feature)
@@ -167,23 +162,20 @@ where
 /// let new_sum = sum::sum_incremental(new_price, old_price, prev_sum).unwrap();
 /// assert_eq!(new_sum, 12.0); // 10.0 + 5.0 - 3.0
 /// ```
-pub fn sum_incremental<T>(
-    input_new_price: T,
-    input_old_price: T,
-    input_prev_sum: T,
-) -> Result<T, KandError>
-where
-    T: Float + FromPrimitive,
-{
+pub fn sum_incremental(
+    input_new_price: TAFloat,
+    input_old_price: TAFloat,
+    prev_sum: TAFloat,
+) -> Result<TAFloat, KandError> {
     #[cfg(feature = "deep-check")]
     {
         // NaN check
-        if input_new_price.is_nan() || input_old_price.is_nan() || input_prev_sum.is_nan() {
+        if input_new_price.is_nan() || input_old_price.is_nan() || prev_sum.is_nan() {
             return Err(KandError::NaNDetected);
         }
     }
 
-    Ok(input_prev_sum + input_new_price - input_old_price)
+    Ok(prev_sum + input_new_price - input_old_price)
 }
 
 #[cfg(test)]

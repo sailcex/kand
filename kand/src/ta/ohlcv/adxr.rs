@@ -1,7 +1,5 @@
-use num_traits::{Float, FromPrimitive};
-
 use super::adx;
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Calculates the lookback period required for ADXR calculation
 ///
@@ -94,20 +92,17 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// )
 /// .unwrap();
 /// ```
-pub fn adxr<T>(
-    input_high: &[T],
-    input_low: &[T],
-    input_close: &[T],
+pub fn adxr(
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
+    input_close: &[TAFloat],
     param_period: usize,
-    output_adxr: &mut [T],
-    output_adx: &mut [T],
-    output_smoothed_plus_dm: &mut [T],
-    output_smoothed_minus_dm: &mut [T],
-    output_smoothed_tr: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_adxr: &mut [TAFloat],
+    output_adx: &mut [TAFloat],
+    output_smoothed_plus_dm: &mut [TAFloat],
+    output_smoothed_minus_dm: &mut [TAFloat],
+    output_smoothed_tr: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_high.len();
     let lookback = lookback(param_period)?;
 
@@ -161,17 +156,16 @@ where
     // Calculate ADXR = (Current ADX + ADX period days ago) / 2
     // First valid value should be at index lookback (period * 3 - 2)
     for i in lookback..len {
-        output_adxr[i] = (output_adx[i] + output_adx[i - param_period + 1])
-            / T::from(2).ok_or(KandError::ConversionError)?;
+        output_adxr[i] = (output_adx[i] + output_adx[i - param_period + 1]) / 2.0;
     }
 
     // Fill initial values with NAN
     for i in 0..lookback {
-        output_adxr[i] = T::nan();
-        output_adx[i] = T::nan();
-        output_smoothed_plus_dm[i] = T::nan();
-        output_smoothed_minus_dm[i] = T::nan();
-        output_smoothed_tr[i] = T::nan();
+        output_adxr[i] = TAFloat::NAN;
+        output_adx[i] = TAFloat::NAN;
+        output_smoothed_plus_dm[i] = TAFloat::NAN;
+        output_smoothed_minus_dm[i] = TAFloat::NAN;
+        output_smoothed_tr[i] = TAFloat::NAN;
     }
 
     Ok(())
@@ -187,18 +181,18 @@ where
 /// # Arguments
 /// * `input_high` - Current high price
 /// * `input_low` - Current low price
-/// * `input_prev_high` - Previous high price
-/// * `input_prev_low` - Previous low price
-/// * `input_prev_close` - Previous close price
-/// * `input_prev_adx` - Previous ADX value
-/// * `input_prev_adx_period_ago` - ADX value from period days ago
-/// * `input_prev_smoothed_plus_dm` - Previous smoothed +DM value
-/// * `input_prev_smoothed_minus_dm` - Previous smoothed -DM value
-/// * `input_prev_smoothed_tr` - Previous smoothed TR value
+/// * `prev_high` - Previous high price
+/// * `prev_low` - Previous low price
+/// * `prev_close` - Previous close price
+/// * `prev_adx` - Previous ADX value
+/// * `prev_adx_period_ago` - ADX value from period days ago
+/// * `prev_smoothed_plus_dm` - Previous smoothed +DM value
+/// * `prev_smoothed_minus_dm` - Previous smoothed -DM value
+/// * `prev_smoothed_tr` - Previous smoothed TR value
 /// * `param_period` - Period for ADX calculation
 ///
 /// # Returns
-/// * `Result<(T, T, T, T, T), KandError>` - Tuple containing:
+/// * `Result<(TAFloat, TAFloat, TAFloat, TAFloat, TAFloat), KandError>` - Tuple containing:
 ///   - Latest ADXR value
 ///   - Latest ADX value
 ///   - New smoothed +DM
@@ -216,34 +210,31 @@ where
 /// let (adxr, adx, plus_dm, minus_dm, tr) = adxr_incremental(
 ///     24.20, // input_high
 ///     23.85, // input_low
-///     24.07, // input_prev_high
-///     23.72, // input_prev_low
-///     23.95, // input_prev_close
-///     25.0,  // input_prev_adx
-///     20.0,  // input_prev_adx_period_ago
-///     0.5,   // input_prev_smoothed_plus_dm
-///     0.3,   // input_prev_smoothed_minus_dm
-///     1.2,   // input_prev_smoothed_tr
+///     24.07, // prev_high
+///     23.72, // prev_low
+///     23.95, // prev_close
+///     25.0,  // prev_adx
+///     20.0,  // prev_adx_period_ago
+///     0.5,   // prev_smoothed_plus_dm
+///     0.3,   // prev_smoothed_minus_dm
+///     1.2,   // prev_smoothed_tr
 ///     14,    // param_period
 /// )
 /// .unwrap();
 /// ```
-pub fn adxr_incremental<T>(
-    input_high: T,
-    input_low: T,
-    input_prev_high: T,
-    input_prev_low: T,
-    input_prev_close: T,
-    input_prev_adx: T,
-    input_prev_adx_period_ago: T,
-    input_prev_smoothed_plus_dm: T,
-    input_prev_smoothed_minus_dm: T,
-    input_prev_smoothed_tr: T,
+pub fn adxr_incremental(
+    input_high: TAFloat,
+    input_low: TAFloat,
+    prev_high: TAFloat,
+    prev_low: TAFloat,
+    prev_close: TAFloat,
+    prev_adx: TAFloat,
+    prev_adx_period_ago: TAFloat,
+    prev_smoothed_plus_dm: TAFloat,
+    prev_smoothed_minus_dm: TAFloat,
+    prev_smoothed_tr: TAFloat,
     param_period: usize,
-) -> Result<(T, T, T, T, T), KandError>
-where
-    T: Float + FromPrimitive,
-{
+) -> Result<(TAFloat, TAFloat, TAFloat, TAFloat, TAFloat), KandError> {
     #[cfg(feature = "check")]
     {
         // Parameter range check
@@ -257,14 +248,14 @@ where
         // NaN check
         if input_high.is_nan()
             || input_low.is_nan()
-            || input_prev_high.is_nan()
-            || input_prev_low.is_nan()
-            || input_prev_close.is_nan()
-            || input_prev_adx.is_nan()
-            || input_prev_adx_period_ago.is_nan()
-            || input_prev_smoothed_plus_dm.is_nan()
-            || input_prev_smoothed_minus_dm.is_nan()
-            || input_prev_smoothed_tr.is_nan()
+            || prev_high.is_nan()
+            || prev_low.is_nan()
+            || prev_close.is_nan()
+            || prev_adx.is_nan()
+            || prev_adx_period_ago.is_nan()
+            || prev_smoothed_plus_dm.is_nan()
+            || prev_smoothed_minus_dm.is_nan()
+            || prev_smoothed_tr.is_nan()
         {
             return Err(KandError::NaNDetected);
         }
@@ -274,18 +265,17 @@ where
         adx::adx_incremental(
             input_high,
             input_low,
-            input_prev_high,
-            input_prev_low,
-            input_prev_close,
-            input_prev_adx,
-            input_prev_smoothed_plus_dm,
-            input_prev_smoothed_minus_dm,
-            input_prev_smoothed_tr,
+            prev_high,
+            prev_low,
+            prev_close,
+            prev_adx,
+            prev_smoothed_plus_dm,
+            prev_smoothed_minus_dm,
+            prev_smoothed_tr,
             param_period,
         )?;
 
-    let output_adxr =
-        (output_adx + input_prev_adx_period_ago) / T::from(2).ok_or(KandError::ConversionError)?;
+    let output_adxr = (output_adx + prev_adx_period_ago) / 2.0;
 
     Ok((
         output_adxr,

@@ -9,10 +9,9 @@ use pyo3::prelude::*;
 /// between 0 and -100.
 ///
 /// Args:
-///     py: Python interpreter token required for GIL management.
-///     high: Input high prices as a 1-D NumPy array of type `f64`.
-///     low: Input low prices as a 1-D NumPy array of type `f64`.
-///     close: Input closing prices as a 1-D NumPy array of type `f64`.
+///     high: Input high prices as a 1-D NumPy array of type `TAFloat`.
+///     low: Input low prices as a 1-D NumPy array of type `TAFloat`.
+///     close: Input closing prices as a 1-D NumPy array of type `TAFloat`.
 ///     period: Lookback period for calculations. Must be >= 2.
 ///
 /// Returns:

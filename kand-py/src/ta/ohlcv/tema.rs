@@ -8,8 +8,7 @@ use pyo3::prelude::*;
 /// It applies triple exponential smoothing to put more weight on recent data and less on older data.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   prices: Input prices as a 1-D NumPy array of type `f64`.
+///   prices: Input prices as a 1-D NumPy array of type `TAFloat`.
 ///   period: Smoothing period for calculations (must be >= 2).
 ///
 /// Returns:

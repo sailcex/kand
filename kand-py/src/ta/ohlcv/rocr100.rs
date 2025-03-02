@@ -9,8 +9,7 @@ use pyo3::prelude::*;
 /// Values above 100 indicate price increases, while values below 100 indicate price decreases.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   data: Input price data as a 1-D NumPy array of type `f64`.
+///   data: Input price data as a 1-D NumPy array of type `TAFloat`.
 ///   period: Number of periods to look back. Must be >= 2.
 ///
 /// Returns:

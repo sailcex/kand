@@ -8,17 +8,12 @@ use pyo3::prelude::*;
 /// volatility levels in the market.
 ///
 /// Args:
-///     py: Python interpreter token required for GIL management.
-///     high: High prices as a 1-D NumPy array of type `f32`.
-///     low: Low prices as a 1-D NumPy array of type `f32`.
+///     high: High prices as a 1-D NumPy array of type `TAFloat`.
+///     low: Low prices as a 1-D NumPy array of type `TAFloat`.
 ///     period: The time period for ADR calculation (must be >= 2).
 ///
 /// Returns:
 ///     A new 1-D NumPy array containing the ADR values. The array has the same length as the inputs.
-///
-/// Note:
-///     This function releases the Python GIL during computation using `py.allow_threads()` to enable
-///     concurrent Python execution.
 ///
 /// Examples:
 ///     ```python

@@ -11,8 +11,7 @@ use pyo3::prelude::*;
 /// - Histogram: Difference between MACD line and signal line
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   data: Input price data as a 1-D NumPy array of type `f64`.
+///   data: Input price data as a 1-D NumPy array of type `TAFloat`.
 ///   fast_period: Period for fast EMA calculation (typically 12).
 ///   slow_period: Period for slow EMA calculation (typically 26).
 ///   signal_period: Period for signal line calculation (typically 9).
@@ -25,10 +24,6 @@ use pyo3::prelude::*;
 ///   - Fast EMA values
 ///   - Slow EMA values
 ///   Each array has the same length as the input, with initial elements containing NaN values.
-///
-/// Note:
-///   This function releases the Python GIL during computation using `py.allow_threads()` to enable
-///   concurrent Python execution.
 ///
 /// Examples:
 ///   ```python
@@ -95,7 +90,7 @@ pub fn macd_py(
 /// previous EMA values instead of recalculating the entire series.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
+///
 ///   price: Current price value as `f64`.
 ///   prev_fast_ema: Previous fast EMA value as `f64`.
 ///   prev_slow_ema: Previous slow EMA value as `f64`.

@@ -1,7 +1,5 @@
-use num_traits::{Float, FromPrimitive};
-
 use super::{ema, roc};
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Calculates the lookback period required for TRIX calculation
 ///
@@ -81,17 +79,14 @@ pub fn lookback(param_period: usize) -> Result<usize, KandError> {
 ///
 /// trix::trix(&input, period, &mut output, &mut ema1, &mut ema2, &mut ema3).unwrap();
 /// ```
-pub fn trix<T>(
-    input: &[T],
+pub fn trix(
+    input: &[TAFloat],
     param_period: usize,
-    output: &mut [T],
-    ema1_output: &mut [T],
-    ema2_output: &mut [T],
-    ema3_output: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output: &mut [TAFloat],
+    ema1_output: &mut [TAFloat],
+    ema2_output: &mut [TAFloat],
+    ema3_output: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input.len();
     let lookback = lookback(param_period)?;
 
@@ -154,10 +149,10 @@ where
 
     // Fill initial values with NAN
     for i in 0..lookback {
-        output[i] = T::nan();
-        ema1_output[i] = T::nan();
-        ema2_output[i] = T::nan();
-        ema3_output[i] = T::nan();
+        output[i] = TAFloat::NAN;
+        ema1_output[i] = TAFloat::NAN;
+        ema2_output[i] = TAFloat::NAN;
+        ema3_output[i] = TAFloat::NAN;
     }
 
     Ok(())
@@ -187,7 +182,7 @@ where
 /// * `param_period` - Period for EMA calculations. Must be >= 2
 ///
 /// # Returns
-/// * `Result<(T, T, T, T), KandError>` - Tuple containing (TRIX, `new_ema1`, `new_ema2`, `new_ema3`) if successful
+/// * `Result<(TAFloat, TAFloat, TAFloat, TAFloat), KandError>` - Tuple containing (TRIX, `new_ema1`, `new_ema2`, `new_ema3`) if successful
 ///
 /// # Errors
 /// * `KandError::InvalidParameter` - If `param_period` < 2 (with "check" feature)
@@ -207,16 +202,13 @@ where
 /// let (trix, new_ema1, new_ema2, new_ema3) =
 ///     trix::trix_incremental(price, prev_ema1, prev_ema2, prev_ema3, period).unwrap();
 /// ```
-pub fn trix_incremental<T>(
-    input: T,
-    prev_ema1: T,
-    prev_ema2: T,
-    prev_ema3: T,
+pub fn trix_incremental(
+    input: TAFloat,
+    prev_ema1: TAFloat,
+    prev_ema2: TAFloat,
+    prev_ema3: TAFloat,
     param_period: usize,
-) -> Result<(T, T, T, T), KandError>
-where
-    T: Float + FromPrimitive,
-{
+) -> Result<(TAFloat, TAFloat, TAFloat, TAFloat), KandError> {
     #[cfg(feature = "check")]
     {
         if param_period < 2 {

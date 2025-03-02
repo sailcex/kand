@@ -7,17 +7,12 @@ use pyo3::prelude::*;
 /// Momentum measures the change in price between the current price and the price n periods ago.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   data: Input data as a 1-D NumPy array of type `f32`.
+///   data: Input data as a 1-D NumPy array of type `TAFloat`.
 ///   period: Window size for momentum calculation. Must be positive and less than input length.
 ///
 /// Returns:
 ///   A new 1-D NumPy array containing the momentum values. The array has the same length as the input,
 ///   with the first `period` elements containing NaN values.
-///
-/// Note:
-///   This function releases the Python GIL during computation using `py.allow_threads()` to enable
-///   concurrent Python execution.
 ///
 /// Examples:
 ///   ```python
@@ -56,7 +51,7 @@ pub fn mom_py(
 /// when streaming data is available, without needing the full price history.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
+///
 ///   current_price: The current period's price value.
 ///   old_price: The price value from n periods ago.
 ///

@@ -8,10 +8,9 @@ use pyo3::prelude::*;
 /// the Average Directional Index (ADX), which helps determine trend strength.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   high: High prices as a 1-D NumPy array of type `f32`.
-///   low: Low prices as a 1-D NumPy array of type `f32`.
-///   close: Close prices as a 1-D NumPy array of type `f32`.
+///   high: High prices as a 1-D NumPy array of type `TAFloat`.
+///   low: Low prices as a 1-D NumPy array of type `TAFloat`.
+///   close: Close prices as a 1-D NumPy array of type `TAFloat`.
 ///   period: Window size for -DI calculation. Must be positive and less than input length.
 ///
 /// Returns:
@@ -20,10 +19,6 @@ use pyo3::prelude::*;
 ///   - The smoothed -DM values
 ///   - The smoothed TR values
 ///   Each array has the same length as the input, with the first `period` elements containing NaN values.
-///
-/// Note:
-///   This function releases the Python GIL during computation using `py.allow_threads()` to enable
-///   concurrent Python execution.
 ///
 /// Examples:
 ///   ```python
@@ -88,14 +83,14 @@ pub fn minus_di_py(
 /// It maintains the same mathematical properties as the full calculation.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   high: Current high price as `f32`.
-///   low: Current low price as `f32`.
-///   prev_high: Previous high price as `f32`.
-///   prev_low: Previous low price as `f32`.
-///   prev_close: Previous close price as `f32`.
-///   prev_smoothed_minus_dm: Previous smoothed -DM value as `f32`.
-///   prev_smoothed_tr: Previous smoothed TR value as `f32`.
+///
+///   high: Current high price as `TAFloat`.
+///   low: Current low price as `TAFloat`.
+///   prev_high: Previous high price as `TAFloat`.
+///   prev_low: Previous low price as `TAFloat`.
+///   prev_close: Previous close price as `TAFloat`.
+///   prev_smoothed_minus_dm: Previous smoothed -DM value as `TAFloat`.
+///   prev_smoothed_tr: Previous smoothed TR value as `TAFloat`.
 ///   period: Calculation period (>= 2).
 ///
 /// Returns:

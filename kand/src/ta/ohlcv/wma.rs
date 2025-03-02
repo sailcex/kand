@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Calculates the lookback period required for Weighted Moving Average (WMA).
 ///
@@ -76,8 +74,11 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// // output = [NaN, NaN, 2.0, 3.0, 4.0]
 /// // First value: (1.0*3 + 2.0*2 + 3.0*1)/(3+2+1) = 2.0
 /// ```
-pub fn wma<T>(input: &[T], param_period: usize, output: &mut [T]) -> Result<(), KandError>
-where T: Float + FromPrimitive {
+pub fn wma(
+    input: &[TAFloat],
+    param_period: usize,
+    output: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input.len();
     let lookback = lookback(param_period)?;
 
@@ -104,22 +105,21 @@ where T: Float + FromPrimitive {
     }
 
     // Calculate denominator (sum of weights)
-    let denominator =
-        T::from((param_period * (param_period + 1)) / 2).ok_or(KandError::ConversionError)?;
+    let denominator = (param_period * (param_period + 1)) as TAFloat / 2.0;
 
     // Fill initial values with NAN
     for value in output.iter_mut().take(lookback) {
-        *value = T::nan();
+        *value = TAFloat::NAN;
     }
 
     // Calculate WMA for each window
     for i in lookback..len {
-        let mut weighted_sum = T::zero();
-        let mut weight = T::from(param_period).ok_or(KandError::ConversionError)?;
+        let mut weighted_sum = 0.0;
+        let mut weight = param_period as TAFloat;
 
         for j in 0..param_period {
-            weighted_sum = weighted_sum + input[i - j] * weight;
-            weight = weight - T::one();
+            weighted_sum += input[i - j] * weight;
+            weight -= 1.0;
         }
 
         output[i] = weighted_sum / denominator;
@@ -148,7 +148,7 @@ where T: Float + FromPrimitive {
 /// * `param_period` - The time period for WMA calculation (must be >= 2)
 ///
 /// # Returns
-/// * `Result<T, KandError>` - The calculated WMA value
+/// * `Result<TAFloat, KandError>` - The calculated WMA value
 ///
 /// # Errors
 /// * `KandError::InvalidParameter` - If period < 2
@@ -163,8 +163,10 @@ where T: Float + FromPrimitive {
 /// let wma = wma::wma_incremental(&window, 3).unwrap();
 /// // wma = (5.0*3 + 4.0*2 + 3.0*1)/(3+2+1) = 4.333...
 /// ```
-pub fn wma_incremental<T>(input_window: &[T], param_period: usize) -> Result<T, KandError>
-where T: Float + FromPrimitive {
+pub fn wma_incremental(
+    input_window: &[TAFloat],
+    param_period: usize,
+) -> Result<TAFloat, KandError> {
     #[cfg(feature = "check")]
     {
         if param_period < 2 {
@@ -184,14 +186,13 @@ where T: Float + FromPrimitive {
         }
     }
 
-    let denominator =
-        T::from((param_period * (param_period + 1)) / 2).ok_or(KandError::ConversionError)?;
-    let mut weighted_sum = T::zero();
-    let mut weight = T::from(param_period).ok_or(KandError::ConversionError)?;
+    let denominator = (param_period * (param_period + 1)) as TAFloat / 2.0;
+    let mut weighted_sum = 0.0;
+    let mut weight = param_period as TAFloat;
 
     for &value in input_window {
-        weighted_sum = weighted_sum + value * weight;
-        weight = weight - T::one();
+        weighted_sum += value * weight;
+        weight -= 1.0;
     }
 
     Ok(weighted_sum / denominator)
@@ -244,7 +245,7 @@ mod tests {
 
         // Test incremental calculation matches regular calculation
         for i in 30..35 {
-            let window: Vec<f64> = input[i - (param_period - 1)..=i]
+            let window: Vec<TAFloat> = input[i - (param_period - 1)..=i]
                 .iter()
                 .rev()
                 .copied()

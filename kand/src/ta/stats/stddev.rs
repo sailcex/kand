@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::{KandError, ta::stats::var};
+use crate::{KandError, TAFloat, ta::stats::var};
 
 /// Calculates the lookback period required for Standard Deviation calculation.
 ///
@@ -78,16 +76,13 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// )
 /// .unwrap();
 /// ```
-pub fn stddev<T>(
-    input_prices: &[T],
+pub fn stddev(
+    input_prices: &[TAFloat],
     param_period: usize,
-    output_stddev: &mut [T],
-    output_sum: &mut [T],
-    output_sum_sq: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_stddev: &mut [TAFloat],
+    output_sum: &mut [TAFloat],
+    output_sum_sq: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_prices.len();
     let lookback = lookback(param_period)?;
 
@@ -140,13 +135,13 @@ where
 ///
 /// # Arguments
 /// * `input_price` - The latest price value to include in calculation
-/// * `input_prev_sum` - Previous sum of values in the period
-/// * `input_prev_sum_sq` - Previous sum of squared values in the period
+/// * `prev_sum` - Previous sum of values in the period
+/// * `prev_sum_sq` - Previous sum of squared values in the period
 /// * `input_old_price` - Price value to remove from the period
 /// * `param_period` - The time period for calculation (must be >= 2)
 ///
 /// # Returns
-/// * `Result<(T, T, T), KandError>` - Tuple containing:
+/// * `Result<(TAFloat, TAFloat, TAFloat), KandError>` - Tuple containing:
 ///   - Latest Standard Deviation value
 ///   - New sum
 ///   - New sum of squares
@@ -167,20 +162,17 @@ where
 /// )
 /// .unwrap();
 /// ```
-pub fn stddev_incremental<T>(
-    input_price: T,
-    input_prev_sum: T,
-    input_prev_sum_sq: T,
-    input_old_price: T,
+pub fn stddev_incremental(
+    input_price: TAFloat,
+    prev_sum: TAFloat,
+    prev_sum_sq: TAFloat,
+    input_old_price: TAFloat,
     param_period: usize,
-) -> Result<(T, T, T), KandError>
-where
-    T: Float + FromPrimitive,
-{
+) -> Result<(TAFloat, TAFloat, TAFloat), KandError> {
     let (var, new_sum, new_sum_sq) = var::var_incremental(
         input_price,
-        input_prev_sum,
-        input_prev_sum_sq,
+        prev_sum,
+        prev_sum_sq,
         input_old_price,
         param_period,
     )?;

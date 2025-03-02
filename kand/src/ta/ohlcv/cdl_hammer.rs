@@ -1,7 +1,6 @@
-use num_traits::{Float, FromPrimitive};
-
 use crate::{
     KandError,
+    TAFloat,
     TAInt,
     helper::{lower_shadow_length, period_to_k, real_body_length, upper_shadow_length},
     types::Signal,
@@ -101,19 +100,16 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// )
 /// .unwrap();
 /// ```
-pub fn cdl_hammer<T>(
-    input_open: &[T],
-    input_high: &[T],
-    input_low: &[T],
-    input_close: &[T],
+pub fn cdl_hammer(
+    input_open: &[TAFloat],
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
+    input_close: &[TAFloat],
     param_period: usize,
-    param_factor: T,
+    param_factor: TAFloat,
     output_signals: &mut [TAInt],
-    output_body_avg: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_body_avg: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_open.len();
     let lookback = lookback(param_period)?;
 
@@ -143,7 +139,7 @@ where
         if param_period < 2 {
             return Err(KandError::InvalidParameter);
         }
-        if param_factor <= T::zero() {
+        if param_factor <= 0.0 {
             return Err(KandError::InvalidParameter);
         }
     }
@@ -162,11 +158,11 @@ where
     }
 
     // Calculate initial SMA
-    let mut sum = T::zero();
+    let mut sum = 0.0;
     for i in 0..param_period {
-        sum = sum + real_body_length(input_open[i], input_close[i]);
+        sum += real_body_length(input_open[i], input_close[i]);
     }
-    let mut body_avg = sum / T::from(param_period).ok_or(KandError::ConversionError)?;
+    let mut body_avg = sum / param_period as TAFloat;
     output_body_avg[lookback] = body_avg;
 
     // Process remaining candles
@@ -188,7 +184,7 @@ where
     // Fill initial values with -1
     for i in 0..lookback {
         output_signals[i] = Signal::Invalid.into();
-        output_body_avg[i] = T::nan();
+        output_body_avg[i] = TAFloat::NAN;
     }
 
     Ok(())
@@ -205,12 +201,12 @@ where
 /// * `input_high` - High price of current candlestick
 /// * `input_low` - Low price of current candlestick
 /// * `input_close` - Closing price of current candlestick
-/// * `input_prev_body_avg` - Previous EMA value of body sizes
+/// * `prev_body_avg` - Previous EMA value of body sizes
 /// * `param_period` - Period for EMA calculation
 /// * `param_factor` - Minimum ratio of lower shadow to body length
 ///
 /// # Returns
-/// * `Ok((TAInt, T))` - Returns tuple containing:
+/// * `Ok((TAInt, TAFloat))` - Returns tuple containing:
 ///   - First element: Pattern signal (100 for bullish hammer, 0 for no pattern)
 ///   - Second element: Updated EMA value of body sizes
 ///
@@ -235,24 +231,21 @@ where
 /// )
 /// .unwrap();
 /// ```
-pub fn cdl_hammer_incremental<T>(
-    input_open: T,
-    input_high: T,
-    input_low: T,
-    input_close: T,
-    input_prev_body_avg: T,
+pub fn cdl_hammer_incremental(
+    input_open: TAFloat,
+    input_high: TAFloat,
+    input_low: TAFloat,
+    input_close: TAFloat,
+    prev_body_avg: TAFloat,
     param_period: usize,
-    param_factor: T,
-) -> Result<(TAInt, T), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    param_factor: TAFloat,
+) -> Result<(TAInt, TAFloat), KandError> {
     #[cfg(feature = "check")]
     {
         if param_period < 2 {
             return Err(KandError::InvalidParameter);
         }
-        if param_factor <= T::zero() {
+        if param_factor <= 0.0 {
             return Err(KandError::InvalidParameter);
         }
     }
@@ -263,7 +256,7 @@ where
             || input_high.is_nan()
             || input_low.is_nan()
             || input_close.is_nan()
-            || input_prev_body_avg.is_nan()
+            || prev_body_avg.is_nan()
         {
             return Err(KandError::NaNDetected);
         }
@@ -273,14 +266,13 @@ where
     let up_shadow = upper_shadow_length(input_high, input_open, input_close);
     let down_shadow = lower_shadow_length(input_low, input_open, input_close);
     let k = period_to_k(param_period)?;
-    let body_avg = (body - input_prev_body_avg) * k + input_prev_body_avg;
+    let body_avg = (body - prev_body_avg) * k + prev_body_avg;
 
     // Check for Hammer pattern
-    let is_small_body = body <= body_avg && body > T::zero();
+    let is_small_body = body <= body_avg && body > 0.0;
     let has_long_lower_shadow = down_shadow >= param_factor * body;
     let has_minimal_upper_shadow = up_shadow <= body;
-    let body_in_upper_half = T::min(input_open, input_close)
-        > (input_high + input_low) / (T::from(2).ok_or(KandError::ConversionError)?);
+    let body_in_upper_half = TAFloat::min(input_open, input_close) > (input_high + input_low) / 2.0;
 
     let signal =
         if is_small_body && has_long_lower_shadow && has_minimal_upper_shadow && body_in_upper_half
@@ -361,16 +353,13 @@ mod tests {
             assert!(output_body_avg[i].is_nan());
         }
 
-        println!("output_signals: {output_signals:?}");
-        println!("output_body_avg: {output_body_avg:?}");
-
         // Test specific signals
         assert_eq!(output_signals[16], Signal::Bullish.into()); // TV BTCUSDT.P 5m 2025-02-03 06:30
         assert_eq!(output_signals[54], Signal::Bullish.into()); // TV BTCUSDT.P 5m 2025-02-03 16:00
         assert_eq!(output_signals[59], Signal::Bullish.into()); // TV BTCUSDT.P 5m 2025-02-03 17:15
 
         // Test incremental calculation matches regular calculation
-        let mut input_prev_body_avg = output_body_avg[13]; // First valid body average
+        let mut prev_body_avg = output_body_avg[13]; // First valid body average
 
         // Test each incremental step
         for i in 14..18 {
@@ -379,14 +368,14 @@ mod tests {
                 input_high[i],
                 input_low[i],
                 input_close[i],
-                input_prev_body_avg,
+                prev_body_avg,
                 param_period,
                 param_factor,
             )
             .unwrap();
             assert_eq!(signal, output_signals[i]);
             assert_relative_eq!(new_body_avg, output_body_avg[i], epsilon = 0.00001);
-            input_prev_body_avg = new_body_avg;
+            prev_body_avg = new_body_avg;
         }
     }
 }

@@ -1,7 +1,6 @@
-use num_traits::{Float, FromPrimitive};
-
 use crate::{
     KandError,
+    TAFloat,
     TAInt,
     helper::{lower_shadow_length, real_body_length, upper_shadow_length},
     types::Signal,
@@ -93,18 +92,15 @@ pub const fn lookback() -> Result<usize, KandError> {
 /// )
 /// .unwrap();
 /// ```
-pub fn cdl_doji<T>(
-    input_open: &[T],
-    input_high: &[T],
-    input_low: &[T],
-    input_close: &[T],
-    param_body_percent: T,
-    param_shadow_equal_percent: T,
+pub fn cdl_doji(
+    input_open: &[TAFloat],
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
+    input_close: &[TAFloat],
+    param_body_percent: TAFloat,
+    param_shadow_equal_percent: TAFloat,
     output_signals: &mut [TAInt],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+) -> Result<(), KandError> {
     let len = input_open.len();
 
     #[cfg(feature = "check")]
@@ -119,7 +115,7 @@ where
         }
 
         // Check parameters
-        if param_body_percent <= T::zero() || param_shadow_equal_percent <= T::zero() {
+        if param_body_percent <= 0.0 || param_shadow_equal_percent <= 0.0 {
             return Err(KandError::InvalidParameter);
         }
     }
@@ -186,21 +182,18 @@ where
 /// * `KandError::InvalidParameter` - If any parameter is invalid (e.g. <= 0)
 /// * `KandError::NaNDetected` - If any input value is NaN (when `deep-check` enabled)
 /// * `KandError::ConversionError` - If numeric conversion fails
-pub fn cdl_doji_incremental<T>(
-    input_open: T,
-    input_high: T,
-    input_low: T,
-    input_close: T,
-    param_body_percent: T,
-    param_shadow_equal_percent: T,
-) -> Result<TAInt, KandError>
-where
-    T: Float + FromPrimitive,
-{
+pub fn cdl_doji_incremental(
+    input_open: TAFloat,
+    input_high: TAFloat,
+    input_low: TAFloat,
+    input_close: TAFloat,
+    param_body_percent: TAFloat,
+    param_shadow_equal_percent: TAFloat,
+) -> Result<TAInt, KandError> {
     #[cfg(feature = "check")]
     {
         // Check parameters
-        if param_body_percent <= T::zero() || param_shadow_equal_percent <= T::zero() {
+        if param_body_percent <= 0.0 || param_shadow_equal_percent <= 0.0 {
             return Err(KandError::InvalidParameter);
         }
     }
@@ -218,10 +211,8 @@ where
     let up_shadow = upper_shadow_length(input_high, input_open, input_close);
     let dn_shadow = lower_shadow_length(input_low, input_open, input_close);
 
-    let hundred = T::from_f64(100.0).ok_or(KandError::ConversionError)?;
-
     // Check for Doji pattern
-    let is_doji_body = range > T::zero() && body <= range * param_body_percent / hundred;
+    let is_doji_body = range > 0.0 && body <= range * param_body_percent / 100.0;
 
     // Calculates the percentage difference between upper and lower shadows.
     // Returns the minimum relative difference to provide a more balanced comparison.
@@ -236,12 +227,12 @@ where
     // - It better handles cases where shadows have significant size differences
     //
     // Returns 100% if either shadow length is zero, indicating maximum inequality.
-    let shadow_diff_percent = if dn_shadow > T::zero() && up_shadow > T::zero() {
-        let up_diff = (up_shadow - dn_shadow).abs() / dn_shadow * hundred;
-        let dn_diff = (dn_shadow - up_shadow).abs() / up_shadow * hundred;
+    let shadow_diff_percent = if dn_shadow > 0.0 && up_shadow > 0.0 {
+        let up_diff = (up_shadow - dn_shadow).abs() / dn_shadow * 100.0;
+        let dn_diff = (dn_shadow - up_shadow).abs() / up_shadow * 100.0;
         up_diff.min(dn_diff)
     } else {
-        hundred
+        100.0
     };
 
     let shadows_equal = shadow_diff_percent < param_shadow_equal_percent;

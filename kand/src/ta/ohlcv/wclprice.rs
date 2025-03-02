@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Returns the lookback period required for Weighted Close Price (WCLPRICE) calculation.
 ///
@@ -66,15 +64,12 @@ pub const fn lookback() -> Result<usize, KandError> {
 ///
 /// wclprice::wclprice(&high, &low, &close, &mut output).unwrap();
 /// ```
-pub fn wclprice<T>(
-    input_high: &[T],
-    input_low: &[T],
-    input_close: &[T],
-    output: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+pub fn wclprice(
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
+    input_close: &[TAFloat],
+    output: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_high.len();
 
     #[cfg(feature = "check")]
@@ -96,11 +91,8 @@ where
         }
     }
 
-    let four = T::from(4).ok_or(KandError::ConversionError)?;
-    let two = T::from(2).ok_or(KandError::ConversionError)?;
-
     for i in 0..len {
-        output[i] = (input_high[i] + input_low[i] + (input_close[i] * two)) / four;
+        output[i] = (input_high[i] + input_low[i] + (input_close[i] * 2.0)) / 4.0;
     }
 
     Ok(())
@@ -118,7 +110,7 @@ where
 /// * `input_close` - Latest closing price value
 ///
 /// # Returns
-/// * `Result<T, KandError>` - The calculated WCLPRICE value if successful
+/// * `Result<TAFloat, KandError>` - The calculated WCLPRICE value if successful
 ///
 /// # Errors
 /// * `KandError::NaNDetected` - If any input value is NaN (when "`deep-check`" feature is enabled)
@@ -133,14 +125,11 @@ where
 ///
 /// let wclprice = wclprice_incremental(high, low, close).unwrap();
 /// ```
-pub fn wclprice_incremental<T>(
-    input_high: T,
-    input_low: T,
-    input_close: T,
-) -> Result<T, KandError>
-where
-    T: Float + FromPrimitive,
-{
+pub fn wclprice_incremental(
+    input_high: TAFloat,
+    input_low: TAFloat,
+    input_close: TAFloat,
+) -> Result<TAFloat, KandError> {
     #[cfg(feature = "deep-check")]
     {
         if input_high.is_nan() || input_low.is_nan() || input_close.is_nan() {
@@ -148,10 +137,7 @@ where
         }
     }
 
-    let four = T::from(4).ok_or(KandError::ConversionError)?;
-    let two = T::from(2).ok_or(KandError::ConversionError)?;
-
-    Ok((input_high + input_low + (input_close * two)) / four)
+    Ok((input_high + input_low + (input_close * 2.0)) / 4.0)
 }
 
 #[cfg(test)]

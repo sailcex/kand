@@ -64,7 +64,6 @@ pub mod stoch_bench;
 pub mod supertrend_bench;
 pub mod t3_bench;
 pub mod tema_bench;
-// pub mod tpo_bench;
 pub mod trange_bench;
 pub mod trima_bench;
 pub mod trix_bench;

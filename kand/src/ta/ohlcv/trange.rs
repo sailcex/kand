@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Returns the lookback period required for True Range (TR) calculation
 ///
@@ -78,15 +76,12 @@ pub const fn lookback() -> Result<usize, KandError> {
 /// assert_eq!(tr[1], 3.0); // max(3, 3, 2)
 /// assert_eq!(tr[2], 4.0); // max(4, 4, 3)
 /// ```
-pub fn trange<T>(
-    input_high: &[T],
-    input_low: &[T],
-    input_close: &[T],
-    output_trange: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+pub fn trange(
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
+    input_close: &[TAFloat],
+    output_trange: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_high.len();
     let lookback = lookback()?;
     #[cfg(feature = "check")]
@@ -118,7 +113,7 @@ where
     }
 
     // First value is NAN since we need previous close
-    output_trange[0] = T::nan();
+    output_trange[0] = TAFloat::NAN;
 
     // Calculate True Range for remaining values
     for i in 1..len {
@@ -130,7 +125,7 @@ where
 
     // Fill initial values with NAN
     for value in output_trange.iter_mut().take(lookback) {
-        *value = T::nan();
+        *value = TAFloat::NAN;
     }
 
     Ok(())
@@ -154,10 +149,10 @@ where
 /// # Arguments
 /// * `input_high` - Current period's high price
 /// * `input_low` - Current period's low price
-/// * `input_prev_close` - Previous period's closing price
+/// * `prev_close` - Previous period's closing price
 ///
 /// # Returns
-/// * `Result<T, KandError>` - Calculated TR value
+/// * `Result<TAFloat, KandError>` - Calculated TR value
 ///
 /// # Errors
 /// * `KandError::NaNDetected` - If any input value is NaN (when `deep-check` enabled)
@@ -169,25 +164,22 @@ where
 /// let tr = trange::trange_incremental(12.0f64, 9.0, 11.0).unwrap();
 /// assert_eq!(tr, 3.0); // max(3, 1, 2)
 /// ```
-pub fn trange_incremental<T>(
-    input_high: T,
-    input_low: T,
-    input_prev_close: T,
-) -> Result<T, KandError>
-where
-    T: Float + FromPrimitive,
-{
+pub fn trange_incremental(
+    input_high: TAFloat,
+    input_low: TAFloat,
+    prev_close: TAFloat,
+) -> Result<TAFloat, KandError> {
     #[cfg(feature = "deep-check")]
     {
         // NaN check
-        if input_high.is_nan() || input_low.is_nan() || input_prev_close.is_nan() {
+        if input_high.is_nan() || input_low.is_nan() || prev_close.is_nan() {
             return Err(KandError::NaNDetected);
         }
     }
 
     let h_l = input_high - input_low;
-    let h_pc = (input_high - input_prev_close).abs();
-    let l_pc = (input_low - input_prev_close).abs();
+    let h_pc = (input_high - prev_close).abs();
+    let l_pc = (input_low - prev_close).abs();
     Ok(h_l.max(h_pc).max(l_pc))
 }
 

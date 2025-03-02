@@ -1,7 +1,5 @@
-use num_traits::{Float, FromPrimitive};
-
 use super::trange;
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Returns the lookback period required for ATR calculation.
 ///
@@ -91,16 +89,13 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// )
 /// .unwrap();
 /// ```
-pub fn atr<T>(
-    input_high: &[T],
-    input_low: &[T],
-    input_close: &[T],
+pub fn atr(
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
+    input_close: &[TAFloat],
     param_period: usize,
-    output_atr: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_atr: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_high.len();
     let lookback = lookback(param_period)?;
 
@@ -133,27 +128,26 @@ where
     }
 
     // Calculate first TR values and initial ATR (SMA of TR)
-    let mut tr_sum = T::zero();
+    let mut tr_sum = 0.0;
     let mut prev_close = input_close[0];
 
     for i in 1..=lookback {
         let tr = trange::trange_incremental(input_high[i], input_low[i], prev_close)?;
-        tr_sum = tr_sum + tr;
+        tr_sum += tr;
         prev_close = input_close[i];
     }
-    output_atr[lookback] = tr_sum / T::from(param_period).ok_or(KandError::ConversionError)?;
+    output_atr[lookback] = tr_sum / (param_period as TAFloat);
 
     // Calculate remaining ATR values using RMA
     for i in (lookback + 1)..len {
         let tr = trange::trange_incremental(input_high[i], input_low[i], input_close[i - 1])?;
         output_atr[i] =
-            (output_atr[i - 1] * T::from(param_period - 1).ok_or(KandError::ConversionError)? + tr)
-                / T::from(param_period).ok_or(KandError::ConversionError)?;
+            (output_atr[i - 1] * ((param_period - 1) as TAFloat) + tr) / (param_period as TAFloat);
     }
 
     // Fill initial values with NAN
     for value in output_atr.iter_mut().take(lookback) {
-        *value = T::nan();
+        *value = TAFloat::NAN;
     }
 
     Ok(())
@@ -174,12 +168,12 @@ where
 /// # Arguments
 /// * `input_high` - Current period's high price
 /// * `input_low` - Current period's low price
-/// * `input_prev_close` - Previous period's close price
-/// * `input_prev_atr` - Previous period's ATR value
+/// * `prev_close` - Previous period's close price
+/// * `prev_atr` - Previous period's ATR value
 /// * `param_period` - The time period for ATR calculation (must be >= 2)
 ///
 /// # Returns
-/// * `Result<T, KandError>` - The calculated ATR value on success
+/// * `Result<TAFloat, KandError>` - The calculated ATR value on success
 ///
 /// # Errors
 /// * `KandError::InvalidParameter` - If `param_period` is less than 2
@@ -191,29 +185,20 @@ where
 ///
 /// let input_high = 15.0f64;
 /// let input_low = 11.0;
-/// let input_prev_close = 12.0;
-/// let input_prev_atr = 3.0;
+/// let prev_close = 12.0;
+/// let prev_atr = 3.0;
 /// let param_period = 3;
 ///
-/// let output_atr = atr_incremental(
-///     input_high,
-///     input_low,
-///     input_prev_close,
-///     input_prev_atr,
-///     param_period,
-/// )
-/// .unwrap();
+/// let output_atr =
+///     atr_incremental(input_high, input_low, prev_close, prev_atr, param_period).unwrap();
 /// ```
-pub fn atr_incremental<T>(
-    input_high: T,
-    input_low: T,
-    input_prev_close: T,
-    input_prev_atr: T,
+pub fn atr_incremental(
+    input_high: TAFloat,
+    input_low: TAFloat,
+    prev_close: TAFloat,
+    prev_atr: TAFloat,
     param_period: usize,
-) -> Result<T, KandError>
-where
-    T: Float + FromPrimitive,
-{
+) -> Result<TAFloat, KandError> {
     #[cfg(feature = "check")]
     {
         // Parameter range check
@@ -225,20 +210,13 @@ where
     #[cfg(feature = "deep-check")]
     {
         // NaN check
-        if input_high.is_nan()
-            || input_low.is_nan()
-            || input_prev_close.is_nan()
-            || input_prev_atr.is_nan()
-        {
+        if input_high.is_nan() || input_low.is_nan() || prev_close.is_nan() || prev_atr.is_nan() {
             return Err(KandError::NaNDetected);
         }
     }
 
-    let tr = trange::trange_incremental(input_high, input_low, input_prev_close)?;
-    Ok(
-        (input_prev_atr * T::from(param_period - 1).ok_or(KandError::ConversionError)? + tr)
-            / T::from(param_period).ok_or(KandError::ConversionError)?,
-    )
+    let tr = trange::trange_incremental(input_high, input_low, prev_close)?;
+    Ok((prev_atr * ((param_period - 1) as TAFloat) + tr) / (param_period as TAFloat))
 }
 
 #[cfg(test)]

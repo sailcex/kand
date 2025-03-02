@@ -1,4 +1,4 @@
-use num_traits::{Float, FromPrimitive};
+use kand::TAFloat;
 use rand::Rng;
 
 /// Generate a vector of floating point values simulating price movements
@@ -6,28 +6,26 @@ use rand::Rng;
 /// # Panics
 ///
 /// This function will panic if:
-/// - The floating point type `T` cannot represent common values like 0.0, 0.5, 1.0, 2.0, 100.0
-/// - Type conversion from `usize` to type `T` fails
+/// - Type conversion from `usize` to `TAFloat` fails
 #[must_use]
 #[allow(clippy::expect_used)]
-pub fn generate_test_data<T: Float + FromPrimitive + rand::distr::uniform::SampleUniform>(
-    size: usize,
-) -> Vec<T> {
+pub fn generate_test_data(size: usize) -> Vec<TAFloat> {
     let mut rng = rand::rng();
     let mut data = Vec::with_capacity(size);
 
-    // These constants are used frequently, so we create them once
-    let price_init = T::from_f64(100.0).expect("Failed to convert 100.0 to target type");
-    let increment = T::from_f64(0.001).expect("Failed to convert 0.001 to target type");
-    let half = T::from_f64(0.5).expect("Failed to convert 0.5 to target type");
-    let two = T::from_f64(2.0).expect("Failed to convert 2.0 to target type");
+    // These constants are used frequently
+    let price_init: TAFloat = 100.0;
+    let increment: TAFloat = 0.001;
+    let half: TAFloat = 0.5;
+    let two: TAFloat = 2.0;
 
     let mut price = price_init;
 
     for i in 0..size {
         // Simulate small random price movements
-        price = price + (rng.random_range(T::zero()..T::one()) - half) * two;
-        let idx = T::from_usize(i).expect("Failed to convert index to target type");
+        let random_factor: TAFloat = rng.random_range(0.0..1.0);
+        price = (random_factor - half).mul_add(two, price);
+        let idx = i as TAFloat;
         data.push(idx.mul_add(increment, price));
     }
     data

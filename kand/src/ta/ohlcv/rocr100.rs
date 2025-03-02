@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Calculates the lookback period required for ROCR100 (Rate of Change Ratio * 100) calculation.
 ///
@@ -78,14 +76,11 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// // First param_period values are NaN
 /// // Remaining values show percentage ratio between current and historical prices
 /// ```
-pub fn rocr100<T>(
-    input_price: &[T],
+pub fn rocr100(
+    input_price: &[TAFloat],
     param_period: usize,
-    output_rocr100: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_rocr100: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_price.len();
     let lookback = lookback(param_period)?;
 
@@ -118,13 +113,12 @@ where
 
     // Calculate ROCR100 values
     for i in lookback..len {
-        output_rocr100[i] = (input_price[i] / input_price[i - param_period])
-            * T::from(100).ok_or(KandError::ConversionError)?;
+        output_rocr100[i] = (input_price[i] / input_price[i - param_period]) * 100.0;
     }
 
     // Fill initial values with NAN
     for value in output_rocr100.iter_mut().take(lookback) {
-        *value = T::nan();
+        *value = TAFloat::NAN;
     }
 
     Ok(())
@@ -138,10 +132,10 @@ where
 ///
 /// # Arguments
 /// * `input` - Current price value
-/// * `input_prev` - Price value from `param_period` periods ago
+/// * `prev` - Price value from `param_period` periods ago
 ///
 /// # Returns
-/// * `Result<T, KandError>` - The calculated ROCR100 value
+/// * `Result<TAFloat, KandError>` - The calculated ROCR100 value
 ///
 /// # Errors
 /// * `KandError::NaNDetected` - If any input value is NaN (when "`deep-check`" feature is enabled)
@@ -157,16 +151,15 @@ where
 /// let rocr100_value = rocr100::rocr100_incremental(current_price, price_10_periods_ago).unwrap();
 /// // Result shows current price is 125% of price 10 periods ago
 /// ```
-pub fn rocr100_incremental<T>(input: T, input_prev: T) -> Result<T, KandError>
-where T: Float + FromPrimitive {
+pub fn rocr100_incremental(input: TAFloat, prev: TAFloat) -> Result<TAFloat, KandError> {
     #[cfg(feature = "deep-check")]
     {
-        if input.is_nan() || input_prev.is_nan() {
+        if input.is_nan() || prev.is_nan() {
             return Err(KandError::NaNDetected);
         }
     }
 
-    Ok((input / input_prev) * T::from(100).ok_or(KandError::ConversionError)?)
+    Ok((input / prev) * 100.0)
 }
 
 #[cfg(test)]

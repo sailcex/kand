@@ -1,7 +1,5 @@
-use num_traits::{Float, FromPrimitive};
-
 use super::dx;
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Calculate the lookback period required for ADX calculation
 ///
@@ -109,19 +107,16 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// )
 /// .unwrap();
 /// ```
-pub fn adx<T>(
-    input_high: &[T],
-    input_low: &[T],
-    input_close: &[T],
+pub fn adx(
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
+    input_close: &[TAFloat],
     param_period: usize,
-    output_adx: &mut [T],
-    output_smoothed_plus_dm: &mut [T],
-    output_smoothed_minus_dm: &mut [T],
-    output_smoothed_tr: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_adx: &mut [TAFloat],
+    output_smoothed_plus_dm: &mut [TAFloat],
+    output_smoothed_minus_dm: &mut [TAFloat],
+    output_smoothed_tr: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_high.len();
     let lookback = lookback(param_period)?;
 
@@ -159,7 +154,7 @@ where
         }
     }
 
-    let mut dx_values = vec![T::zero(); len];
+    let mut dx_values = vec![0.0; len];
 
     // Calculate DX values
     dx::dx(
@@ -174,25 +169,25 @@ where
     )?;
 
     // Calculate initial ADX as simple average of first period DX values
-    let mut sum = T::zero();
+    let mut sum = 0.0;
     for value in dx_values
         .iter()
         .take(lookback + 1)
         .skip(lookback + 1 - param_period)
     {
-        sum = sum + *value;
+        sum += *value;
     }
-    output_adx[lookback] = sum / T::from(param_period).ok_or(KandError::ConversionError)?;
+    output_adx[lookback] = sum / param_period as f64;
 
     // Calculate remaining ADX values using Wilder's smoothing
-    let period_t = T::from(param_period).ok_or(KandError::ConversionError)?;
+    let period_t = param_period as f64;
     for i in (lookback + 1)..len {
-        output_adx[i] = (output_adx[i - 1] * (period_t - T::one()) + dx_values[i]) / period_t;
+        output_adx[i] = (output_adx[i - 1] * (period_t - 1.0) + dx_values[i]) / period_t;
     }
 
     // Fill initial values with NAN
     for item in output_adx.iter_mut().take(param_period * 2 - 1) {
-        *item = T::nan();
+        *item = TAFloat::NAN;
     }
 
     Ok(())
@@ -206,17 +201,17 @@ where
 /// # Arguments
 /// * `input_high` - Current period's high price
 /// * `input_low` - Current period's low price
-/// * `input_prev_high` - Previous period's high price
-/// * `input_prev_low` - Previous period's low price
-/// * `input_prev_close` - Previous period's close price
-/// * `input_prev_adx` - Previous period's ADX value
-/// * `input_prev_smoothed_plus_dm` - Previous period's smoothed +DM
-/// * `input_prev_smoothed_minus_dm` - Previous period's smoothed -DM
-/// * `input_prev_smoothed_tr` - Previous period's smoothed TR
+/// * `prev_high` - Previous period's high price
+/// * `prev_low` - Previous period's low price
+/// * `prev_close` - Previous period's close price
+/// * `prev_adx` - Previous period's ADX value
+/// * `prev_smoothed_plus_dm` - Previous period's smoothed +DM
+/// * `prev_smoothed_minus_dm` - Previous period's smoothed -DM
+/// * `prev_smoothed_tr` - Previous period's smoothed TR
 /// * `param_period` - The period parameter (typically 14)
 ///
 /// # Returns
-/// * `Result<(T, T, T, T), KandError>` - Tuple containing:
+/// * `Result<(TAFloat, TAFloat, TAFloat, TAFloat), KandError>` - Tuple containing:
 ///   - Latest ADX value
 ///   - New smoothed +DM
 ///   - New smoothed -DM
@@ -244,21 +239,18 @@ where
 /// )
 /// .unwrap();
 /// ```
-pub fn adx_incremental<T>(
-    input_high: T,
-    input_low: T,
-    input_prev_high: T,
-    input_prev_low: T,
-    input_prev_close: T,
-    input_prev_adx: T,
-    input_prev_smoothed_plus_dm: T,
-    input_prev_smoothed_minus_dm: T,
-    input_prev_smoothed_tr: T,
+pub fn adx_incremental(
+    input_high: TAFloat,
+    input_low: TAFloat,
+    prev_high: TAFloat,
+    prev_low: TAFloat,
+    prev_close: TAFloat,
+    prev_adx: TAFloat,
+    prev_smoothed_plus_dm: TAFloat,
+    prev_smoothed_minus_dm: TAFloat,
+    prev_smoothed_tr: TAFloat,
     param_period: usize,
-) -> Result<(T, T, T, T), KandError>
-where
-    T: Float + FromPrimitive,
-{
+) -> Result<(TAFloat, TAFloat, TAFloat, TAFloat), KandError> {
     #[cfg(feature = "check")]
     {
         // Parameter range check
@@ -272,13 +264,13 @@ where
         // NaN check
         if input_high.is_nan()
             || input_low.is_nan()
-            || input_prev_high.is_nan()
-            || input_prev_low.is_nan()
-            || input_prev_close.is_nan()
-            || input_prev_adx.is_nan()
-            || input_prev_smoothed_plus_dm.is_nan()
-            || input_prev_smoothed_minus_dm.is_nan()
-            || input_prev_smoothed_tr.is_nan()
+            || prev_high.is_nan()
+            || prev_low.is_nan()
+            || prev_close.is_nan()
+            || prev_adx.is_nan()
+            || prev_smoothed_plus_dm.is_nan()
+            || prev_smoothed_minus_dm.is_nan()
+            || prev_smoothed_tr.is_nan()
         {
             return Err(KandError::NaNDetected);
         }
@@ -288,17 +280,17 @@ where
         dx::dx_incremental(
             input_high,
             input_low,
-            input_prev_high,
-            input_prev_low,
-            input_prev_close,
-            input_prev_smoothed_plus_dm,
-            input_prev_smoothed_minus_dm,
-            input_prev_smoothed_tr,
+            prev_high,
+            prev_low,
+            prev_close,
+            prev_smoothed_plus_dm,
+            prev_smoothed_minus_dm,
+            prev_smoothed_tr,
             param_period,
         )?;
 
-    let period_t = T::from(param_period).ok_or(KandError::ConversionError)?;
-    let output_adx = (input_prev_adx * (period_t - T::one()) + dx) / period_t;
+    let period_t = param_period as f64;
+    let output_adx = (prev_adx * (period_t - 1.0) + dx) / period_t;
 
     Ok((
         output_adx,

@@ -8,8 +8,7 @@ use pyo3::prelude::*;
 /// prices over a specified period.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   data: Input price data as a 1-D NumPy array of type `f64`.
+///   data: Input price data as a 1-D NumPy array of type `TAFloat`.
 ///   period: Time period for calculation (must be >= 2).
 ///
 /// Returns:
@@ -68,7 +67,6 @@ pub fn midpoint_py(
 /// without recalculating the entire series.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
 ///   price: Current price value as `f64`.
 ///   prev_highest: Previous highest value as `f64`.
 ///   prev_lowest: Previous lowest value as `f64`.

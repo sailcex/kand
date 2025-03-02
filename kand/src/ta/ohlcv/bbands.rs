@@ -1,7 +1,6 @@
-use num_traits::{Float, FromPrimitive};
-
 use crate::{
     KandError,
+    TAFloat,
     ta::{ohlcv::sma, stats::var},
 };
 
@@ -108,22 +107,19 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// )
 /// .unwrap();
 /// ```
-pub fn bbands<T>(
-    input_price: &[T],
+pub fn bbands(
+    input_price: &[TAFloat],
     param_period: usize,
-    param_dev_up: T,
-    param_dev_down: T,
-    output_upper: &mut [T],
-    output_middle: &mut [T],
-    output_lower: &mut [T],
-    output_sma: &mut [T],
-    output_var: &mut [T],
-    output_sum: &mut [T],
-    output_sum_sq: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    param_dev_up: TAFloat,
+    param_dev_down: TAFloat,
+    output_upper: &mut [TAFloat],
+    output_middle: &mut [TAFloat],
+    output_lower: &mut [TAFloat],
+    output_sma: &mut [TAFloat],
+    output_var: &mut [TAFloat],
+    output_sum: &mut [TAFloat],
+    output_sum_sq: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_price.len();
     let lookback = lookback(param_period)?;
 
@@ -184,13 +180,13 @@ where
 
     // Fill initial values with NAN
     for i in 0..lookback {
-        output_upper[i] = T::nan();
-        output_middle[i] = T::nan();
-        output_lower[i] = T::nan();
-        output_sma[i] = T::nan();
-        output_var[i] = T::nan();
-        output_sum[i] = T::nan();
-        output_sum_sq[i] = T::nan();
+        output_upper[i] = TAFloat::NAN;
+        output_middle[i] = TAFloat::NAN;
+        output_lower[i] = TAFloat::NAN;
+        output_sma[i] = TAFloat::NAN;
+        output_var[i] = TAFloat::NAN;
+        output_sum[i] = TAFloat::NAN;
+        output_sum_sq[i] = TAFloat::NAN;
     }
 
     Ok(())
@@ -210,16 +206,16 @@ where
 ///
 /// # Arguments
 /// * `input_price` - The current price value
-/// * `input_prev_sma` - The previous SMA value
-/// * `input_prev_sum` - The previous sum for variance calculation
-/// * `input_prev_sum_sq` - The previous sum of squares for variance calculation
+/// * `prev_sma` - The previous SMA value
+/// * `prev_sum` - The previous sum for variance calculation
+/// * `prev_sum_sq` - The previous sum of squares for variance calculation
 /// * `input_old_price` - The oldest price value to be removed from the period
 /// * `param_period` - The time period for calculations (must be >= 2)
 /// * `param_dev_up` - Number of standard deviations for upper band
 /// * `param_dev_down` - Number of standard deviations for lower band
 ///
 /// # Returns
-/// * `Result<(T, T, T, T, T, T), KandError>` - A tuple containing:
+/// * `Result<(TAFloat, TAFloat, TAFloat, TAFloat, TAFloat, TAFloat), KandError>` - A tuple containing:
 ///   - Upper Band value
 ///   - Middle Band value
 ///   - Lower Band value
@@ -246,19 +242,16 @@ where
 /// )
 /// .unwrap();
 /// ```
-pub fn bbands_incremental<T>(
-    input_price: T,
-    input_prev_sma: T,
-    input_prev_sum: T,
-    input_prev_sum_sq: T,
-    input_old_price: T,
+pub fn bbands_incremental(
+    input_price: TAFloat,
+    prev_sma: TAFloat,
+    prev_sum: TAFloat,
+    prev_sum_sq: TAFloat,
+    input_old_price: TAFloat,
     param_period: usize,
-    param_dev_up: T,
-    param_dev_down: T,
-) -> Result<(T, T, T, T, T, T), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    param_dev_up: TAFloat,
+    param_dev_down: TAFloat,
+) -> Result<(TAFloat, TAFloat, TAFloat, TAFloat, TAFloat, TAFloat), KandError> {
     #[cfg(feature = "check")]
     {
         if param_period < 2 {
@@ -269,9 +262,9 @@ where
     #[cfg(feature = "deep-check")]
     {
         if input_price.is_nan()
-            || input_prev_sma.is_nan()
-            || input_prev_sum.is_nan()
-            || input_prev_sum_sq.is_nan()
+            || prev_sma.is_nan()
+            || prev_sum.is_nan()
+            || prev_sum_sq.is_nan()
             || input_old_price.is_nan()
         {
             return Err(KandError::NaNDetected);
@@ -282,13 +275,13 @@ where
     }
 
     // Calculate new SMA using incremental SMA
-    let new_sma = sma::sma_incremental(input_prev_sma, input_price, input_old_price, param_period)?;
+    let new_sma = sma::sma_incremental(prev_sma, input_price, input_old_price, param_period)?;
 
     // Calculate new variance using incremental variance
     let (new_variance, new_sum, new_sum_sq) = var::var_incremental(
         input_price,
-        input_prev_sum,
-        input_prev_sum_sq,
+        prev_sum,
+        prev_sum_sq,
         input_old_price,
         param_period,
     )?;

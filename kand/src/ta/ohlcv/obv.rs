@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Returns the lookback period required for On Balance Volume (OBV) calculation
 ///
@@ -71,14 +69,11 @@ pub const fn lookback() -> Result<usize, KandError> {
 /// obv::obv(&input_close, &input_volume, &mut output_obv).unwrap();
 /// // output_obv = [100.0, 250.0, 130.0, 330.0]
 /// ```
-pub fn obv<T>(
-    input_close: &[T],
-    input_volume: &[T],
-    output_obv: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+pub fn obv(
+    input_close: &[TAFloat],
+    input_volume: &[TAFloat],
+    output_obv: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_close.len();
     let lookback = lookback()?;
 
@@ -134,12 +129,12 @@ where
 ///
 /// # Arguments
 /// * `input_curr_close` - Current closing price
-/// * `input_prev_close` - Previous closing price
+/// * `prev_close` - Previous closing price
 /// * `input_volume` - Current volume
-/// * `input_prev_obv` - Previous OBV value
+/// * `prev_obv` - Previous OBV value
 ///
 /// # Returns
-/// * `Result<T, KandError>` - Latest OBV value if calculation succeeds, Err otherwise
+/// * `Result<TAFloat, KandError>` - Latest OBV value if calculation succeeds, Err otherwise
 ///
 /// # Errors
 /// * `KandError::NaNDetected` - If any input value is NaN (when "`deep-check`" feature is enabled)
@@ -156,33 +151,30 @@ where
 /// let output_obv = obv::obv_incremental(curr_close, prev_close, volume, prev_obv).unwrap();
 /// // output_obv = 250.0 (prev_obv + volume since price increased)
 /// ```
-pub fn obv_incremental<T>(
-    input_curr_close: T,
-    input_prev_close: T,
-    input_volume: T,
-    input_prev_obv: T,
-) -> Result<T, KandError>
-where
-    T: Float + FromPrimitive,
-{
+pub fn obv_incremental(
+    input_curr_close: TAFloat,
+    prev_close: TAFloat,
+    input_volume: TAFloat,
+    prev_obv: TAFloat,
+) -> Result<TAFloat, KandError> {
     #[cfg(feature = "deep-check")]
     {
         // NaN check
         if input_curr_close.is_nan()
-            || input_prev_close.is_nan()
+            || prev_close.is_nan()
             || input_volume.is_nan()
-            || input_prev_obv.is_nan()
+            || prev_obv.is_nan()
         {
             return Err(KandError::NaNDetected);
         }
     }
 
-    Ok(if input_curr_close > input_prev_close {
-        input_prev_obv + input_volume
-    } else if input_curr_close < input_prev_close {
-        input_prev_obv - input_volume
+    Ok(if input_curr_close > prev_close {
+        prev_obv + input_volume
+    } else if input_curr_close < prev_close {
+        prev_obv - input_volume
     } else {
-        input_prev_obv
+        prev_obv
     })
 }
 

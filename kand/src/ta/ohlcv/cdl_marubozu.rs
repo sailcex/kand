@@ -1,7 +1,6 @@
-use num_traits::{Float, FromPrimitive};
-
 use crate::{
     KandError,
+    TAFloat,
     TAInt,
     helper::{lower_shadow_length, period_to_k, real_body_length, upper_shadow_length},
     types::Signal,
@@ -106,19 +105,16 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// )
 /// .unwrap();
 /// ```
-pub fn cdl_marubozu<T>(
-    input_open: &[T],
-    input_high: &[T],
-    input_low: &[T],
-    input_close: &[T],
+pub fn cdl_marubozu(
+    input_open: &[TAFloat],
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
+    input_close: &[TAFloat],
     param_period: usize,
-    param_shadow_percent: T,
+    param_shadow_percent: TAFloat,
     output_signals: &mut [TAInt],
-    output_body_avg: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_body_avg: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_open.len();
     let lookback = lookback(param_period)?;
 
@@ -148,7 +144,7 @@ where
         if param_period < 2 {
             return Err(KandError::InvalidParameter);
         }
-        if param_shadow_percent <= T::zero() {
+        if param_shadow_percent <= 0.0 {
             return Err(KandError::InvalidParameter);
         }
     }
@@ -168,11 +164,11 @@ where
     }
 
     // Calculate initial SMA
-    let mut sum = T::zero();
+    let mut sum = 0.0;
     for i in 0..param_period {
-        sum = sum + real_body_length(input_open[i], input_close[i]);
+        sum += real_body_length(input_open[i], input_close[i]);
     }
-    let mut body_avg = sum / T::from(param_period).ok_or(KandError::ConversionError)?;
+    let mut body_avg = sum / param_period as TAFloat;
     output_body_avg[lookback] = body_avg;
 
     // Process each candle
@@ -194,7 +190,7 @@ where
     // Fill initial values
     for i in 0..lookback {
         output_signals[i] = Signal::Neutral.into();
-        output_body_avg[i] = T::nan();
+        output_body_avg[i] = TAFloat::NAN;
     }
 
     Ok(())
@@ -224,7 +220,7 @@ where
 /// * `input_high` - High price of current candle
 /// * `input_low` - Low price of current candle
 /// * `input_close` - Closing price of current candle
-/// * `input_prev_body_avg` - Previous EMA value of body sizes
+/// * `prev_body_avg` - Previous EMA value of body sizes
 /// * `param_period` - Period for EMA calculation (>= 2)
 /// * `param_shadow_percent` - Maximum shadow size as percentage of body
 ///
@@ -253,25 +249,22 @@ where
 /// )
 /// .unwrap();
 /// ```
-pub fn cdl_marubozu_incremental<T>(
-    input_open: T,
-    input_high: T,
-    input_low: T,
-    input_close: T,
-    input_prev_body_avg: T,
+pub fn cdl_marubozu_incremental(
+    input_open: TAFloat,
+    input_high: TAFloat,
+    input_low: TAFloat,
+    input_close: TAFloat,
+    prev_body_avg: TAFloat,
     param_period: usize,
-    param_shadow_percent: T,
-) -> Result<(TAInt, T), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    param_shadow_percent: TAFloat,
+) -> Result<(TAInt, TAFloat), KandError> {
     #[cfg(feature = "check")]
     {
         // Parameter range check
         if param_period < 2 {
             return Err(KandError::InvalidParameter);
         }
-        if param_shadow_percent <= T::zero() {
+        if param_shadow_percent <= 0.0 {
             return Err(KandError::InvalidParameter);
         }
     }
@@ -283,7 +276,7 @@ where
             || input_high.is_nan()
             || input_low.is_nan()
             || input_close.is_nan()
-            || input_prev_body_avg.is_nan()
+            || prev_body_avg.is_nan()
         {
             return Err(KandError::NaNDetected);
         }
@@ -292,27 +285,24 @@ where
     let body = real_body_length(input_open, input_close);
     let up_shadow = upper_shadow_length(input_high, input_open, input_close);
     let dn_shadow = lower_shadow_length(input_low, input_open, input_close);
-    let shadow_threshold =
-        body * param_shadow_percent / T::from(100).ok_or(KandError::ConversionError)?;
+    let shadow_threshold = body * param_shadow_percent / 100.0;
 
     // Calculate new body average using EMA formula
     let multiplier = period_to_k(param_period)?;
-    let new_body_avg = (body - input_prev_body_avg) * multiplier + input_prev_body_avg;
+    let new_body_avg = (body - prev_body_avg) * multiplier + prev_body_avg;
 
     // Check for Marubozu pattern
-    let signal = if body > input_prev_body_avg
-        && up_shadow <= shadow_threshold
-        && dn_shadow <= shadow_threshold
-    {
-        // Bullish if close > open, Bearish if close < open
-        if input_close > input_open {
-            Signal::Bullish.into()
+    let signal =
+        if body > prev_body_avg && up_shadow <= shadow_threshold && dn_shadow <= shadow_threshold {
+            // Bullish if close > open, Bearish if close < open
+            if input_close > input_open {
+                Signal::Bullish.into()
+            } else {
+                Signal::Bearish.into()
+            }
         } else {
-            Signal::Bearish.into()
-        }
-    } else {
-        Signal::Neutral.into()
-    };
+            Signal::Neutral.into()
+        };
 
     Ok((signal, new_body_avg))
 }
@@ -392,7 +382,7 @@ mod tests {
         assert_eq!(output_signals[61], Signal::Bullish.into()); // TV BTCUSDT.P 5m 2025-02-10 08:00
 
         // Now test incremental calculation matches regular calculation
-        let mut input_prev_body_avg = output_body_avg[13]; // First valid body average
+        let mut prev_body_avg = output_body_avg[13]; // First valid body average
 
         // Test each incremental step
         for i in 14..18 {
@@ -401,14 +391,14 @@ mod tests {
                 input_high[i],
                 input_low[i],
                 input_close[i],
-                input_prev_body_avg,
+                prev_body_avg,
                 param_period,
                 param_shadow_percent,
             )
             .unwrap();
             assert_eq!(signal, output_signals[i]);
             assert_relative_eq!(new_body_avg, output_body_avg[i], epsilon = 0.00001);
-            input_prev_body_avg = new_body_avg;
+            prev_body_avg = new_body_avg;
         }
     }
 }

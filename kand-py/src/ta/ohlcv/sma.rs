@@ -9,17 +9,12 @@ use pyo3::prelude::*;
 /// and divides by the period size.
 ///
 /// Args:
-///     py: Python interpreter token required for GIL management.
-///     data: Input data as a 1-D NumPy array of type `f64`.
+///     data: Input data as a 1-D NumPy array of type `TAFloat`.
 ///     period: Window size for SMA calculation. Must be positive and less than input length.
 ///
 /// Returns:
 ///     A new 1-D NumPy array containing the SMA values. The array has the same length as the input,
 ///     with the first `period-1` elements containing NaN values.
-///
-/// Note:
-///     This function releases the Python GIL during computation using `py.allow_threads()` to enable
-///     concurrent Python execution.
 ///
 /// Examples:
 ///     ```python

@@ -8,9 +8,8 @@ use pyo3::prelude::*;
 /// It oscillates between -100 and +100, with positive values indicating an uptrend and negative values a downtrend.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   high: Input high prices as a 1-D NumPy array of type `f64`.
-///   low: Input low prices as a 1-D NumPy array of type `f64`.
+///   high: Input high prices as a 1-D NumPy array of type `TAFloat`.
+///   low: Input low prices as a 1-D NumPy array of type `TAFloat`.
 ///   period: The lookback period for calculations (must be >= 2).
 ///
 /// Returns:
@@ -80,7 +79,7 @@ pub fn aroonosc_py(
 /// Calculate the next Aroon Oscillator value incrementally.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
+///
 ///   high: Current period's high price.
 ///   low: Current period's low price.
 ///   prev_high: Previous highest price within the period.

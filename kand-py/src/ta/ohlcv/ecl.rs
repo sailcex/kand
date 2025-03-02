@@ -8,18 +8,13 @@ use pyo3::prelude::*;
 /// high, low and close prices.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   high: Input high prices as a 1-D NumPy array of type `f32`.
-///   low: Input low prices as a 1-D NumPy array of type `f32`.
-///   close: Input close prices as a 1-D NumPy array of type `f32`.
+///   high: Input high prices as a 1-D NumPy array of type `TAFloat`.
+///   low: Input low prices as a 1-D NumPy array of type `TAFloat`.
+///   close: Input close prices as a 1-D NumPy array of type `TAFloat`.
 ///
 /// Returns:
 ///   A tuple of ten 1-D NumPy arrays containing the ECL values (H5,H4,H3,H2,H1,L1,L2,L3,L4,L5).
 ///   Each array has the same length as the input, with the first element containing NaN value.
-///
-/// Note:
-///   This function releases the Python GIL during computation using `py.allow_threads()` to enable
-///   concurrent Python execution.
 ///
 /// Examples:
 ///   ```python
@@ -104,10 +99,10 @@ pub fn ecl_py(
 /// reprocessing the entire dataset.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   prev_high: Previous period's high price as `f32`.
-///   prev_low: Previous period's low price as `f32`.
-///   prev_close: Previous period's close price as `f32`.
+///
+///   prev_high: Previous period's high price as `TAFloat`.
+///   prev_low: Previous period's low price as `TAFloat`.
+///   prev_close: Previous period's close price as `TAFloat`.
 ///
 /// Returns:
 ///   A tuple of ten values (H5,H4,H3,H2,H1,L1,L2,L3,L4,L5) containing the latest ECL levels.

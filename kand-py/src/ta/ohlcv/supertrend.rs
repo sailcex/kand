@@ -8,10 +8,9 @@ use pyo3::prelude::*;
 /// with basic upper and lower bands to identify trend direction and potential reversal points.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   high: High prices as a 1-D NumPy array of type `f64`.
-///   low: Low prices as a 1-D NumPy array of type `f64`.
-///   close: Close prices as a 1-D NumPy array of type `f64`.
+///   high: High prices as a 1-D NumPy array of type `TAFloat`.
+///   low: Low prices as a 1-D NumPy array of type `TAFloat`.
+///   close: Close prices as a 1-D NumPy array of type `TAFloat`.
 ///   period: Period for ATR calculation (typically 7-14). Must be positive.
 ///   multiplier: ATR multiplier (typically 2-4).
 ///
@@ -23,10 +22,6 @@ use pyo3::prelude::*;
 ///   - upper: Array containing upper band values
 ///   - lower: Array containing lower band values
 ///   All arrays have the same length as the input, with the first `period-1` elements containing NaN values.
-///
-/// Note:
-///   This function releases the Python GIL during computation using `py.allow_threads()` to enable
-///   concurrent Python execution.
 ///
 /// Examples:
 ///   ```python

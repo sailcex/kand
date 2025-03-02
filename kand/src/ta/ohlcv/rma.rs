@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Calculates the lookback period required for RMA calculation.
 ///
@@ -74,8 +72,11 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// let mut rma_values = vec![0.0; 5];
 /// rma::rma(&prices, period, &mut rma_values).unwrap();
 /// ```
-pub fn rma<T>(input: &[T], param_period: usize, output_rma: &mut [T]) -> Result<(), KandError>
-where T: Float + FromPrimitive {
+pub fn rma(
+    input: &[TAFloat],
+    param_period: usize,
+    output_rma: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input.len();
     let lookback = lookback(param_period)?;
 
@@ -110,21 +111,19 @@ where T: Float + FromPrimitive {
     // Calculate first SMA value
     let mut sum = input[0];
     for value in input.iter().take(param_period).skip(1) {
-        sum = sum + *value;
+        sum += *value;
     }
-    let alpha = T::from(1).ok_or(KandError::ConversionError)?
-        / T::from(param_period).ok_or(KandError::ConversionError)?;
-    output_rma[param_period - 1] = sum / T::from(param_period).ok_or(KandError::ConversionError)?;
+    let alpha = 1.0 / param_period as TAFloat;
+    output_rma[param_period - 1] = sum / param_period as TAFloat;
 
     // Calculate RMA for remaining values
     for i in param_period..input.len() {
-        output_rma[i] = input[i] * alpha
-            + output_rma[i - 1] * (T::from(1).ok_or(KandError::ConversionError)? - alpha);
+        output_rma[i] = input[i] * alpha + output_rma[i - 1] * (1.0 - alpha);
     }
 
     // Fill initial values with NAN
     for value in output_rma.iter_mut().take(param_period - 1) {
-        *value = T::nan();
+        *value = TAFloat::NAN;
     }
 
     Ok(())
@@ -143,11 +142,11 @@ where T: Float + FromPrimitive {
 ///
 /// # Arguments
 /// * `input_current` - The current price value
-/// * `input_prev_rma` - The previous RMA value
+/// * `prev_rma` - The previous RMA value
 /// * `param_period` - The smoothing period (must be >= 2)
 ///
 /// # Returns
-/// * `Result<T, KandError>` - The new RMA value on success
+/// * `Result<TAFloat, KandError>` - The new RMA value on success
 ///
 /// # Errors
 /// * `KandError::InvalidParameter` - If period is less than 2
@@ -161,14 +160,11 @@ where T: Float + FromPrimitive {
 /// let period = 14;
 /// let new_rma = rma::rma_incremental(current_price, prev_rma, period).unwrap();
 /// ```
-pub fn rma_incremental<T>(
-    input_current: T,
-    input_prev_rma: T,
+pub fn rma_incremental(
+    input_current: TAFloat,
+    prev_rma: TAFloat,
     param_period: usize,
-) -> Result<T, KandError>
-where
-    T: Float + FromPrimitive,
-{
+) -> Result<TAFloat, KandError> {
     #[cfg(feature = "check")]
     {
         // Parameter range check
@@ -180,13 +176,11 @@ where
     #[cfg(feature = "deep-check")]
     {
         // NaN check
-        if input_current.is_nan() || input_prev_rma.is_nan() {
+        if input_current.is_nan() || prev_rma.is_nan() {
             return Err(KandError::NaNDetected);
         }
     }
 
-    let alpha = T::from(1).ok_or(KandError::ConversionError)?
-        / T::from(param_period).ok_or(KandError::ConversionError)?;
-    Ok(input_current * alpha
-        + input_prev_rma * (T::from(1).ok_or(KandError::ConversionError)? - alpha))
+    let alpha = 1.0 / param_period as TAFloat;
+    Ok(input_current * alpha + prev_rma * (1.0 - alpha))
 }

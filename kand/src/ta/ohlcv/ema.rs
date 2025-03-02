@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::{error::KandError, helper::period_to_k};
+use crate::{KandError, TAFloat, helper::period_to_k};
 
 /// Returns the lookback period required for EMA calculation.
 ///
@@ -11,7 +9,7 @@ use crate::{error::KandError, helper::period_to_k};
 /// # Arguments
 /// * `param_period` - The time period for EMA calculation. Must be >= 2.
 ///
-/// # Returns
+/// # Returnss
 /// * `Result<usize, KandError>` - The lookback period on success, or error on failure.
 ///
 /// # Errors
@@ -80,15 +78,12 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// // Calculate EMA with default smoothing
 /// ema::ema(&prices, period, None, &mut ema_values).unwrap();
 /// ```
-pub fn ema<T>(
-    input_prices: &[T],
+pub fn ema(
+    input_prices: &[TAFloat],
     param_period: usize,
-    param_k: Option<T>,
-    output_ema: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    param_k: Option<TAFloat>,
+    output_ema: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_prices.len();
     let lookback = lookback(param_period)?;
 
@@ -123,9 +118,9 @@ where
     // Calculate initial SMA
     let mut sum = input_prices[0];
     for value in input_prices.iter().take(param_period).skip(1) {
-        sum = sum + *value;
+        sum += *value;
     }
-    let mut prev_ma = sum / T::from(param_period).ok_or(KandError::ConversionError)?;
+    let mut prev_ma = sum / (param_period as TAFloat);
     output_ema[lookback] = prev_ma;
 
     // Get multiplier - either custom or default
@@ -136,13 +131,13 @@ where
 
     // Calculate EMA
     for i in param_period..len {
-        prev_ma = (input_prices[i] - prev_ma) * multiplier + prev_ma;
+        prev_ma = (input_prices[i] - prev_ma).mul_add(multiplier, prev_ma);
         output_ema[i] = prev_ma;
     }
 
     // Fill initial values with NAN
     for value in output_ema.iter_mut().take(lookback) {
-        *value = T::nan();
+        *value = TAFloat::NAN;
     }
 
     Ok(())
@@ -163,12 +158,12 @@ where
 ///
 /// # Arguments
 /// * `input_price` - The current period's price value
-/// * `input_prev_ema` - The previous period's EMA value
+/// * `prev_ema` - The previous period's EMA value
 /// * `param_period` - The time period for EMA calculation (must be >= 2)
 /// * `param_k` - Optional custom smoothing factor. If None, uses 2/(period+1)
 ///
 /// # Returns
-/// * `Result<T, KandError>` - The new EMA value on success, or error on failure
+/// * `Result<TAFloat, KandError>` - The new EMA value on success, or error on failure
 ///
 /// # Errors
 /// * `KandError::InvalidParameter` - If period < 2
@@ -184,15 +179,12 @@ where
 /// // Calculate next EMA with default smoothing
 /// let new_ema = ema::ema_incremental(current_price, prev_ema, period, None).unwrap();
 /// ```
-pub fn ema_incremental<T>(
-    input_price: T,
-    input_prev_ema: T,
+pub fn ema_incremental(
+    input_price: TAFloat,
+    prev_ema: TAFloat,
     param_period: usize,
-    param_k: Option<T>,
-) -> Result<T, KandError>
-where
-    T: Float + FromPrimitive,
-{
+    param_k: Option<TAFloat>,
+) -> Result<TAFloat, KandError> {
     #[cfg(feature = "check")]
     {
         // Parameter range check
@@ -204,7 +196,7 @@ where
     #[cfg(feature = "deep-check")]
     {
         // NaN check
-        if input_price.is_nan() || input_prev_ema.is_nan() {
+        if input_price.is_nan() || prev_ema.is_nan() {
             return Err(KandError::NaNDetected);
         }
     }
@@ -213,7 +205,7 @@ where
         Some(k) => k,
         None => period_to_k(param_period)?,
     };
-    Ok((input_price - input_prev_ema) * multiplier + input_prev_ema)
+    Ok((input_price - prev_ema).mul_add(multiplier, prev_ema))
 }
 
 #[cfg(test)]

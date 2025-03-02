@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::{error::KandError, helper::period_to_k};
+use crate::{TAFloat, error::KandError, helper::period_to_k};
 
 /// Returns the lookback period required for DEMA calculation.
 ///
@@ -86,16 +84,13 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// )
 /// .unwrap();
 /// ```
-pub fn dema<T>(
-    input: &[T],
+pub fn dema(
+    input: &[TAFloat],
     param_period: usize,
-    output_dema: &mut [T],
-    output_ema1: &mut [T],
-    output_ema2: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_dema: &mut [TAFloat],
+    output_ema1: &mut [TAFloat],
+    output_ema2: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input.len();
     let lookback = lookback(param_period)?;
 
@@ -126,19 +121,19 @@ where
         }
     }
 
-    let alpha = period_to_k::<T>(param_period)?;
+    let alpha = period_to_k(param_period)?;
 
     // Calculate initial SMA for first EMA
     let mut sum = input[0];
     for price in input.iter().take(param_period).skip(1) {
-        sum = sum + *price;
+        sum += *price;
     }
-    let mut prev_ema1 = sum / T::from(param_period).ok_or(KandError::ConversionError)?;
+    let mut prev_ema1 = sum / param_period as TAFloat;
     output_ema1[param_period - 1] = prev_ema1;
 
     // Calculate first EMA series
     for i in param_period..len {
-        prev_ema1 = input[i] * alpha + prev_ema1 * (T::one() - alpha);
+        prev_ema1 = input[i] * alpha + prev_ema1 * (1.0 - alpha);
         output_ema1[i] = prev_ema1;
     }
     // Initialize second EMA with SMA of first EMA
@@ -148,28 +143,27 @@ where
         .take(param_period * 2 - 1)
         .skip(param_period)
     {
-        sum = sum + *value;
+        sum += *value;
     }
-    let mut prev_ema2 = sum / T::from(param_period).ok_or(KandError::ConversionError)?;
+    let mut prev_ema2 = sum / param_period as TAFloat;
     output_ema2[param_period * 2 - 2] = prev_ema2;
 
     // Calculate second EMA series (EMA of EMA)
     for i in param_period * 2 - 1..len {
-        prev_ema2 = output_ema1[i] * alpha + prev_ema2 * (T::one() - alpha);
+        prev_ema2 = output_ema1[i] * alpha + prev_ema2 * (1.0 - alpha);
         output_ema2[i] = prev_ema2;
     }
 
     // Calculate DEMA = 2 * EMA1 - EMA2
     for i in 0..len {
-        output_dema[i] =
-            T::from(2.0).ok_or(KandError::ConversionError)? * output_ema1[i] - output_ema2[i];
+        output_dema[i] = 2.0 * output_ema1[i] - output_ema2[i];
     }
 
     // Fill initial values with NAN
     for i in 0..lookback {
-        output_dema[i] = T::nan();
-        output_ema1[i] = T::nan();
-        output_ema2[i] = T::nan();
+        output_dema[i] = TAFloat::NAN;
+        output_ema1[i] = TAFloat::NAN;
+        output_ema2[i] = TAFloat::NAN;
     }
 
     Ok(())
@@ -191,12 +185,12 @@ where
 ///
 /// # Arguments
 /// * `input_price` - Current price value
-/// * `input_prev_ema1` - Previous value of first EMA
-/// * `input_prev_ema2` - Previous value of second EMA
+/// * `prev_ema1` - Previous value of first EMA
+/// * `prev_ema2` - Previous value of second EMA
 /// * `param_period` - The smoothing period. Must be >= 2.
 ///
 /// # Returns
-/// * `Result<(T, T, T), KandError>` - Tuple containing (DEMA, `new_ema1`, `new_ema2`) if successful
+/// * `Result<(TAFloat, TAFloat, TAFloat), KandError>` - Tuple containing (DEMA, `new_ema1`, `new_ema2`) if successful
 ///
 /// # Errors
 /// * `KandError::InvalidParameter` - Period is less than 2
@@ -213,15 +207,12 @@ where
 /// )
 /// .unwrap();
 /// ```
-pub fn dema_incremental<T>(
-    input_price: T,
-    input_prev_ema1: T,
-    input_prev_ema2: T,
+pub fn dema_incremental(
+    input_price: TAFloat,
+    prev_ema1: TAFloat,
+    prev_ema2: TAFloat,
     param_period: usize,
-) -> Result<(T, T, T), KandError>
-where
-    T: Float + FromPrimitive,
-{
+) -> Result<(TAFloat, TAFloat, TAFloat), KandError> {
     #[cfg(feature = "check")]
     {
         // Parameter check
@@ -232,16 +223,16 @@ where
 
     #[cfg(feature = "deep-check")]
     {
-        if input_price.is_nan() || input_prev_ema1.is_nan() || input_prev_ema2.is_nan() {
+        if input_price.is_nan() || prev_ema1.is_nan() || prev_ema2.is_nan() {
             return Err(KandError::NaNDetected);
         }
     }
 
-    let alpha = period_to_k::<T>(param_period)?;
+    let alpha = period_to_k(param_period)?;
 
-    let new_ema1 = input_price * alpha + input_prev_ema1 * (T::one() - alpha);
-    let new_ema2 = new_ema1 * alpha + input_prev_ema2 * (T::one() - alpha);
-    let dema = T::from(2.0).ok_or(KandError::ConversionError)? * new_ema1 - new_ema2;
+    let new_ema1 = input_price * alpha + prev_ema1 * (1.0 - alpha);
+    let new_ema2 = new_ema1 * alpha + prev_ema2 * (1.0 - alpha);
+    let dema = 2.0 * new_ema1 - new_ema2;
 
     Ok((dema, new_ema1, new_ema2))
 }

@@ -1,7 +1,5 @@
-use num_traits::{Float, FromPrimitive};
-
 use super::trange;
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Returns the lookback period needed for +DI calculation
 ///
@@ -104,18 +102,15 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// )
 /// .unwrap();
 /// ```
-pub fn plus_di<T>(
-    input_high: &[T],
-    input_low: &[T],
-    input_close: &[T],
+pub fn plus_di(
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
+    input_close: &[TAFloat],
     param_period: usize,
-    output_plus_di: &mut [T],
-    output_smoothed_plus_dm: &mut [T],
-    output_smoothed_tr: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_plus_di: &mut [TAFloat],
+    output_smoothed_plus_dm: &mut [TAFloat],
+    output_smoothed_tr: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_high.len();
     let lookback = lookback(param_period)?;
 
@@ -153,8 +148,8 @@ where
     }
 
     // Calculate initial +DM and TR sums
-    let mut plus_dm_sum = T::zero();
-    let mut tr_sum = T::zero();
+    let mut plus_dm_sum = 0.0;
+    let mut tr_sum = 0.0;
     let mut prev_high = input_high[0];
     let mut prev_low = input_low[0];
     let mut prev_close = input_close[0];
@@ -164,16 +159,16 @@ where
         let high_diff = input_high[i] - prev_high;
         let low_diff = prev_low - input_low[i];
 
-        let plus_dm1 = if high_diff > low_diff && high_diff > T::zero() {
+        let plus_dm1 = if high_diff > low_diff && high_diff > 0.0 {
             high_diff
         } else {
-            T::zero()
+            0.0
         };
 
-        plus_dm_sum = plus_dm_sum + plus_dm1;
+        plus_dm_sum += plus_dm1;
 
         let tr1 = trange::trange_incremental(input_high[i], input_low[i], prev_close)?;
-        tr_sum = tr_sum + tr1;
+        tr_sum += tr1;
 
         prev_high = input_high[i];
         prev_low = input_low[i];
@@ -181,8 +176,8 @@ where
     }
 
     // Calculate first +DI value
-    let hundred = T::from(100).ok_or(KandError::ConversionError)?;
-    let period_t = T::from(param_period).ok_or(KandError::ConversionError)?;
+    let hundred = 100.0;
+    let period_t = param_period as TAFloat;
 
     // Initialize smoothed values
     let mut curr_smoothed_plus_dm = plus_dm_sum;
@@ -193,10 +188,10 @@ where
         let high_diff = input_high[i] - input_high[i - 1];
         let low_diff = input_low[i - 1] - input_low[i];
 
-        let plus_dm1 = if high_diff > low_diff && high_diff > T::zero() {
+        let plus_dm1 = if high_diff > low_diff && high_diff > 0.0 {
             high_diff
         } else {
-            T::zero()
+            0.0
         };
 
         let tr1 = trange::trange_incremental(input_high[i], input_low[i], input_close[i - 1])?;
@@ -209,8 +204,8 @@ where
         output_smoothed_plus_dm[i] = curr_smoothed_plus_dm;
         output_smoothed_tr[i] = curr_smoothed_tr;
 
-        output_plus_di[i] = if curr_smoothed_tr.is_zero() {
-            T::zero()
+        output_plus_di[i] = if curr_smoothed_tr == 0.0 {
+            0.0
         } else {
             hundred * curr_smoothed_plus_dm / curr_smoothed_tr
         };
@@ -218,9 +213,9 @@ where
 
     // Fill initial values with NAN
     for i in 0..lookback {
-        output_plus_di[i] = T::nan();
-        output_smoothed_plus_dm[i] = T::nan();
-        output_smoothed_tr[i] = T::nan();
+        output_plus_di[i] = TAFloat::NAN;
+        output_smoothed_plus_dm[i] = TAFloat::NAN;
+        output_smoothed_tr[i] = TAFloat::NAN;
     }
 
     Ok(())
@@ -253,15 +248,15 @@ where
 /// # Arguments
 /// * `input_high` - Current high price
 /// * `input_low` - Current low price
-/// * `input_prev_high` - Previous high price
-/// * `input_prev_low` - Previous low price
-/// * `input_prev_close` - Previous close price
-/// * `input_prev_smoothed_plus_dm` - Previous smoothed +DM value
-/// * `input_prev_smoothed_tr` - Previous smoothed TR value
+/// * `prev_high` - Previous high price
+/// * `prev_low` - Previous low price
+/// * `prev_close` - Previous close price
+/// * `prev_smoothed_plus_dm` - Previous smoothed +DM value
+/// * `prev_smoothed_tr` - Previous smoothed TR value
 /// * `param_period` - Smoothing period (>= 2)
 ///
 /// # Returns
-/// * `Result<(T, T, T), KandError>` - Tuple of (latest +DI, new smoothed +DM, new smoothed TR)
+/// * `Result<(TAFloat, TAFloat, TAFloat), KandError>` - Tuple of (latest +DI, new smoothed +DM, new smoothed TR)
 ///
 /// # Errors
 /// * `KandError::InvalidParameter` - If period < 2
@@ -283,19 +278,16 @@ where
 /// )
 /// .unwrap();
 /// ```
-pub fn plus_di_incremental<T>(
-    input_high: T,
-    input_low: T,
-    input_prev_high: T,
-    input_prev_low: T,
-    input_prev_close: T,
-    input_prev_smoothed_plus_dm: T,
-    input_prev_smoothed_tr: T,
+pub fn plus_di_incremental(
+    input_high: TAFloat,
+    input_low: TAFloat,
+    prev_high: TAFloat,
+    prev_low: TAFloat,
+    prev_close: TAFloat,
+    prev_smoothed_plus_dm: TAFloat,
+    prev_smoothed_tr: TAFloat,
     param_period: usize,
-) -> Result<(T, T, T), KandError>
-where
-    T: Float + FromPrimitive,
-{
+) -> Result<(TAFloat, TAFloat, TAFloat), KandError> {
     #[cfg(feature = "check")]
     {
         // Parameter range check
@@ -309,37 +301,36 @@ where
         // NaN check
         if input_high.is_nan()
             || input_low.is_nan()
-            || input_prev_high.is_nan()
-            || input_prev_low.is_nan()
-            || input_prev_close.is_nan()
-            || input_prev_smoothed_plus_dm.is_nan()
-            || input_prev_smoothed_tr.is_nan()
+            || prev_high.is_nan()
+            || prev_low.is_nan()
+            || prev_close.is_nan()
+            || prev_smoothed_plus_dm.is_nan()
+            || prev_smoothed_tr.is_nan()
         {
             return Err(KandError::NaNDetected);
         }
     }
 
-    let high_diff = input_high - input_prev_high;
-    let low_diff = input_prev_low - input_low;
+    let high_diff = input_high - prev_high;
+    let low_diff = prev_low - input_low;
 
-    let plus_dm = if high_diff > low_diff && high_diff > T::zero() {
+    let plus_dm = if high_diff > low_diff && high_diff > 0.0 {
         high_diff
     } else {
-        T::zero()
+        0.0
     };
 
-    let tr = trange::trange_incremental(input_high, input_low, input_prev_close)?;
-    let period_t = T::from(param_period).ok_or(KandError::ConversionError)?;
+    let tr = trange::trange_incremental(input_high, input_low, prev_close)?;
+    let period_t = param_period as TAFloat;
 
     let output_smoothed_plus_dm =
-        input_prev_smoothed_plus_dm - (input_prev_smoothed_plus_dm / period_t) + plus_dm;
-    let output_smoothed_tr = input_prev_smoothed_tr - (input_prev_smoothed_tr / period_t) + tr;
+        prev_smoothed_plus_dm - (prev_smoothed_plus_dm / period_t) + plus_dm;
+    let output_smoothed_tr = prev_smoothed_tr - (prev_smoothed_tr / period_t) + tr;
 
-    let output_plus_di = if output_smoothed_tr.is_zero() {
-        T::zero()
+    let output_plus_di = if output_smoothed_tr == 0.0 {
+        0.0
     } else {
-        T::from(100).ok_or(KandError::ConversionError)? * output_smoothed_plus_dm
-            / output_smoothed_tr
+        100.0 * output_smoothed_plus_dm / output_smoothed_tr
     };
 
     Ok((output_plus_di, output_smoothed_plus_dm, output_smoothed_tr))

@@ -61,7 +61,7 @@
   Deeply integrated with NumPy, ensuring lossless data flow at maximum speed.
 
 - **📊 Pioneering Indicators**
-  Features advanced tools like TPO, VWAP, and Supertrend, pushing analysis frontiers.
+  Features advanced tools like Vegas, VWAP, and Supertrend, pushing analysis frontiers.
 
 - **📦 Lightweight & Effortless**
   Ultra-compact package with one-line install—no bloat, no complex dependencies.
@@ -222,7 +222,6 @@ Recommend Rust version `>=1.80`.
 - [x] **SUPERTREND** - Super Trend Indicator
 - [x] **T3** - Triple Exponential Moving Average (T3)
 - [x] **TEMA** - Triple Exponential Moving Average
-- [x] **TPO** - Time Price Opportunity **[Unstable]**
 - [x] **TRANGE** - True Range
 - [x] **TRIMA** - Triangular Moving Average
 - [x] **TRIX** - 1-day Rate-Of-Change (ROC) of a Triple Smooth EMA

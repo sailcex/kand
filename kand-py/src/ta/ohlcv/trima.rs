@@ -9,8 +9,7 @@ use pyo3::prelude::*;
 /// Simple Moving Average (SMA).
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   prices: Input prices as a 1-D NumPy array of type `f64`.
+///   prices: Input prices as a 1-D NumPy array of type `TAFloat`.
 ///   period: Smoothing period for calculations (must be >= 2).
 ///
 /// Returns:

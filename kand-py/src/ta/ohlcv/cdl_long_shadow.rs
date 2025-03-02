@@ -5,11 +5,10 @@ use pyo3::prelude::*;
 /// Detects Long Shadow candlestick patterns in price data.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   open: Opening prices as a 1-D NumPy array of type `f32`.
-///   high: High prices as a 1-D NumPy array of type `f32`.
-///   low: Low prices as a 1-D NumPy array of type `f32`.
-///   close: Close prices as a 1-D NumPy array of type `f32`.
+///   open: Opening prices as a 1-D NumPy array of type `TAFloat`.
+///   high: High prices as a 1-D NumPy array of type `TAFloat`.
+///   low: Low prices as a 1-D NumPy array of type `TAFloat`.
+///   close: Close prices as a 1-D NumPy array of type `TAFloat`.
 ///   period: Period for EMA calculation of body sizes.
 ///   shadow_factor: Minimum percentage of total range that shadow must be.
 ///
@@ -74,7 +73,7 @@ pub fn cdl_long_shadow_py(
 /// Detects a Long Shadow pattern in a single candlestick.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
+///
 ///   open: Opening price.
 ///   high: High price.
 ///   low: Low price.

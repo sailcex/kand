@@ -1,7 +1,5 @@
-use num_traits::{Float, FromPrimitive};
-
 use super::ema;
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Returns the lookback period required for VEGAS (Volume and EMA Guided Adaptive Scaling) calculation
 ///
@@ -75,16 +73,13 @@ pub const fn lookback() -> Result<usize, KandError> {
 /// )
 /// .unwrap();
 /// ```
-pub fn vegas<T>(
-    input_price: &[T],
-    output_channel_upper: &mut [T],
-    output_channel_lower: &mut [T],
-    output_boundary_upper: &mut [T],
-    output_boundary_lower: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+pub fn vegas(
+    input_price: &[TAFloat],
+    output_channel_upper: &mut [TAFloat],
+    output_channel_lower: &mut [TAFloat],
+    output_boundary_upper: &mut [TAFloat],
+    output_boundary_lower: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_price.len();
     let lookback = lookback()?;
 
@@ -128,7 +123,7 @@ where
 
     // Fill initial values with NAN
     for value in output_channel_upper.iter_mut().take(lookback) {
-        *value = T::nan();
+        *value = TAFloat::NAN;
     }
 
     Ok(())
@@ -155,7 +150,7 @@ where
 /// * `prev_boundary_lower` - Previous EMA(676) value
 ///
 /// # Returns
-/// * `Result<(T,T,T,T), KandError>` - Tuple of (`channel_upper`, `channel_lower`, `boundary_upper`, `boundary_lower`)
+/// * `Result<(TAFloat,TAFloat,TAFloat,TAFloat), KandError>` - Tuple of (`channel_upper`, `channel_lower`, `boundary_upper`, `boundary_lower`)
 ///
 /// # Errors
 /// * `KandError::NaNDetected` - If any input value is NaN
@@ -176,16 +171,13 @@ where
 /// )
 /// .unwrap();
 /// ```
-pub fn vegas_incremental<T>(
-    input_price: T,
-    prev_channel_upper: T,
-    prev_channel_lower: T,
-    prev_boundary_upper: T,
-    prev_boundary_lower: T,
-) -> Result<(T, T, T, T), KandError>
-where
-    T: Float + FromPrimitive,
-{
+pub fn vegas_incremental(
+    input_price: TAFloat,
+    prev_channel_upper: TAFloat,
+    prev_channel_lower: TAFloat,
+    prev_boundary_upper: TAFloat,
+    prev_boundary_lower: TAFloat,
+) -> Result<(TAFloat, TAFloat, TAFloat, TAFloat), KandError> {
     #[cfg(feature = "deep-check")]
     {
         // NaN check

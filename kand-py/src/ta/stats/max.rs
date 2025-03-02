@@ -5,16 +5,11 @@ use pyo3::prelude::*;
 /// Calculate Maximum Value for a NumPy array
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   prices: Input prices as a 1-D NumPy array of type `f64`.
+///   prices: Input prices as a 1-D NumPy array of type `TAFloat`.
 ///   period: Period for MAX calculation (must be >= 2).
 ///
 /// Returns:
 ///   A 1-D NumPy array containing MAX values. The first (period-1) elements contain NaN values.
-///
-/// Note:
-///   This function releases the Python GIL during computation using `py.allow_threads()` to enable
-///   concurrent Python execution.
 ///
 /// Examples:
 ///   ```python

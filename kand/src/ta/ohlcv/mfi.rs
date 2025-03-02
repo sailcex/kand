@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::{KandError, ta::ohlcv::typprice};
+use crate::{KandError, TAFloat, ta::ohlcv::typprice};
 
 /// Calculates the lookback period required for Money Flow Index (MFI) calculation.
 ///
@@ -99,21 +97,18 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// )
 /// .unwrap();
 /// ```
-pub fn mfi<T>(
-    input_high: &[T],
-    input_low: &[T],
-    input_close: &[T],
-    input_volume: &[T],
+pub fn mfi(
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
+    input_close: &[TAFloat],
+    input_volume: &[TAFloat],
     param_period: usize,
-    output_mfi: &mut [T],
-    output_typ_prices: &mut [T],
-    output_money_flows: &mut [T],
-    output_pos_flows: &mut [T],
-    output_neg_flows: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_mfi: &mut [TAFloat],
+    output_typ_prices: &mut [TAFloat],
+    output_money_flows: &mut [TAFloat],
+    output_pos_flows: &mut [TAFloat],
+    output_neg_flows: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_high.len();
     let lookback = lookback(param_period)?;
 
@@ -158,15 +153,15 @@ where
 
     // Calculate MFI for each period
     for i in param_period..len {
-        let mut pos_flow = T::zero();
-        let mut neg_flow = T::zero();
+        let mut pos_flow = 0.0;
+        let mut neg_flow = 0.0;
 
         // Calculate positive and negative money flows over the period
         for j in (i - param_period + 1)..=i {
             if output_typ_prices[j] > output_typ_prices[j - 1] {
-                pos_flow = pos_flow + output_money_flows[j];
+                pos_flow += output_money_flows[j];
             } else if output_typ_prices[j] < output_typ_prices[j - 1] {
-                neg_flow = neg_flow + output_money_flows[j];
+                neg_flow += output_money_flows[j];
             }
         }
 
@@ -176,21 +171,20 @@ where
         // Calculate MFI using the optimized formula:
         // MFI = 100 * (posSumMF/(posSumMF+negSumMF))
         let total_flow = pos_flow + neg_flow;
-        if total_flow < T::from(1.0).ok_or(KandError::ConversionError)? {
-            output_mfi[i] = T::zero();
+        if total_flow < 1.0 {
+            output_mfi[i] = 0.0;
         } else {
-            output_mfi[i] =
-                T::from(100.0).ok_or(KandError::ConversionError)? * (pos_flow / total_flow);
+            output_mfi[i] = 100.0 * (pos_flow / total_flow);
         }
     }
 
     // Set initial values to NaN
     for i in 0..param_period {
-        output_mfi[i] = T::nan();
-        output_pos_flows[i] = T::nan();
-        output_neg_flows[i] = T::nan();
-        output_typ_prices[i] = T::nan();
-        output_money_flows[i] = T::nan();
+        output_mfi[i] = TAFloat::NAN;
+        output_pos_flows[i] = TAFloat::NAN;
+        output_neg_flows[i] = TAFloat::NAN;
+        output_typ_prices[i] = TAFloat::NAN;
+        output_money_flows[i] = TAFloat::NAN;
     }
 
     Ok(())

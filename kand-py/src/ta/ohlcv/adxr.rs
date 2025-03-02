@@ -8,10 +8,9 @@ use pyo3::prelude::*;
 /// the current ADX value with the ADX value from `period` days ago.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   high: High prices as a 1-D NumPy array of type `f64`.
-///   low: Low prices as a 1-D NumPy array of type `f64`.
-///   close: Close prices as a 1-D NumPy array of type `f64`.
+///   high: High prices as a 1-D NumPy array of type `TAFloat`.
+///   low: Low prices as a 1-D NumPy array of type `TAFloat`.
+///   close: Close prices as a 1-D NumPy array of type `TAFloat`.
 ///   period: Period for ADX calculation (typically 14).
 ///
 /// Returns:
@@ -22,10 +21,6 @@ use pyo3::prelude::*;
 ///   - Smoothed -DM values
 ///   - Smoothed TR values
 ///   The first (3*period-2) elements of each array contain NaN values.
-///
-/// Note:
-///   This function releases the Python GIL during computation using `py.allow_threads()` to enable
-///   concurrent Python execution.
 ///
 /// Examples:
 ///   ```python
@@ -89,7 +84,7 @@ pub fn adxr_py(
 /// Calculate the latest ADXR value incrementally
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
+///
 ///   high: Current high price as f64.
 ///   low: Current low price as f64.
 ///   prev_high: Previous high price as f64.

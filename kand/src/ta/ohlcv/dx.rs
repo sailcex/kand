@@ -1,7 +1,5 @@
-use num_traits::{Float, FromPrimitive};
-
 use super::{minus_di, plus_di};
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Calculate the lookback period required for DX calculation
 ///
@@ -97,19 +95,16 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// )
 /// .unwrap();
 /// ```
-pub fn dx<T>(
-    input_high: &[T],
-    input_low: &[T],
-    input_close: &[T],
+pub fn dx(
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
+    input_close: &[TAFloat],
     param_period: usize,
-    output_dx: &mut [T],
-    output_smoothed_plus_dm: &mut [T],
-    output_smoothed_minus_dm: &mut [T],
-    output_smoothed_tr: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_dx: &mut [TAFloat],
+    output_smoothed_plus_dm: &mut [TAFloat],
+    output_smoothed_minus_dm: &mut [TAFloat],
+    output_smoothed_tr: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_high.len();
     let lookback = lookback(param_period)?;
 
@@ -147,8 +142,8 @@ where
         }
     }
 
-    let mut plus_di_values = vec![T::zero(); len];
-    let mut minus_di_values = vec![T::zero(); len];
+    let mut plus_di_values = vec![0.0; len];
+    let mut minus_di_values = vec![0.0; len];
 
     // Calculate +DI and -DI
     plus_di::plus_di(
@@ -171,16 +166,15 @@ where
     )?;
 
     // Calculate DX
-    let hundred = T::from(100).ok_or(KandError::ConversionError)?;
     for i in lookback..len {
         let plus_di = plus_di_values[i];
         let minus_di = minus_di_values[i];
-        output_dx[i] = hundred * (plus_di - minus_di).abs() / (plus_di + minus_di);
+        output_dx[i] = 100.0 * (plus_di - minus_di).abs() / (plus_di + minus_di);
     }
 
     // Fill initial values with NAN
     for item in output_dx.iter_mut().take(lookback) {
-        *item = T::nan();
+        *item = TAFloat::NAN;
     }
 
     Ok(())
@@ -198,16 +192,16 @@ where
 /// # Arguments
 /// * `input_high` - Current high price
 /// * `input_low` - Current low price
-/// * `input_prev_high` - Previous period's high price
-/// * `input_prev_low` - Previous period's low price
-/// * `input_prev_close` - Previous period's close price
-/// * `input_prev_smoothed_plus_dm` - Previous smoothed +DM value
-/// * `input_prev_smoothed_minus_dm` - Previous smoothed -DM value
-/// * `input_prev_smoothed_tr` - Previous smoothed TR value
+/// * `prev_high` - Previous period's high price
+/// * `prev_low` - Previous period's low price
+/// * `prev_close` - Previous period's close price
+/// * `prev_smoothed_plus_dm` - Previous smoothed +DM value
+/// * `prev_smoothed_minus_dm` - Previous smoothed -DM value
+/// * `prev_smoothed_tr` - Previous smoothed TR value
 /// * `param_period` - Period for DX calculation (typically 14)
 ///
 /// # Returns
-/// * `Result<(T, T, T, T), KandError>` - Tuple containing:
+/// * `Result<(TAFloat, TAFloat, TAFloat, TAFloat), KandError>` - Tuple containing:
 ///   - Latest DX value
 ///   - New smoothed +DM
 ///   - New smoothed -DM
@@ -223,42 +217,39 @@ where
 ///
 /// let input_high = 24.20;
 /// let input_low = 23.85;
-/// let input_prev_high = 24.07;
-/// let input_prev_low = 23.72;
-/// let input_prev_close = 23.95;
-/// let input_prev_smoothed_plus_dm = 0.5;
-/// let input_prev_smoothed_minus_dm = 0.3;
-/// let input_prev_smoothed_tr = 1.2;
+/// let prev_high = 24.07;
+/// let prev_low = 23.72;
+/// let prev_close = 23.95;
+/// let prev_smoothed_plus_dm = 0.5;
+/// let prev_smoothed_minus_dm = 0.3;
+/// let prev_smoothed_tr = 1.2;
 /// let param_period = 14;
 ///
 /// let (output_dx, output_smoothed_plus_dm, output_smoothed_minus_dm, output_smoothed_tr) =
 ///     dx::dx_incremental(
 ///         input_high,
 ///         input_low,
-///         input_prev_high,
-///         input_prev_low,
-///         input_prev_close,
-///         input_prev_smoothed_plus_dm,
-///         input_prev_smoothed_minus_dm,
-///         input_prev_smoothed_tr,
+///         prev_high,
+///         prev_low,
+///         prev_close,
+///         prev_smoothed_plus_dm,
+///         prev_smoothed_minus_dm,
+///         prev_smoothed_tr,
 ///         param_period,
 ///     )
 ///     .unwrap();
 /// ```
-pub fn dx_incremental<T>(
-    input_high: T,
-    input_low: T,
-    input_prev_high: T,
-    input_prev_low: T,
-    input_prev_close: T,
-    input_prev_smoothed_plus_dm: T,
-    input_prev_smoothed_minus_dm: T,
-    input_prev_smoothed_tr: T,
+pub fn dx_incremental(
+    input_high: TAFloat,
+    input_low: TAFloat,
+    prev_high: TAFloat,
+    prev_low: TAFloat,
+    prev_close: TAFloat,
+    prev_smoothed_plus_dm: TAFloat,
+    prev_smoothed_minus_dm: TAFloat,
+    prev_smoothed_tr: TAFloat,
     param_period: usize,
-) -> Result<(T, T, T, T), KandError>
-where
-    T: Float + FromPrimitive,
-{
+) -> Result<(TAFloat, TAFloat, TAFloat, TAFloat), KandError> {
     #[cfg(feature = "check")]
     {
         // Parameter range check
@@ -275,12 +266,12 @@ where
         // NaN check
         if input_high.is_nan()
             || input_low.is_nan()
-            || input_prev_high.is_nan()
-            || input_prev_low.is_nan()
-            || input_prev_close.is_nan()
-            || input_prev_smoothed_plus_dm.is_nan()
-            || input_prev_smoothed_minus_dm.is_nan()
-            || input_prev_smoothed_tr.is_nan()
+            || prev_high.is_nan()
+            || prev_low.is_nan()
+            || prev_close.is_nan()
+            || prev_smoothed_plus_dm.is_nan()
+            || prev_smoothed_minus_dm.is_nan()
+            || prev_smoothed_tr.is_nan()
         {
             return Err(KandError::NaNDetected);
         }
@@ -289,27 +280,26 @@ where
     let (plus_di, output_smoothed_plus_dm, output_smoothed_tr) = plus_di::plus_di_incremental(
         input_high,
         input_low,
-        input_prev_high,
-        input_prev_low,
-        input_prev_close,
-        input_prev_smoothed_plus_dm,
-        input_prev_smoothed_tr,
+        prev_high,
+        prev_low,
+        prev_close,
+        prev_smoothed_plus_dm,
+        prev_smoothed_tr,
         param_period,
     )?;
 
     let (minus_di, output_smoothed_minus_dm, _) = minus_di::minus_di_incremental(
         input_high,
         input_low,
-        input_prev_high,
-        input_prev_low,
-        input_prev_close,
-        input_prev_smoothed_minus_dm,
-        input_prev_smoothed_tr,
+        prev_high,
+        prev_low,
+        prev_close,
+        prev_smoothed_minus_dm,
+        prev_smoothed_tr,
         param_period,
     )?;
 
-    let hundred = T::from(100).ok_or(KandError::ConversionError)?;
-    let output_dx = hundred * (plus_di - minus_di).abs() / (plus_di + minus_di);
+    let output_dx = 100.0 * (plus_di - minus_di).abs() / (plus_di + minus_di);
     Ok((
         output_dx,
         output_smoothed_plus_dm,

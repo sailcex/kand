@@ -8,18 +8,13 @@ use pyo3::prelude::*;
 /// Directional Movement System developed by J. Welles Wilder.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   high: Input high prices as a 1-D NumPy array of type `f32`.
-///   low: Input low prices as a 1-D NumPy array of type `f32`.
+///   high: Input high prices as a 1-D NumPy array of type `TAFloat`.
+///   low: Input low prices as a 1-D NumPy array of type `TAFloat`.
 ///   period: Window size for +DM calculation. Must be positive and less than input length.
 ///
 /// Returns:
 ///   A new 1-D NumPy array containing the +DM values. The array has the same length as the input,
 ///   with the first `period-1` elements containing NaN values.
-///
-/// Note:
-///   This function releases the Python GIL during computation using `py.allow_threads()` to enable
-///   concurrent Python execution.
 ///
 /// Examples:
 ///   ```python
@@ -59,11 +54,11 @@ pub fn plus_dm_py(
 /// and current price data, avoiding the need to recalculate the entire series.
 ///
 /// Args:
-///   high: Current high price as `f32`.
-///   prev_high: Previous high price as `f32`.
-///   low: Current low price as `f32`.
-///   prev_low: Previous low price as `f32`.
-///   prev_plus_dm: Previous Plus DM value as `f32`.
+///   high: Current high price as `TAFloat`.
+///   prev_high: Previous high price as `TAFloat`.
+///   low: Current low price as `TAFloat`.
+///   prev_low: Previous low price as `TAFloat`.
+///   prev_plus_dm: Previous Plus DM value as `TAFloat`.
 ///   period: Smoothing period (>= 2).
 ///
 /// Returns:

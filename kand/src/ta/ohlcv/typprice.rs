@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Returns the lookback period required for Typical Price calculation.
 ///
@@ -62,15 +60,12 @@ pub const fn lookback() -> Result<usize, KandError> {
 /// typprice::typprice(&input_high, &input_low, &input_close, &mut output_typprice).unwrap();
 /// // output_typprice ≈ [23.98, 23.91, 23.78]
 /// ```
-pub fn typprice<T>(
-    input_high: &[T],
-    input_low: &[T],
-    input_close: &[T],
-    output_typprice: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+pub fn typprice(
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
+    input_close: &[TAFloat],
+    output_typprice: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_high.len();
 
     #[cfg(feature = "check")]
@@ -97,9 +92,8 @@ where
     }
 
     // Calculate typical price
-    let three = T::from(3).ok_or(KandError::ConversionError)?;
     for i in 0..len {
-        output_typprice[i] = (input_high[i] + input_low[i] + input_close[i]) / three;
+        output_typprice[i] = (input_high[i] + input_low[i] + input_close[i]) / 3.0;
     }
 
     Ok(())
@@ -116,7 +110,7 @@ where
 /// * `input_close` - Close price for the current period
 ///
 /// # Returns
-/// * `Result<T, KandError>` - The calculated Typical Price value
+/// * `Result<TAFloat, KandError>` - The calculated Typical Price value
 ///
 /// # Errors
 /// * `KandError::NaNDetected` - If any input value is NaN (when `deep-check` enabled)
@@ -131,14 +125,11 @@ where
 /// let typ_price = typprice::typprice_incremental(high, low, close).unwrap();
 /// // typ_price ≈ 23.98
 /// ```
-pub fn typprice_incremental<T>(
-    input_high: T,
-    input_low: T,
-    input_close: T,
-) -> Result<T, KandError>
-where
-    T: Float + FromPrimitive,
-{
+pub fn typprice_incremental(
+    input_high: TAFloat,
+    input_low: TAFloat,
+    input_close: TAFloat,
+) -> Result<TAFloat, KandError> {
     #[cfg(feature = "deep-check")]
     {
         // NaN check
@@ -147,7 +138,7 @@ where
         }
     }
 
-    Ok((input_high + input_low + input_close) / T::from(3).ok_or(KandError::ConversionError)?)
+    Ok((input_high + input_low + input_close) / 3.0)
 }
 
 #[cfg(test)]

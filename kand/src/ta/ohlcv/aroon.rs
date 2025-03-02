@@ -1,6 +1,5 @@
-use num_traits::{Float, FromPrimitive};
-
 use crate::{
+    TAFloat,
     error::KandError,
     helper::{highest_bars, lowest_bars},
 };
@@ -102,20 +101,17 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// )
 /// .unwrap();
 /// ```
-pub fn aroon<T>(
-    input_high: &[T],
-    input_low: &[T],
+pub fn aroon(
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
     param_period: usize,
-    output_aroon_up: &mut [T],
-    output_aroon_down: &mut [T],
-    output_prev_high: &mut [T],
-    output_prev_low: &mut [T],
+    output_aroon_up: &mut [TAFloat],
+    output_aroon_down: &mut [TAFloat],
+    output_prev_high: &mut [TAFloat],
+    output_prev_low: &mut [TAFloat],
     output_days_since_high: &mut [usize],
     output_days_since_low: &mut [usize],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+) -> Result<(), KandError> {
     let len = input_high.len();
     let lookback = lookback(param_period)?;
 
@@ -154,8 +150,8 @@ where
         }
     }
 
-    let param_period_t = T::from(param_period).ok_or(KandError::ConversionError)?;
-    let hundred_t = T::from(100).ok_or(KandError::ConversionError)?;
+    let param_period_t = param_period as TAFloat;
+    let hundred_t = 100.0;
 
     // Calculate Aroon Up and Down values for each index starting from lookback
     // Note: We use param_period + 1 in highest_bars/lowest_bars because:
@@ -187,8 +183,8 @@ where
         output_prev_low[i] = input_low[i - days_since_low];
 
         // Calculate Aroon Up and Down values
-        let days_since_high_t = T::from(days_since_high).ok_or(KandError::ConversionError)?;
-        let days_since_low_t = T::from(days_since_low).ok_or(KandError::ConversionError)?;
+        let days_since_high_t = days_since_high as TAFloat;
+        let days_since_low_t = days_since_low as TAFloat;
 
         output_aroon_up[i] = hundred_t - (hundred_t * days_since_high_t / param_period_t);
         output_aroon_down[i] = hundred_t - (hundred_t * days_since_low_t / param_period_t);
@@ -196,10 +192,10 @@ where
 
     // Fill NaN values for lookback period
     for i in 0..lookback {
-        output_aroon_up[i] = T::nan();
-        output_aroon_down[i] = T::nan();
-        output_prev_high[i] = T::nan();
-        output_prev_low[i] = T::nan();
+        output_aroon_up[i] = TAFloat::NAN;
+        output_aroon_down[i] = TAFloat::NAN;
+        output_prev_high[i] = TAFloat::NAN;
+        output_prev_low[i] = TAFloat::NAN;
         output_days_since_high[i] = 0;
         output_days_since_low[i] = 0;
     }
@@ -221,14 +217,14 @@ where
 /// # Arguments
 /// * `input_high` - Current period's high price
 /// * `input_low` - Current period's low price
-/// * `input_prev_high` - Previous highest price in period
-/// * `input_prev_low` - Previous lowest price in period
+/// * `prev_high` - Previous highest price in period
+/// * `prev_low` - Previous lowest price in period
 /// * `input_days_since_high` - Days since previous highest price
 /// * `input_days_since_low` - Days since previous lowest price
 /// * `param_period` - The lookback period
 ///
 /// # Returns
-/// * `Result<(T, T, T, T, usize, usize), KandError>` - Returns tuple containing:
+/// * `Result<(TAFloat, TAFloat, TAFloat, TAFloat, usize, usize), KandError>` - Returns tuple containing:
 ///   - Aroon Up value
 ///   - Aroon Down value
 ///   - New highest price
@@ -255,18 +251,15 @@ where
 /// )
 /// .unwrap();
 /// ```
-pub fn aroon_incremental<T>(
-    input_high: T,
-    input_low: T,
-    input_prev_high: T,
-    input_prev_low: T,
+pub fn aroon_incremental(
+    input_high: TAFloat,
+    input_low: TAFloat,
+    prev_high: TAFloat,
+    prev_low: TAFloat,
     input_days_since_high: usize,
     input_days_since_low: usize,
     param_period: usize,
-) -> Result<(T, T, T, T, usize, usize), KandError>
-where
-    T: Float + FromPrimitive,
-{
+) -> Result<(TAFloat, TAFloat, TAFloat, TAFloat, usize, usize), KandError> {
     #[cfg(feature = "check")]
     {
         if param_period < 2 {
@@ -276,17 +269,13 @@ where
 
     #[cfg(feature = "deep-check")]
     {
-        if input_high.is_nan()
-            || input_low.is_nan()
-            || input_prev_high.is_nan()
-            || input_prev_low.is_nan()
-        {
+        if input_high.is_nan() || input_low.is_nan() || prev_high.is_nan() || prev_low.is_nan() {
             return Err(KandError::NaNDetected);
         }
     }
 
-    let mut new_high = input_prev_high;
-    let mut new_low = input_prev_low;
+    let mut new_high = prev_high;
+    let mut new_low = prev_low;
     let mut days_since_high = input_days_since_high;
     let mut days_since_low = input_days_since_low;
 
@@ -299,19 +288,19 @@ where
     }
 
     // Check if current values are new high/low
-    if input_high >= input_prev_high {
+    if input_high >= prev_high {
         new_high = input_high;
         days_since_high = 0;
     }
-    if input_low <= input_prev_low {
+    if input_low <= prev_low {
         new_low = input_low;
         days_since_low = 0;
     }
 
-    let param_period_t = T::from(param_period).ok_or(KandError::ConversionError)?;
-    let hundred_t = T::from(100.0).ok_or(KandError::ConversionError)?;
-    let days_since_high_t = T::from(days_since_high).ok_or(KandError::ConversionError)?;
-    let days_since_low_t = T::from(days_since_low).ok_or(KandError::ConversionError)?;
+    let param_period_t = param_period as TAFloat;
+    let hundred_t = 100.0;
+    let days_since_high_t = days_since_high as TAFloat;
+    let days_since_low_t = days_since_low as TAFloat;
 
     let aroon_up = hundred_t - (hundred_t * days_since_high_t / param_period_t);
     let aroon_down = hundred_t - (hundred_t * days_since_low_t / param_period_t);

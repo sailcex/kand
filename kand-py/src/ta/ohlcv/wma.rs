@@ -8,17 +8,12 @@ use pyo3::prelude::*;
 /// giving more importance to recent prices and less to older ones.
 ///
 /// Args:
-///     py: Python interpreter token required for GIL management.
-///     data: Input data as a 1-D NumPy array of type `f32`.
+///     data: Input data as a 1-D NumPy array of type `TAFloat`.
 ///     period: Window size for WMA calculation. Must be >= 2.
 ///
 /// Returns:
 ///     A new 1-D NumPy array containing the WMA values. The array has the same length as the input,
 ///     with the first `period-1` elements containing NaN values.
-///
-/// Note:
-///     This function releases the Python GIL during computation using `py.allow_threads()` to enable
-///     concurrent Python execution.
 ///
 /// Examples:
 ///     ```python

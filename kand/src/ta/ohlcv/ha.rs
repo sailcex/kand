@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Returns the lookback period required for Heikin-Ashi calculation
 ///
@@ -33,14 +31,14 @@ pub const fn lookback() -> Result<usize, KandError> {
 /// ```
 ///
 /// # Parameters
-/// * `input_open` - Array of opening prices (slice of type T)
-/// * `input_high` - Array of high prices (slice of type T)
-/// * `input_low` - Array of low prices (slice of type T)
-/// * `input_close` - Array of closing prices (slice of type T)
-/// * `output_open` - Array to store calculated HA open values (mutable slice of type T)
-/// * `output_high` - Array to store calculated HA high values (mutable slice of type T)
-/// * `output_low` - Array to store calculated HA low values (mutable slice of type T)
-/// * `output_close` - Array to store calculated HA close values (mutable slice of type T)
+/// * `input_open` - Array of opening prices (slice of type TAFloat)
+/// * `input_high` - Array of high prices (slice of type TAFloat)
+/// * `input_low` - Array of low prices (slice of type TAFloat)
+/// * `input_close` - Array of closing prices (slice of type TAFloat)
+/// * `output_open` - Array to store calculated HA open values (mutable slice of type TAFloat)
+/// * `output_high` - Array to store calculated HA high values (mutable slice of type TAFloat)
+/// * `output_low` - Array to store calculated HA low values (mutable slice of type TAFloat)
+/// * `output_close` - Array to store calculated HA close values (mutable slice of type TAFloat)
 ///
 /// # Returns
 /// * `Result<(), KandError>` - Ok(()) if calculation succeeds
@@ -76,19 +74,16 @@ pub const fn lookback() -> Result<usize, KandError> {
 /// )
 /// .unwrap();
 /// ```
-pub fn ha<T>(
-    input_open: &[T],
-    input_high: &[T],
-    input_low: &[T],
-    input_close: &[T],
-    output_open: &mut [T],
-    output_high: &mut [T],
-    output_low: &mut [T],
-    output_close: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+pub fn ha(
+    input_open: &[TAFloat],
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
+    input_close: &[TAFloat],
+    output_open: &mut [TAFloat],
+    output_high: &mut [TAFloat],
+    output_low: &mut [TAFloat],
+    output_close: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_open.len();
     let lookback = lookback()?;
 
@@ -127,11 +122,8 @@ where
     }
 
     // Calculate first candle
-    let two = T::from(2).ok_or(KandError::ConversionError)?;
-    let four = T::from(4).ok_or(KandError::ConversionError)?;
-
-    output_close[0] = (input_open[0] + input_high[0] + input_low[0] + input_close[0]) / four;
-    output_open[0] = (input_open[0] + input_close[0]) / two;
+    output_close[0] = (input_open[0] + input_high[0] + input_low[0] + input_close[0]) / 4.0;
+    output_open[0] = (input_open[0] + input_close[0]) / 2.0;
     output_high[0] = input_high[0];
     output_low[0] = input_low[0];
 
@@ -170,15 +162,15 @@ where
 /// ```
 ///
 /// # Parameters
-/// * `curr_open` - Current candle's open price (type T)
-/// * `curr_high` - Current candle's high price (type T)
-/// * `curr_low` - Current candle's low price (type T)
-/// * `curr_close` - Current candle's close price (type T)
-/// * `prev_ha_open` - Previous Heikin-Ashi candle's open price (type T)
-/// * `prev_ha_close` - Previous Heikin-Ashi candle's close price (type T)
+/// * `curr_open` - Current candle's open price (type TAFloat)
+/// * `curr_high` - Current candle's high price (type TAFloat)
+/// * `curr_low` - Current candle's low price (type TAFloat)
+/// * `curr_close` - Current candle's close price (type TAFloat)
+/// * `prev_ha_open` - Previous Heikin-Ashi candle's open price (type TAFloat)
+/// * `prev_ha_close` - Previous Heikin-Ashi candle's close price (type TAFloat)
 ///
 /// # Returns
-/// * `Result<(T, T, T, T), KandError>` - Tuple of (`HA_Open`, `HA_High`, `HA_Low`, `HA_Close`) if successful
+/// * `Result<(TAFloat, TAFloat, TAFloat, TAFloat), KandError>` - Tuple of (`HA_Open`, `HA_High`, `HA_Low`, `HA_Close`) if successful
 ///
 /// # Errors
 /// * `KandError::NaNDetected` - If any input is NaN (with "`deep-check`")
@@ -197,17 +189,14 @@ where
 /// )
 /// .unwrap();
 /// ```
-pub fn ha_incremental<T>(
-    curr_open: T,
-    curr_high: T,
-    curr_low: T,
-    curr_close: T,
-    prev_ha_open: T,
-    prev_ha_close: T,
-) -> Result<(T, T, T, T), KandError>
-where
-    T: Float + FromPrimitive,
-{
+pub fn ha_incremental(
+    curr_open: TAFloat,
+    curr_high: TAFloat,
+    curr_low: TAFloat,
+    curr_close: TAFloat,
+    prev_ha_open: TAFloat,
+    prev_ha_close: TAFloat,
+) -> Result<(TAFloat, TAFloat, TAFloat, TAFloat), KandError> {
     #[cfg(feature = "deep-check")]
     {
         // NaN check
@@ -222,11 +211,8 @@ where
         }
     }
 
-    let two = T::from(2).ok_or(KandError::ConversionError)?;
-    let four = T::from(4).ok_or(KandError::ConversionError)?;
-
-    let ha_close = (curr_open + curr_high + curr_low + curr_close) / four;
-    let ha_open = (prev_ha_open + prev_ha_close) / two;
+    let ha_close = (curr_open + curr_high + curr_low + curr_close) / 4.0;
+    let ha_open = (prev_ha_open + prev_ha_close) / 2.0;
     let ha_high = curr_high.max(ha_open).max(ha_close);
     let ha_low = curr_low.min(ha_open).min(ha_close);
 

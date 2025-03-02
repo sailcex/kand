@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Calculates the lookback period required for Minus Directional Movement (-DM) calculation.
 ///
@@ -89,15 +87,12 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 ///
 /// minus_dm::minus_dm(&high, &low, 3, &mut minus_dm).unwrap();
 /// ```
-pub fn minus_dm<T>(
-    input_high: &[T],
-    input_low: &[T],
+pub fn minus_dm(
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
     param_period: usize,
-    output_dm: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_dm: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_high.len();
     let lookback = lookback(param_period)?;
 
@@ -130,18 +125,18 @@ where
     }
 
     // Calculate first -DM values and initial -DM (sum of -DM1)
-    let mut dm_sum = T::zero();
+    let mut dm_sum = 0.0;
 
     for i in 1..param_period {
         let high_diff = input_high[i] - input_high[i - 1];
         let low_diff = input_low[i - 1] - input_low[i];
 
-        let dm = if low_diff > high_diff && low_diff > T::zero() {
+        let dm = if low_diff > high_diff && low_diff > 0.0 {
             low_diff
         } else {
-            T::zero()
+            0.0
         };
-        dm_sum = dm_sum + dm;
+        dm_sum += dm;
     }
     output_dm[lookback] = dm_sum;
 
@@ -150,20 +145,18 @@ where
         let high_diff = input_high[i] - input_high[i - 1];
         let low_diff = input_low[i - 1] - input_low[i];
 
-        let dm = if low_diff > high_diff && low_diff > T::zero() {
+        let dm = if low_diff > high_diff && low_diff > 0.0 {
             low_diff
         } else {
-            T::zero()
+            0.0
         };
 
-        output_dm[i] = output_dm[i - 1]
-            - (output_dm[i - 1] / T::from(param_period).ok_or(KandError::ConversionError)?)
-            + dm;
+        output_dm[i] = output_dm[i - 1] - (output_dm[i - 1] / param_period as TAFloat) + dm;
     }
 
     // Fill initial values with NAN
     for value in output_dm.iter_mut().take(lookback) {
-        *value = T::nan();
+        *value = TAFloat::NAN;
     }
 
     Ok(())
@@ -188,14 +181,14 @@ where
 ///
 /// # Arguments
 /// * `input_high` - Current high price
-/// * `input_prev_high` - Previous high price
+/// * `prev_high` - Previous high price
 /// * `input_low` - Current low price
-/// * `input_prev_low` - Previous low price
-/// * `input_prev_minus_dm` - Previous -DM value
+/// * `prev_low` - Previous low price
+/// * `prev_minus_dm` - Previous -DM value
 /// * `param_period` - Time period for calculation (must be between 2 and 100)
 ///
 /// # Returns
-/// * `Result<T, KandError>` - The next -DM value on success
+/// * `Result<TAFloat, KandError>` - The next -DM value on success
 ///
 /// # Errors
 /// * `KandError::InvalidParameter` - If period is not between 2 and 100
@@ -222,17 +215,14 @@ where
 /// )
 /// .unwrap();
 /// ```
-pub fn minus_dm_incremental<T>(
-    input_high: T,
-    input_prev_high: T,
-    input_low: T,
-    input_prev_low: T,
-    input_prev_minus_dm: T,
+pub fn minus_dm_incremental(
+    input_high: TAFloat,
+    prev_high: TAFloat,
+    input_low: TAFloat,
+    prev_low: TAFloat,
+    prev_minus_dm: TAFloat,
     param_period: usize,
-) -> Result<T, KandError>
-where
-    T: Float + FromPrimitive,
-{
+) -> Result<TAFloat, KandError> {
     #[cfg(feature = "check")]
     {
         // Parameter range check
@@ -245,27 +235,25 @@ where
     {
         // NaN check
         if input_high.is_nan()
-            || input_prev_high.is_nan()
+            || prev_high.is_nan()
             || input_low.is_nan()
-            || input_prev_low.is_nan()
-            || input_prev_minus_dm.is_nan()
+            || prev_low.is_nan()
+            || prev_minus_dm.is_nan()
         {
             return Err(KandError::NaNDetected);
         }
     }
 
-    let high_diff = input_high - input_prev_high;
-    let low_diff = input_prev_low - input_low;
+    let high_diff = input_high - prev_high;
+    let low_diff = prev_low - input_low;
 
-    let dm = if low_diff > high_diff && low_diff > T::zero() {
+    let dm = if low_diff > high_diff && low_diff > 0.0 {
         low_diff
     } else {
-        T::zero()
+        0.0
     };
 
-    Ok(input_prev_minus_dm
-        - (input_prev_minus_dm / T::from(param_period).ok_or(KandError::ConversionError)?)
-        + dm)
+    Ok(prev_minus_dm - (prev_minus_dm / param_period as TAFloat) + dm)
 }
 
 #[cfg(test)]

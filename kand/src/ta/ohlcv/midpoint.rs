@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Calculates the lookback period required for Midpoint calculation.
 ///
@@ -93,16 +91,13 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// )
 /// .unwrap();
 /// ```
-pub fn midpoint<T>(
-    input_price: &[T],
+pub fn midpoint(
+    input_price: &[TAFloat],
     param_period: usize,
-    output_midpoint: &mut [T],
-    output_highest: &mut [T],
-    output_lowest: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_midpoint: &mut [TAFloat],
+    output_highest: &mut [TAFloat],
+    output_lowest: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_price.len();
     let lookback = lookback(param_period)?;
 
@@ -148,14 +143,14 @@ where
 
         output_highest[i] = highest;
         output_lowest[i] = lowest;
-        output_midpoint[i] = (highest + lowest) / T::from(2).ok_or(KandError::ConversionError)?;
+        output_midpoint[i] = (highest + lowest) / 2.0;
     }
 
     // Fill initial values with NAN
     for i in 0..lookback {
-        output_midpoint[i] = T::nan();
-        output_highest[i] = T::nan();
-        output_lowest[i] = T::nan();
+        output_midpoint[i] = TAFloat::NAN;
+        output_highest[i] = TAFloat::NAN;
+        output_lowest[i] = TAFloat::NAN;
     }
 
     Ok(())
@@ -182,12 +177,12 @@ where
 ///
 /// # Arguments
 /// * `input_price` - Current price value
-/// * `input_prev_highest` - Previous highest value
-/// * `input_prev_lowest` - Previous lowest value
+/// * `prev_highest` - Previous highest value
+/// * `prev_lowest` - Previous lowest value
 /// * `param_period` - Time period for calculation (must be >= 2)
 ///
 /// # Returns
-/// * `Result<(T, T, T), KandError>` - Tuple (midpoint, `new_highest`, `new_lowest`) on success
+/// * `Result<(TAFloat, TAFloat, TAFloat), KandError>` - Tuple (midpoint, `new_highest`, `new_lowest`) on success
 ///
 /// # Errors
 /// * `KandError::InvalidParameter` - If `param_period` is less than 2
@@ -205,15 +200,12 @@ where
 /// let (midpoint, new_highest, new_lowest) =
 ///     midpoint::midpoint_incremental(current_price, prev_highest, prev_lowest, period).unwrap();
 /// ```
-pub fn midpoint_incremental<T>(
-    input_price: T,
-    input_prev_highest: T,
-    input_prev_lowest: T,
+pub fn midpoint_incremental(
+    input_price: TAFloat,
+    prev_highest: TAFloat,
+    prev_lowest: TAFloat,
     param_period: usize,
-) -> Result<(T, T, T), KandError>
-where
-    T: Float + FromPrimitive,
-{
+) -> Result<(TAFloat, TAFloat, TAFloat), KandError> {
     #[cfg(feature = "check")]
     {
         if param_period < 2 {
@@ -223,14 +215,14 @@ where
 
     #[cfg(feature = "deep-check")]
     {
-        if input_price.is_nan() || input_prev_highest.is_nan() || input_prev_lowest.is_nan() {
+        if input_price.is_nan() || prev_highest.is_nan() || prev_lowest.is_nan() {
             return Err(KandError::NaNDetected);
         }
     }
 
-    let new_highest = input_price.max(input_prev_highest);
-    let new_lowest = input_price.min(input_prev_lowest);
-    let midpoint = (new_highest + new_lowest) / T::from(2).ok_or(KandError::ConversionError)?;
+    let new_highest = input_price.max(prev_highest);
+    let new_lowest = input_price.min(prev_lowest);
+    let midpoint = (new_highest + new_lowest) / 2.0;
 
     Ok((midpoint, new_highest, new_lowest))
 }

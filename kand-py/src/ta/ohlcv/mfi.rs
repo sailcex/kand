@@ -8,11 +8,10 @@ use pyo3::prelude::*;
 /// overbought or oversold conditions in an asset.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   high: Array of high prices as a 1-D NumPy array of type `f32`.
-///   low: Array of low prices as a 1-D NumPy array of type `f32`.
-///   close: Array of close prices as a 1-D NumPy array of type `f32`.
-///   volume: Array of volume data as a 1-D NumPy array of type `f32`.
+///   high: Array of high prices as a 1-D NumPy array of type `TAFloat`.
+///   low: Array of low prices as a 1-D NumPy array of type `TAFloat`.
+///   close: Array of close prices as a 1-D NumPy array of type `TAFloat`.
+///   volume: Array of volume data as a 1-D NumPy array of type `TAFloat`.
 ///   period: The time period for MFI calculation (typically 14).
 ///
 /// Returns:

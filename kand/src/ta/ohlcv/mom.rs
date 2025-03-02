@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Returns the lookback period required for Momentum (MOM) calculation
 ///
@@ -81,14 +79,11 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// mom::mom(&input_prices, period, &mut output_mom).unwrap();
 /// // output_mom = [NaN, NaN, 4.0, 4.0, 4.0]
 /// ```
-pub fn mom<T>(
-    input_prices: &[T],
+pub fn mom(
+    input_prices: &[TAFloat],
     param_period: usize,
-    output_mom: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_mom: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_prices.len();
     let lookback = lookback(param_period)?;
 
@@ -127,7 +122,7 @@ where
 
     // Fill initial values with NAN
     for item in output_mom.iter_mut().take(lookback) {
-        *item = T::nan();
+        *item = TAFloat::NAN;
     }
 
     Ok(())
@@ -144,7 +139,7 @@ where
 /// * `input_old_price` - The price value from n periods ago
 ///
 /// # Returns
-/// * `Result<T, KandError>` - The calculated momentum value on success, or error on failure
+/// * `Result<TAFloat, KandError>` - The calculated momentum value on success, or error on failure
 ///
 /// # Errors
 /// * `KandError::NaNDetected` - If any input price is NaN (when "`deep-check`" feature is enabled)
@@ -158,8 +153,10 @@ where
 /// let momentum = mom::mom_incremental(current_price, old_price).unwrap();
 /// assert_eq!(momentum, 4.0);
 /// ```
-pub fn mom_incremental<T>(input_current_price: T, input_old_price: T) -> Result<T, KandError>
-where T: Float + FromPrimitive {
+pub fn mom_incremental(
+    input_current_price: TAFloat,
+    input_old_price: TAFloat,
+) -> Result<TAFloat, KandError> {
     #[cfg(feature = "deep-check")]
     {
         if input_current_price.is_nan() || input_old_price.is_nan() {

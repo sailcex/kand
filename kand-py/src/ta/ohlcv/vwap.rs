@@ -5,11 +5,10 @@ use pyo3::prelude::*;
 /// Calculates Volume Weighted Average Price (VWAP) for a series of price data.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   high: High prices as a 1-D NumPy array of type `f32`.
-///   low: Low prices as a 1-D NumPy array of type `f32`.
-///   close: Close prices as a 1-D NumPy array of type `f32`.
-///   volume: Volume data as a 1-D NumPy array of type `f32`.
+///   high: High prices as a 1-D NumPy array of type `TAFloat`.
+///   low: Low prices as a 1-D NumPy array of type `TAFloat`.
+///   close: Close prices as a 1-D NumPy array of type `TAFloat`.
+///   volume: Volume data as a 1-D NumPy array of type `TAFloat`.
 ///
 /// Returns:
 ///   A tuple of three 1-D NumPy arrays containing:
@@ -73,12 +72,12 @@ pub fn vwap_py(
 /// Calculates a single VWAP value from the latest price and volume data.
 ///
 /// Args:
-///   high: Latest high price value as `f32`.
-///   low: Latest low price value as `f32`.
-///   close: Latest close price value as `f32`.
-///   volume: Latest volume value as `f32`.
-///   prev_cum_pv: Previous cumulative price-volume product as `f32`.
-///   prev_cum_vol: Previous cumulative volume as `f32`.
+///   high: Latest high price value as `TAFloat`.
+///   low: Latest low price value as `TAFloat`.
+///   close: Latest close price value as `TAFloat`.
+///   volume: Latest volume value as `TAFloat`.
+///   prev_cum_pv: Previous cumulative price-volume product as `TAFloat`.
+///   prev_cum_vol: Previous cumulative volume as `TAFloat`.
 ///
 /// Returns:
 ///   A tuple containing (new cumulative PV, new cumulative volume, new VWAP).

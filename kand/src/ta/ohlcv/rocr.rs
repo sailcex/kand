@@ -1,6 +1,4 @@
-use num_traits::{Float, FromPrimitive};
-
-use crate::KandError;
+use crate::{KandError, TAFloat};
 
 /// Calculates the lookback period required for Rate of Change Ratio (ROCR) calculation.
 ///
@@ -74,14 +72,11 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// // First param_period values will be NaN
 /// // Remaining values show ratio between current and historical prices
 /// ```
-pub fn rocr<T>(
-    input_price: &[T],
+pub fn rocr(
+    input_price: &[TAFloat],
     param_period: usize,
-    output_rocr: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+    output_rocr: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_price.len();
     let lookback = lookback(param_period)?;
 
@@ -119,7 +114,7 @@ where
 
     // Fill initial values with NAN
     for value in output_rocr.iter_mut().take(lookback) {
-        *value = T::nan();
+        *value = TAFloat::NAN;
     }
 
     Ok(())
@@ -132,10 +127,10 @@ where
 ///
 /// # Arguments
 /// * `input` - Current price value
-/// * `input_prev` - Price value from `param_period` periods ago
+/// * `prev` - Price value from `param_period` periods ago
 ///
 /// # Returns
-/// * `Result<T, KandError>` - The calculated ROCR value
+/// * `Result<TAFloat, KandError>` - The calculated ROCR value
 ///
 /// # Errors
 /// * `KandError::NaNDetected` - If any input value is NaN (when "`deep-check`" feature is enabled)
@@ -150,16 +145,15 @@ where
 /// let rocr_value = rocr::rocr_incremental(current_price, historical_price).unwrap();
 /// // rocr_value will be 1.25 (15.0 / 12.0)
 /// ```
-pub fn rocr_incremental<T>(input: T, input_prev: T) -> Result<T, KandError>
-where T: Float + FromPrimitive {
+pub fn rocr_incremental(input: TAFloat, prev: TAFloat) -> Result<TAFloat, KandError> {
     #[cfg(feature = "deep-check")]
     {
-        if input.is_nan() || input_prev.is_nan() {
+        if input.is_nan() || prev.is_nan() {
             return Err(KandError::NaNDetected);
         }
     }
 
-    Ok(input / input_prev)
+    Ok(input / prev)
 }
 
 #[cfg(test)]

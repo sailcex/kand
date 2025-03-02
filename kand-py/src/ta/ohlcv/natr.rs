@@ -8,19 +8,14 @@ use pyo3::prelude::*;
 /// It expresses the ATR as a percentage of the closing price.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   high: High prices as a 1-D NumPy array of type `f32`.
-///   low: Low prices as a 1-D NumPy array of type `f32`.
-///   close: Close prices as a 1-D NumPy array of type `f32`.
+///   high: High prices as a 1-D NumPy array of type `TAFloat`.
+///   low: Low prices as a 1-D NumPy array of type `TAFloat`.
+///   close: Close prices as a 1-D NumPy array of type `TAFloat`.
 ///   period: Window size for NATR calculation. Must be positive and less than input length.
 ///
 /// Returns:
 ///   A new 1-D NumPy array containing the NATR values. The array has the same length as the input,
 ///   with the first `period` elements containing NaN values.
-///
-/// Note:
-///   This function releases the Python GIL during computation using `py.allow_threads()` to enable
-///   concurrent Python execution.
 ///
 /// Examples:
 ///   ```python
@@ -71,7 +66,7 @@ pub fn natr_py(
 /// using the previous ATR value and current price data, without recalculating the entire series.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
+///
 ///   high: Current period's high price.
 ///   low: Current period's low price.
 ///   close: Current period's closing price.

@@ -8,8 +8,7 @@ use pyo3::prelude::*;
 /// It combines six EMAs with optimized weightings to produce a responsive yet smooth indicator.
 ///
 /// Args:
-///     py: Python interpreter token required for GIL management.
-///     data: Input data as a 1-D NumPy array of type `f32`.
+///     data: Input data as a 1-D NumPy array of type `TAFloat`.
 ///     period: Smoothing period for EMAs (must be >= 2).
 ///     vfactor: Volume factor controlling smoothing (typically 0-1).
 ///

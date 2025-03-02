@@ -8,10 +8,9 @@ use pyo3::prelude::*;
 /// a condition of being overbought or oversold.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   high: High prices as a 1-D NumPy array of type `f32`.
-///   low: Low prices as a 1-D NumPy array of type `f32`.
-///   close: Close prices as a 1-D NumPy array of type `f32`.
+///   high: High prices as a 1-D NumPy array of type `TAFloat`.
+///   low: Low prices as a 1-D NumPy array of type `TAFloat`.
+///   close: Close prices as a 1-D NumPy array of type `TAFloat`.
 ///   period: Window size for CCI calculation. Must be positive and less than input length.
 ///
 /// Returns:
@@ -21,10 +20,6 @@ use pyo3::prelude::*;
 ///   - SMA of typical prices
 ///   - Mean deviation values
 ///   Each array has the same length as the input, with the first `period-1` elements containing NaN values.
-///
-/// Note:
-///   This function releases the Python GIL during computation using `py.allow_threads()` to enable
-///   concurrent Python execution.
 ///
 /// Examples:
 ///   ```python
@@ -90,7 +85,7 @@ pub fn cci_py(
 /// Calculates the next CCI value incrementally.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
+///
 ///   prev_sma_tp: Previous SMA value of typical prices.
 ///   new_high: New high price.
 ///   new_low: New low price.

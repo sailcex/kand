@@ -1,6 +1,5 @@
-use num_traits::{Float, FromPrimitive};
+use crate::{KandError, TAFloat};
 
-use crate::KandError;
 /// Returns the lookback period required for Balance of Power (BOP) calculation.
 ///
 /// # Description
@@ -78,16 +77,13 @@ pub const fn lookback() -> Result<usize, KandError> {
 /// )
 /// .unwrap();
 /// ```
-pub fn bop<T>(
-    input_open: &[T],
-    input_high: &[T],
-    input_low: &[T],
-    input_close: &[T],
-    output_bop: &mut [T],
-) -> Result<(), KandError>
-where
-    T: Float + FromPrimitive,
-{
+pub fn bop(
+    input_open: &[TAFloat],
+    input_high: &[TAFloat],
+    input_low: &[TAFloat],
+    input_close: &[TAFloat],
+    output_bop: &mut [TAFloat],
+) -> Result<(), KandError> {
     let len = input_open.len();
 
     #[cfg(feature = "check")]
@@ -123,8 +119,8 @@ where
 
     for i in 0..len {
         let range = input_high[i] - input_low[i];
-        if range == T::zero() {
-            output_bop[i] = T::zero();
+        if range == 0.0 {
+            output_bop[i] = 0.0;
         } else {
             output_bop[i] = (input_close[i] - input_open[i]) / range;
         }
@@ -151,7 +147,7 @@ where
 /// * `input_close` - Current period's closing price
 ///
 /// # Returns
-/// * `Result<T, KandError>` - Calculated BOP value if successful
+/// * `Result<TAFloat, KandError>` - Calculated BOP value if successful
 ///
 /// # Errors
 /// * `KandError::NaNDetected` - If any input value is NaN (when `deep-check` enabled)
@@ -167,15 +163,12 @@ where
 ///
 /// let output_bop = bop_incremental(input_open, input_high, input_low, input_close).unwrap();
 /// ```
-pub fn bop_incremental<T>(
-    input_open: T,
-    input_high: T,
-    input_low: T,
-    input_close: T,
-) -> Result<T, KandError>
-where
-    T: Float + FromPrimitive,
-{
+pub fn bop_incremental(
+    input_open: TAFloat,
+    input_high: TAFloat,
+    input_low: TAFloat,
+    input_close: TAFloat,
+) -> Result<TAFloat, KandError> {
     #[cfg(feature = "deep-check")]
     {
         // NaN check
@@ -186,8 +179,8 @@ where
     }
 
     let range = input_high - input_low;
-    if range == T::zero() {
-        Ok(T::zero())
+    if range == 0.0 {
+        Ok(0.0)
     } else {
         Ok((input_close - input_open) / range)
     }

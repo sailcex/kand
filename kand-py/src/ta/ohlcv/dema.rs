@@ -5,8 +5,7 @@ use pyo3::prelude::*;
 /// Calculates Double Exponential Moving Average (DEMA) over NumPy arrays.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   input_price: Price values as a 1-D NumPy array of type `f32`.
+///   input_price: Price values as a 1-D NumPy array of type `TAFloat`.
 ///   period: Smoothing period for EMA calculations. Must be >= 2.
 ///
 /// Returns:
@@ -62,7 +61,7 @@ pub fn dema_py(
 /// Calculates the next DEMA value incrementally.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
+///
 ///   price: Current price value.
 ///   prev_ema1: Previous value of first EMA.
 ///   prev_ema2: Previous value of second EMA.

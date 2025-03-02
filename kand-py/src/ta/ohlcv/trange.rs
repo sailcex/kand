@@ -8,19 +8,14 @@ use pyo3::prelude::*;
 /// and the previous close price.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   high: High prices as a 1-D NumPy array of type `f32`.
-///   low: Low prices as a 1-D NumPy array of type `f32`.
-///   close: Close prices as a 1-D NumPy array of type `f32`.
+///   high: High prices as a 1-D NumPy array of type `TAFloat`.
+///   low: Low prices as a 1-D NumPy array of type `TAFloat`.
+///   close: Close prices as a 1-D NumPy array of type `TAFloat`.
 ///
 /// Returns:
 ///   A new 1-D NumPy array containing the TR values. The array has the same length as the input,
 ///   with the first element containing NaN value.
-///
-/// Note:
-///   This function releases the Python GIL during computation using `py.allow_threads()` to enable
-///   concurrent Python execution.
-///
+
 /// Examples:
 ///   ```python
 ///   >>> import numpy as np

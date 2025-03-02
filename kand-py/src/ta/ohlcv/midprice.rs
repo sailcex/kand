@@ -8,9 +8,8 @@ use pyo3::prelude::*;
 /// and lowest low prices over a specified period.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   high: Input high price data as a 1-D NumPy array of type `f32`.
-///   low: Input low price data as a 1-D NumPy array of type `f32`.
+///   high: Input high price data as a 1-D NumPy array of type `TAFloat`.
+///   low: Input low price data as a 1-D NumPy array of type `TAFloat`.
 ///   period: Time period for calculation (must be >= 2).
 ///
 /// Returns:
@@ -73,11 +72,11 @@ pub fn midprice_py(
 /// without recalculating the entire series.
 ///
 /// Args:
-///   py: Python interpreter token required for GIL management.
-///   high: Current high price value as `f32`.
-///   low: Current low price value as `f32`.
-///   prev_highest: Previous highest high value as `f32`.
-///   prev_lowest: Previous lowest low value as `f32`.
+///
+///   high: Current high price value as `TAFloat`.
+///   low: Current low price value as `TAFloat`.
+///   prev_highest: Previous highest high value as `TAFloat`.
+///   prev_lowest: Previous lowest low value as `TAFloat`.
 ///   period: Time period for calculation (must be >= 2).
 ///
 /// Returns:
