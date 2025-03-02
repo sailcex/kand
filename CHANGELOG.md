@@ -4,6 +4,10 @@ This document records all significant updates and changes to the Kand project.
 
 ## [unreleased]
 
+### 🚀 Features
+
+- [**breaking**] Release v0.2.0 with major type system refactoring
+
 ### 🐛 Bug Fixes
 
 - *(ci:publish-doc)* Update publish-doc
