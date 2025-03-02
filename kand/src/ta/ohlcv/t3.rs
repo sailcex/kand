@@ -99,7 +99,7 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 pub fn t3(
     input: &[TAFloat],
     param_period: usize,
-    param_vfactor: f64,
+    param_vfactor: TAFloat,
     output: &mut [TAFloat],
     output_ema1: &mut [TAFloat],
     output_ema2: &mut [TAFloat],
@@ -341,7 +341,7 @@ pub fn t3_incremental(
     prev_ema5: TAFloat,
     prev_ema6: TAFloat,
     param_period: usize,
-    param_vfactor: f64,
+    param_vfactor: TAFloat,
 ) -> Result<
     (
         TAFloat,
@@ -467,12 +467,12 @@ mod tests {
         }
 
         // Test incremental calculation
-        let mut prev_ema1: f64 = output_ema1[24];
-        let mut prev_ema2: f64 = output_ema2[24];
-        let mut prev_ema3: f64 = output_ema3[24];
-        let mut prev_ema4: f64 = output_ema4[24];
-        let mut prev_ema5: f64 = output_ema5[24];
-        let mut prev_ema6: f64 = output_ema6[24];
+        let mut prev_ema1: TAFloat = output_ema1[24];
+        let mut prev_ema2: TAFloat = output_ema2[24];
+        let mut prev_ema3: TAFloat = output_ema3[24];
+        let mut prev_ema4: TAFloat = output_ema4[24];
+        let mut prev_ema5: TAFloat = output_ema5[24];
+        let mut prev_ema6: TAFloat = output_ema6[24];
 
         // Test each incremental step matches the full calculation
         for i in 25..input.len() {

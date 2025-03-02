@@ -54,10 +54,10 @@ pub fn obv_py(
 /// using the previous OBV value and current price/volume data.
 ///
 /// Args:
-///   curr_close: Current closing price as `f64`.
-///   prev_close: Previous closing price as `f64`.
-///   volume: Current volume as `f64`.
-///   prev_obv: Previous OBV value as `f64`.
+///   curr_close: Current closing price as `TAFloat`.
+///   prev_close: Previous closing price as `TAFloat`.
+///   volume: Current volume as `TAFloat`.
+///   prev_obv: Previous OBV value as `TAFloat`.
 ///
 /// Returns:
 ///   The calculated OBV value.

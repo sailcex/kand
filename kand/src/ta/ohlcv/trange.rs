@@ -66,7 +66,7 @@ pub const fn lookback() -> Result<usize, KandError> {
 /// ```
 /// use kand::ohlcv::trange;
 ///
-/// let high = vec![10.0f64, 12.0, 15.0];
+/// let high = vec![10.0, 12.0, 15.0];
 /// let low = vec![8.0, 9.0, 11.0];
 /// let close = vec![9.0, 11.0, 14.0];
 /// let mut tr = vec![0.0; 3];
@@ -161,7 +161,7 @@ pub fn trange(
 /// ```
 /// use kand::ohlcv::trange;
 ///
-/// let tr = trange::trange_incremental(12.0f64, 9.0, 11.0).unwrap();
+/// let tr = trange::trange_incremental(12.0, 9.0, 11.0).unwrap();
 /// assert_eq!(tr, 3.0); // max(3, 1, 2)
 /// ```
 pub fn trange_incremental(

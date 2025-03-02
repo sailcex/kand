@@ -87,7 +87,7 @@ pub const fn lookback(
 /// ```
 /// use kand::ohlcv::stoch;
 ///
-/// let input_high = vec![10.0f64, 12.0, 15.0, 14.0, 13.0];
+/// let input_high = vec![10.0, 12.0, 15.0, 14.0, 13.0];
 /// let input_low = vec![8.0, 9.0, 11.0, 10.0, 9.0];
 /// let input_close = vec![9.0, 11.0, 14.0, 12.0, 11.0];
 /// let param_k_period = 3;

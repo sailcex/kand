@@ -258,16 +258,16 @@ def adxr_incremental(high, low, prev_high, prev_low, prev_close, prev_adx, prev_
 
     Args:
 
-      high: Current high price as f64.
-      low: Current low price as f64.
-      prev_high: Previous high price as f64.
-      prev_low: Previous low price as f64.
-      prev_close: Previous close price as f64.
-      prev_adx: Previous ADX value as f64.
-      prev_adx_period_ago: ADX value from period days ago as f64.
-      prev_smoothed_plus_dm: Previous smoothed +DM value as f64.
-      prev_smoothed_minus_dm: Previous smoothed -DM value as f64.
-      prev_smoothed_tr: Previous smoothed TR value as f64.
+      high: Current high price as TAFloat.
+      low: Current low price as TAFloat.
+      prev_high: Previous high price as TAFloat.
+      prev_low: Previous low price as TAFloat.
+      prev_close: Previous close price as TAFloat.
+      prev_adx: Previous ADX value as TAFloat.
+      prev_adx_period_ago: ADX value from period days ago as TAFloat.
+      prev_smoothed_plus_dm: Previous smoothed +DM value as TAFloat.
+      prev_smoothed_minus_dm: Previous smoothed -DM value as TAFloat.
+      prev_smoothed_tr: Previous smoothed TR value as TAFloat.
       period: Period for ADX calculation (typically 14).
 
     Returns:
@@ -1381,10 +1381,10 @@ def macd_incremental(price, prev_fast_ema, prev_slow_ema, prev_signal, fast_peri
 
     Args:
 
-      price: Current price value as `f64`.
-      prev_fast_ema: Previous fast EMA value as `f64`.
-      prev_slow_ema: Previous slow EMA value as `f64`.
-      prev_signal: Previous signal line value as `f64`.
+      price: Current price value as `TAFloat`.
+      prev_fast_ema: Previous fast EMA value as `TAFloat`.
+      prev_slow_ema: Previous slow EMA value as `TAFloat`.
+      prev_signal: Previous signal line value as `TAFloat`.
       fast_period: Period for fast EMA calculation (typically 12).
       slow_period: Period for slow EMA calculation (typically 26).
       signal_period: Period for signal line calculation (typically 9).
@@ -1487,8 +1487,8 @@ def medprice_incremental(high, low):
 
     Args:
 
-      high: Current period's high price as `f64`.
-      low: Current period's low price as `f64`.
+      high: Current period's high price as `TAFloat`.
+      low: Current period's low price as `TAFloat`.
 
     Returns:
       The calculated median price value.
@@ -1574,9 +1574,9 @@ def midpoint_incremental(price, prev_highest, prev_lowest, period):
     without recalculating the entire series.
 
     Args:
-      price: Current price value as `f64`.
-      prev_highest: Previous highest value as `f64`.
-      prev_lowest: Previous lowest value as `f64`.
+      price: Current price value as `TAFloat`.
+      prev_highest: Previous highest value as `TAFloat`.
+      prev_lowest: Previous lowest value as `TAFloat`.
       period: Time period for calculation (must be >= 2).
 
     Returns:
@@ -1919,10 +1919,10 @@ def obv_incremental(curr_close, prev_close, volume, prev_obv):
     using the previous OBV value and current price/volume data.
 
     Args:
-      curr_close: Current closing price as `f64`.
-      prev_close: Previous closing price as `f64`.
-      volume: Current volume as `f64`.
-      prev_obv: Previous OBV value as `f64`.
+      curr_close: Current closing price as `TAFloat`.
+      prev_close: Previous closing price as `TAFloat`.
+      volume: Current volume as `TAFloat`.
+      prev_obv: Previous OBV value as `TAFloat`.
 
     Returns:
       The calculated OBV value.

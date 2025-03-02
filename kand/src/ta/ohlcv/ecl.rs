@@ -340,15 +340,15 @@ mod tests {
         let (h5_inc, h4_inc, h3_inc, h2_inc, h1_inc, l1_inc, l2_inc, l3_inc, l4_inc, l5_inc) =
             ecl_incremental(input_high[i - 1], input_low[i - 1], input_close[i - 1]).unwrap();
 
-        assert_relative_eq!(h5_inc, output_h5[i], epsilon = f64::EPSILON);
-        assert_relative_eq!(h4_inc, output_h4[i], epsilon = f64::EPSILON);
-        assert_relative_eq!(h3_inc, output_h3[i], epsilon = f64::EPSILON);
-        assert_relative_eq!(h2_inc, output_h2[i], epsilon = f64::EPSILON);
-        assert_relative_eq!(h1_inc, output_h1[i], epsilon = f64::EPSILON);
-        assert_relative_eq!(l1_inc, output_l1[i], epsilon = f64::EPSILON);
-        assert_relative_eq!(l2_inc, output_l2[i], epsilon = f64::EPSILON);
-        assert_relative_eq!(l3_inc, output_l3[i], epsilon = f64::EPSILON);
-        assert_relative_eq!(l4_inc, output_l4[i], epsilon = f64::EPSILON);
-        assert_relative_eq!(l5_inc, output_l5[i], epsilon = f64::EPSILON);
+        assert_relative_eq!(h5_inc, output_h5[i], epsilon = TAFloat::EPSILON);
+        assert_relative_eq!(h4_inc, output_h4[i], epsilon = TAFloat::EPSILON);
+        assert_relative_eq!(h3_inc, output_h3[i], epsilon = TAFloat::EPSILON);
+        assert_relative_eq!(h2_inc, output_h2[i], epsilon = TAFloat::EPSILON);
+        assert_relative_eq!(h1_inc, output_h1[i], epsilon = TAFloat::EPSILON);
+        assert_relative_eq!(l1_inc, output_l1[i], epsilon = TAFloat::EPSILON);
+        assert_relative_eq!(l2_inc, output_l2[i], epsilon = TAFloat::EPSILON);
+        assert_relative_eq!(l3_inc, output_l3[i], epsilon = TAFloat::EPSILON);
+        assert_relative_eq!(l4_inc, output_l4[i], epsilon = TAFloat::EPSILON);
+        assert_relative_eq!(l5_inc, output_l5[i], epsilon = TAFloat::EPSILON);
     }
 }

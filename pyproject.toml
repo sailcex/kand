@@ -43,7 +43,7 @@ bindings = "pyo3"
 manifest-path = "kand-py/Cargo.toml"
 module-name = "kand._kand"
 python-source = "python"
-features = ["pyo3/extension-module"]
+features = ["pyo3/extension-module", "f64", "i64", "check"]
 include = [
     { path = "rust-toolchain.toml", format = ["sdist", "wheel"] },
     { path = "LICENSE-APACHE", format = "sdist" },

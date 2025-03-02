@@ -85,16 +85,16 @@ pub fn adxr_py(
 ///
 /// Args:
 ///
-///   high: Current high price as f64.
-///   low: Current low price as f64.
-///   prev_high: Previous high price as f64.
-///   prev_low: Previous low price as f64.
-///   prev_close: Previous close price as f64.
-///   prev_adx: Previous ADX value as f64.
-///   prev_adx_period_ago: ADX value from period days ago as f64.
-///   prev_smoothed_plus_dm: Previous smoothed +DM value as f64.
-///   prev_smoothed_minus_dm: Previous smoothed -DM value as f64.
-///   prev_smoothed_tr: Previous smoothed TR value as f64.
+///   high: Current high price as TAFloat.
+///   low: Current low price as TAFloat.
+///   prev_high: Previous high price as TAFloat.
+///   prev_low: Previous low price as TAFloat.
+///   prev_close: Previous close price as TAFloat.
+///   prev_adx: Previous ADX value as TAFloat.
+///   prev_adx_period_ago: ADX value from period days ago as TAFloat.
+///   prev_smoothed_plus_dm: Previous smoothed +DM value as TAFloat.
+///   prev_smoothed_minus_dm: Previous smoothed -DM value as TAFloat.
+///   prev_smoothed_tr: Previous smoothed TR value as TAFloat.
 ///   period: Period for ADX calculation (typically 14).
 ///
 /// Returns:

@@ -62,7 +62,7 @@ pub const fn lookback() -> Result<usize, KandError> {
 /// ```
 /// use kand::ohlcv::obv;
 ///
-/// let input_close = vec![10.0f64, 12.0, 11.0, 13.0];
+/// let input_close = vec![10.0, 12.0, 11.0, 13.0];
 /// let input_volume = vec![100.0, 150.0, 120.0, 200.0];
 /// let mut output_obv = vec![0.0; 4];
 ///
@@ -143,7 +143,7 @@ pub fn obv(
 /// ```
 /// use kand::ohlcv::obv;
 ///
-/// let curr_close = 12.0f64;
+/// let curr_close = 12.0;
 /// let prev_close = 10.0;
 /// let volume = 150.0;
 /// let prev_obv = 100.0;

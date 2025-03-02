@@ -173,7 +173,7 @@ pub fn natr(
 /// ```
 /// use kand::ohlcv::natr;
 ///
-/// let high = 15.0f64;
+/// let high = 15.0;
 /// let low = 11.0;
 /// let close = 14.0;
 /// let prev_close = 12.0;

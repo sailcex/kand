@@ -76,7 +76,7 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// ```
 /// use kand::ohlcv::willr;
 ///
-/// let input_high = vec![10.0f64, 12.0, 15.0, 14.0, 13.0];
+/// let input_high = vec![10.0, 12.0, 15.0, 14.0, 13.0];
 /// let input_low = vec![8.0, 9.0, 11.0, 10.0, 9.0];
 /// let input_close = vec![9.0, 11.0, 14.0, 12.0, 11.0];
 /// let param_period = 3;
@@ -190,7 +190,7 @@ pub fn willr(
 /// ```
 /// use kand::ohlcv::willr::willr_incremental;
 ///
-/// let prev_highest_high = 15.0f64;
+/// let prev_highest_high = 15.0;
 /// let prev_lowest_low = 10.0;
 /// let prev_high = 14.0;
 /// let prev_low = 11.0;

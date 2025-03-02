@@ -70,7 +70,7 @@ pub fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// ```
 /// use kand::ohlcv::trix;
 ///
-/// let input = vec![1.0f64, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0];
+/// let input = vec![1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0];
 /// let period = 3;
 /// let mut output = vec![0.0; 9];
 /// let mut ema1 = vec![0.0; 9];
