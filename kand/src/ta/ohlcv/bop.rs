@@ -62,7 +62,7 @@ pub const fn lookback() -> Result<usize, KandError> {
 /// ```
 /// use kand::ohlcv::bop;
 ///
-/// let input_open = vec![10.0f64, 11.0, 12.0, 13.0];
+/// let input_open = vec![10.0, 11.0, 12.0, 13.0];
 /// let input_high = vec![12.0, 13.0, 14.0, 15.0];
 /// let input_low = vec![8.0, 9.0, 10.0, 11.0];
 /// let input_close = vec![11.0, 12.0, 13.0, 14.0];
@@ -156,7 +156,7 @@ pub fn bop(
 /// ```
 /// use kand::ohlcv::bop::bop_incremental;
 ///
-/// let input_open = 10.0f64;
+/// let input_open = 10.0;
 /// let input_high = 12.0;
 /// let input_low = 8.0;
 /// let input_close = 11.0;

@@ -67,9 +67,9 @@ pub fn midpoint_py(
 /// without recalculating the entire series.
 ///
 /// Args:
-///   price: Current price value as `f64`.
-///   prev_highest: Previous highest value as `f64`.
-///   prev_lowest: Previous lowest value as `f64`.
+///   price: Current price value as `TAFloat`.
+///   prev_highest: Previous highest value as `TAFloat`.
+///   prev_lowest: Previous lowest value as `TAFloat`.
 ///   period: Time period for calculation (must be >= 2).
 ///
 /// Returns:

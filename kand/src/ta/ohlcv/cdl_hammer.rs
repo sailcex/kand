@@ -363,7 +363,7 @@ mod tests {
 
         // Test each incremental step
         for i in 14..18 {
-            let (signal, new_body_avg): (i64, f64) = cdl_hammer_incremental(
+            let (signal, new_body_avg) = cdl_hammer_incremental(
                 input_open[i],
                 input_high[i],
                 input_low[i],

@@ -177,10 +177,10 @@ pub fn adx(
     {
         sum += *value;
     }
-    output_adx[lookback] = sum / param_period as f64;
+    output_adx[lookback] = sum / param_period as TAFloat;
 
     // Calculate remaining ADX values using Wilder's smoothing
-    let period_t = param_period as f64;
+    let period_t = param_period as TAFloat;
     for i in (lookback + 1)..len {
         output_adx[i] = (output_adx[i - 1] * (period_t - 1.0) + dx_values[i]) / period_t;
     }
@@ -289,7 +289,7 @@ pub fn adx_incremental(
             param_period,
         )?;
 
-    let period_t = param_period as f64;
+    let period_t = param_period as TAFloat;
     let output_adx = (prev_adx * (period_t - 1.0) + dx) / period_t;
 
     Ok((

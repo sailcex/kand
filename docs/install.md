@@ -1,6 +1,6 @@
 # Installation Guide
 
-Get started with `kand` through Python, Rust, or Docker. This guide covers all installation methods and system compatibility details.
+Get started with `kand` through Python or Docker. This guide covers all installation methods and system compatibility details.
 
 ## Python Installation
 

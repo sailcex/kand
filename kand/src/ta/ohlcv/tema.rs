@@ -74,7 +74,7 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// ```
 /// use kand::ohlcv::tema;
 ///
-/// let input = vec![1.0f64, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0];
+/// let input = vec![1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 8.0, 9.0];
 /// let period = 3;
 /// let mut output_tema = vec![0.0; input.len()];
 /// let mut ema1 = vec![0.0; input.len()];
@@ -198,7 +198,7 @@ pub fn tema(
 /// ```
 /// use kand::ohlcv::tema::tema_incremental;
 ///
-/// let new_price = 10.0f64;
+/// let new_price = 10.0;
 /// let prev_ema1 = 9.0;
 /// let prev_ema2 = 8.0;
 /// let prev_ema3 = 7.0;

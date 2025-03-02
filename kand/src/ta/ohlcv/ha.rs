@@ -52,7 +52,7 @@ pub const fn lookback() -> Result<usize, KandError> {
 /// ```
 /// use kand::ohlcv::ha;
 ///
-/// let input_open = vec![10.0f64, 10.5, 11.2];
+/// let input_open = vec![10.0, 10.5, 11.2];
 /// let input_high = vec![11.0, 11.5, 11.8];
 /// let input_low = vec![9.5, 10.2, 10.8];
 /// let input_close = vec![10.8, 11.3, 11.5];
@@ -180,7 +180,7 @@ pub fn ha(
 /// use kand::ohlcv::ha::ha_incremental;
 ///
 /// let (ha_open, ha_high, ha_low, ha_close) = ha_incremental(
-///     11.2f64, // Current open
+///     11.2,    // Current open
 ///     11.8,    // Current high
 ///     10.8,    // Current low
 ///     11.5,    // Current close
@@ -227,7 +227,7 @@ mod tests {
 
     #[test]
     fn test_ha_calculation() {
-        let input_open = vec![10.0f64, 10.5, 11.2, 10.8, 11.5];
+        let input_open = vec![10.0, 10.5, 11.2, 10.8, 11.5];
         let input_high = vec![11.0, 11.5, 11.8, 11.3, 12.0];
         let input_low = vec![9.5, 10.2, 10.8, 10.5, 11.3];
         let input_close = vec![10.8, 11.3, 11.5, 11.0, 11.8];

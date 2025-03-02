@@ -76,7 +76,7 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// ```
 /// use kand::ohlcv::midpoint;
 ///
-/// let input_price = vec![10.0f64, 12.0, 15.0, 14.0, 13.0];
+/// let input_price = vec![10.0, 12.0, 15.0, 14.0, 13.0];
 /// let param_period = 3;
 /// let mut output_midpoint = vec![0.0; 5];
 /// let mut output_highest = vec![0.0; 5];
@@ -192,7 +192,7 @@ pub fn midpoint(
 /// ```
 /// use kand::ohlcv::midpoint;
 ///
-/// let current_price = 15.0f64;
+/// let current_price = 15.0;
 /// let prev_highest = 16.0;
 /// let prev_lowest = 14.0;
 /// let period = 14;

@@ -20,8 +20,8 @@ use crate::{KandError, TAFloat};
 /// ```
 /// use kand::ohlcv::sar;
 ///
-/// let acceleration = 0.02f64;
-/// let maximum = 0.2f64;
+/// let acceleration = 0.02;
+/// let maximum = 0.2;
 /// let lookback = sar::lookback(acceleration, maximum).unwrap();
 /// assert_eq!(lookback, 1);
 /// ```
@@ -78,7 +78,7 @@ pub const fn lookback(
 /// ```
 /// use kand::ohlcv::sar;
 ///
-/// let high = vec![10.0f64, 12.0, 15.0, 14.0, 13.0];
+/// let high = vec![10.0, 12.0, 15.0, 14.0, 13.0];
 /// let low = vec![8.0, 9.0, 11.0, 10.0, 9.0];
 /// let mut sar = vec![0.0; 5];
 /// let mut is_long = vec![false; 5];

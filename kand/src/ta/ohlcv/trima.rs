@@ -77,7 +77,7 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// ```
 /// use kand::ohlcv::trima;
 ///
-/// let input = vec![1.0f64, 2.0, 3.0, 4.0, 5.0];
+/// let input = vec![1.0, 2.0, 3.0, 4.0, 5.0];
 /// let period = 3;
 /// let mut output_sma1 = vec![0.0; input.len()];
 /// let mut output_sma2 = vec![0.0; input.len()];

@@ -78,7 +78,7 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// ```
 /// use kand::ohlcv::aroon;
 ///
-/// let input_high = vec![10.0f64, 12.0, 15.0, 14.0, 13.0];
+/// let input_high = vec![10.0, 12.0, 15.0, 14.0, 13.0];
 /// let input_low = vec![8.0, 9.0, 11.0, 10.0, 9.0];
 /// let param_period = 3;
 /// let mut output_aroon_up = vec![0.0; 5];
@@ -241,13 +241,13 @@ pub fn aroon(
 /// use kand::ohlcv::aroon;
 ///
 /// let (aroon_up, aroon_down, new_high, new_low, days_high, days_low) = aroon::aroon_incremental(
-///     15.0f64, // Current high
-///     12.0,    // Current low
-///     14.0,    // Previous high
-///     11.0,    // Previous low
-///     2,       // Days since high
-///     1,       // Days since low
-///     14,      // Period
+///     15.0, // Current high
+///     12.0, // Current low
+///     14.0, // Previous high
+///     11.0, // Previous low
+///     2,    // Days since high
+///     1,    // Days since low
+///     14,   // Period
 /// )
 /// .unwrap();
 /// ```

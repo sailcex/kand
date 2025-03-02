@@ -71,7 +71,7 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// ```
 /// use kand::ohlcv::rocp;
 ///
-/// let input_price = vec![10.0f64, 10.5, 11.2, 10.8, 11.5];
+/// let input_price = vec![10.0, 10.5, 11.2, 10.8, 11.5];
 /// let param_period = 2;
 /// let mut output_rocp = vec![0.0; 5];
 ///
@@ -152,7 +152,7 @@ pub fn rocp(
 /// ```
 /// use kand::ohlcv::rocp::rocp_incremental;
 ///
-/// let current_price = 11.5f64;
+/// let current_price = 11.5;
 /// let prev_price = 10.0;
 ///
 /// let output_rocp = rocp_incremental(current_price, prev_price).unwrap();

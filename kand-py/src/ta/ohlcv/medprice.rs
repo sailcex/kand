@@ -46,8 +46,8 @@ pub fn medprice_py(
 ///
 /// Args:
 ///
-///   high: Current period's high price as `f64`.
-///   low: Current period's low price as `f64`.
+///   high: Current period's high price as `TAFloat`.
+///   low: Current period's low price as `TAFloat`.
 ///
 /// Returns:
 ///   The calculated median price value.

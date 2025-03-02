@@ -91,10 +91,10 @@ pub fn macd_py(
 ///
 /// Args:
 ///
-///   price: Current price value as `f64`.
-///   prev_fast_ema: Previous fast EMA value as `f64`.
-///   prev_slow_ema: Previous slow EMA value as `f64`.
-///   prev_signal: Previous signal line value as `f64`.
+///   price: Current price value as `TAFloat`.
+///   prev_fast_ema: Previous fast EMA value as `TAFloat`.
+///   prev_slow_ema: Previous slow EMA value as `TAFloat`.
+///   prev_signal: Previous signal line value as `TAFloat`.
 ///   fast_period: Period for fast EMA calculation (typically 12).
 ///   slow_period: Period for slow EMA calculation (typically 26).
 ///   signal_period: Period for signal line calculation (typically 9).
