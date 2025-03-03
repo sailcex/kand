@@ -1,4 +1,4 @@
-use crate::{KandError, TAFloat};
+use crate::{KandError, TAFloat, EPSILON};
 
 /// Calculates the lookback period required for Maximum Value calculation.
 ///
@@ -187,7 +187,7 @@ pub fn max_incremental(
     }
 
     // If old price being removed was the max, need to recalculate
-    if prev_max == input_old_price {
+    if (prev_max - input_old_price).abs() < EPSILON {
         return Ok(input_price); // Need full recalculation in this case
     }
 

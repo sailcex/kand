@@ -1,4 +1,4 @@
-use crate::{KandError, TAFloat};
+use crate::{KandError, TAFloat, EPSILON};
 
 /// Calculates the lookback period required for Minimum Value calculation.
 ///
@@ -195,7 +195,7 @@ pub fn min_incremental(
 
     // If the price being removed was the previous min,
     // we need to scan the period for the new min
-    if prev_price == prev_min {
+    if (prev_price - prev_min).abs() < EPSILON {
         // In this case we need the full period data to recalculate
         return Err(KandError::InsufficientData);
     }
