@@ -230,8 +230,7 @@ pub fn tema_incremental(
     let ema1 = ema::ema_incremental(input, prev_ema1, param_period, None)?;
     let ema2 = ema::ema_incremental(ema1, prev_ema2, param_period, None)?;
     let ema3 = ema::ema_incremental(ema2, prev_ema3, param_period, None)?;
-    let three = 3.0;
-    let tema = three * ema1 - three * ema2 + ema3;
+    let tema = 3.0 * ema1 - 3.0 * ema2 + ema3;
 
     Ok((tema, ema1, ema2, ema3))
 }
