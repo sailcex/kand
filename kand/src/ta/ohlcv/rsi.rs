@@ -174,8 +174,8 @@ pub fn rsi(
             (0.0, diff.abs())
         };
 
-        let curr_avg_gain = (prev_avg_gain * (smoothing - 1.0) + curr_gain) / smoothing;
-        let curr_avg_loss = (prev_avg_loss * (smoothing - 1.0) + curr_loss) / smoothing;
+        let curr_avg_gain = prev_avg_gain.mul_add(smoothing - 1.0, curr_gain) / smoothing;
+        let curr_avg_loss = prev_avg_loss.mul_add(smoothing - 1.0, curr_loss) / smoothing;
 
         output_avg_gain[i] = curr_avg_gain;
         output_avg_loss[i] = curr_avg_loss;
@@ -277,8 +277,8 @@ pub fn rsi_incremental(
     };
 
     let smoothing = param_period as TAFloat;
-    let output_avg_gain = (prev_avg_gain * (smoothing - 1.0) + curr_gain) / smoothing;
-    let output_avg_loss = (prev_avg_loss * (smoothing - 1.0) + curr_loss) / smoothing;
+    let output_avg_gain = prev_avg_gain.mul_add(smoothing - 1.0, curr_gain) / smoothing;
+    let output_avg_loss = prev_avg_loss.mul_add(smoothing - 1.0, curr_loss) / smoothing;
 
     let output_rsi = if output_avg_loss == 0.0 {
         100.0

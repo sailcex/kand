@@ -1,7 +1,5 @@
 use crate::{
-    KandError,
-    TAFloat,
-    helper::{highest_bars, lowest_bars},
+    helper::{highest_bars, lowest_bars}, KandError, TAFloat, EPSILON
 };
 
 /// Returns the lookback period required for Williams %R calculation
@@ -235,7 +233,7 @@ pub fn willr_incremental(
     // Update highest high by removing old high and considering new high
     let new_highest_high = if input_high > prev_highest_high {
         input_high
-    } else if prev_high == prev_highest_high {
+    } else if (prev_high - prev_highest_high).abs() < EPSILON {
         // If previous high was the highest, need to find new highest between current high and previous highest
         input_high.max(prev_highest_high)
     } else {
@@ -245,7 +243,7 @@ pub fn willr_incremental(
     // Update lowest low by removing old low and considering new low
     let new_lowest_low = if input_low < prev_lowest_low {
         input_low
-    } else if prev_low == prev_lowest_low {
+    } else if (prev_low - prev_lowest_low).abs() < EPSILON {
         // If previous low was the lowest, need to find new lowest between current low and previous lowest
         input_low.min(prev_lowest_low)
     } else {

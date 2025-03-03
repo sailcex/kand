@@ -142,7 +142,7 @@ pub fn var(
 
     let period_t = param_period as TAFloat;
     let mean = sum / period_t;
-    output_var[lookback] = (sum_sq - sum * mean) / period_t;
+    output_var[lookback] = sum.mul_add(-mean, sum_sq) / period_t;
     output_sum[lookback] = sum;
     output_sum_sq[lookback] = sum_sq;
 
@@ -152,10 +152,10 @@ pub fn var(
         let new_val = input_prices[i];
 
         sum = sum - old_val + new_val;
-        sum_sq = sum_sq - old_val * old_val + new_val * new_val;
+        sum_sq = new_val.mul_add(new_val, old_val.mul_add(-old_val, sum_sq));
 
         let mean = sum / period_t;
-        output_var[i] = (sum_sq - sum * mean) / period_t;
+        output_var[i] = sum.mul_add(-mean, sum_sq) / period_t;
         output_sum[i] = sum;
         output_sum_sq[i] = sum_sq;
     }
@@ -230,11 +230,11 @@ pub fn var_incremental(
     }
 
     let new_sum = prev_sum - input_old_price + input_price;
-    let new_sum_sq = prev_sum_sq - input_old_price * input_old_price + input_price * input_price;
+    let new_sum_sq = input_price.mul_add(input_price, input_old_price.mul_add(-input_old_price, prev_sum_sq));
 
     let period_t = param_period as TAFloat;
     let mean = new_sum / period_t;
-    let var = (new_sum_sq - new_sum * mean) / period_t;
+    let var = new_sum.mul_add(-mean, new_sum_sq) / period_t;
 
     Ok((var, new_sum, new_sum_sq))
 }

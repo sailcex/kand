@@ -255,7 +255,7 @@ pub fn cdl_inverted_hammer_incremental(
     let up_shadow = upper_shadow_length(input_high, input_open, input_close);
     let down_shadow = lower_shadow_length(input_low, input_open, input_close);
     let k = period_to_k(param_period)?;
-    let body_avg = (body - prev_body_avg) * k + prev_body_avg;
+    let body_avg = (body - prev_body_avg).mul_add(k, prev_body_avg);
 
     // Check for Inverted Hammer pattern
     let is_small_body = body <= body_avg && body > 0.0;

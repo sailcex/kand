@@ -118,7 +118,7 @@ pub fn rma(
 
     // Calculate RMA for remaining values
     for i in param_period..input.len() {
-        output_rma[i] = input[i] * alpha + output_rma[i - 1] * (1.0 - alpha);
+        output_rma[i] = input[i].mul_add(alpha, output_rma[i - 1] * (1.0 - alpha));
     }
 
     // Fill initial values with NAN
@@ -182,5 +182,5 @@ pub fn rma_incremental(
     }
 
     let alpha = 1.0 / param_period as TAFloat;
-    Ok(input_current * alpha + prev_rma * (1.0 - alpha))
+    Ok(input_current.mul_add(alpha, prev_rma * (1.0 - alpha)))
 }

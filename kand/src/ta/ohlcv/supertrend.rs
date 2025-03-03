@@ -155,8 +155,8 @@ pub fn supertrend(
     // Calculate basic bands
     for i in lookback..len {
         let hl2 = (input_high[i] + input_low[i]) / 2.0;
-        basic_upper[i] = hl2 + param_multiplier * output_atr[i];
-        basic_lower[i] = hl2 - param_multiplier * output_atr[i];
+        basic_upper[i] = param_multiplier.mul_add(output_atr[i], hl2);
+        basic_lower[i] = param_multiplier.mul_add(-output_atr[i], hl2);
     }
 
     // Initialize the first valid point (at lookback)
@@ -299,8 +299,8 @@ pub fn supertrend_incremental(
         atr::atr_incremental(input_high, input_low, prev_close, prev_atr, param_period)?;
 
     let hl2 = (input_high + input_low) / 2.0;
-    let basic_upper = hl2 + param_multiplier * output_atr;
-    let basic_lower = hl2 - param_multiplier * output_atr;
+    let basic_upper = param_multiplier.mul_add(output_atr, hl2);
+    let basic_lower = param_multiplier.mul_add(-output_atr, hl2);
 
     let output_upper = if prev_close <= prev_upper {
         basic_upper.min(prev_upper)

@@ -9,7 +9,7 @@ use crate::{TAFloat, error::KandError};
 /// * `Result<usize, KandError>` - Lookback period if successful
 ///
 /// # Errors
-/// * `KandError::InvalidParameter` - If param_period < 2
+/// * `KandError::InvalidParameter` - If `param_period` < 2
 pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
     #[cfg(feature = "check")]
     {
@@ -157,8 +157,8 @@ pub fn t3(
     // Calculate coefficients consistent with TA-Lib
     let c1 = -a3;
     let c2 = 3.0 * (a2 + a3);
-    let c3 = -6.0 * a2 - 3.0 * a - 3.0 * a3;
-    let c4 = 1.0 + 3.0 * a + a3 + 3.0 * a2;
+    let c3 = 3.0f64.mul_add(-a3, (-6.0f64).mul_add(a2, -(3.0 * a)));
+    let c4 = 3.0f64.mul_add(a2, 3.0f64.mul_add(a, 1.0) + a3);
 
     let k = crate::helper::period_to_k(param_period)?;
     let one_minus_k = 1.0 - k;
@@ -178,7 +178,7 @@ pub fn t3(
     // Initialize EMA2 using the next (param_period - 1) values.
     temp = e1;
     for _ in 1..param_period {
-        e1 = k * input[today] + one_minus_k * e1;
+        e1 = k.mul_add(input[today], one_minus_k * e1);
         temp += e1;
         today += 1;
     }
@@ -187,8 +187,8 @@ pub fn t3(
     // Initialize EMA3.
     temp = e2;
     for _ in 1..param_period {
-        e1 = k * input[today] + one_minus_k * e1;
-        e2 = k * e1 + one_minus_k * e2;
+        e1 = k.mul_add(input[today], one_minus_k * e1);
+        e2 = k.mul_add(e1, one_minus_k * e2);
         temp += e2;
         today += 1;
     }
@@ -197,9 +197,9 @@ pub fn t3(
     // Initialize EMA4.
     temp = e3;
     for _ in 1..param_period {
-        e1 = k * input[today] + one_minus_k * e1;
-        e2 = k * e1 + one_minus_k * e2;
-        e3 = k * e2 + one_minus_k * e3;
+        e1 = k.mul_add(input[today], one_minus_k * e1);
+        e2 = k.mul_add(e1, one_minus_k * e2);
+        e3 = k.mul_add(e2, one_minus_k * e3);
         temp += e3;
         today += 1;
     }
@@ -208,10 +208,10 @@ pub fn t3(
     // Initialize EMA5.
     temp = e4;
     for _ in 1..param_period {
-        e1 = k * input[today] + one_minus_k * e1;
-        e2 = k * e1 + one_minus_k * e2;
-        e3 = k * e2 + one_minus_k * e3;
-        e4 = k * e3 + one_minus_k * e4;
+        e1 = k.mul_add(input[today], one_minus_k * e1);
+        e2 = k.mul_add(e1, one_minus_k * e2);
+        e3 = k.mul_add(e2, one_minus_k * e3);
+        e4 = k.mul_add(e3, one_minus_k * e4);
         temp += e4;
         today += 1;
     }
@@ -220,11 +220,11 @@ pub fn t3(
     // Initialize EMA6.
     temp = e5;
     for _ in 1..param_period {
-        e1 = k * input[today] + one_minus_k * e1;
-        e2 = k * e1 + one_minus_k * e2;
-        e3 = k * e2 + one_minus_k * e3;
-        e4 = k * e3 + one_minus_k * e4;
-        e5 = k * e4 + one_minus_k * e5;
+        e1 = k.mul_add(input[today], one_minus_k * e1);
+        e2 = k.mul_add(e1, one_minus_k * e2);
+        e3 = k.mul_add(e2, one_minus_k * e3);
+        e4 = k.mul_add(e3, one_minus_k * e4);
+        e5 = k.mul_add(e4, one_minus_k * e5);
         temp += e5;
         today += 1;
     }
@@ -232,17 +232,17 @@ pub fn t3(
 
     // Skip the remainder of the unstable period (if any).
     while today <= lookback {
-        e1 = k * input[today] + one_minus_k * e1;
-        e2 = k * e1 + one_minus_k * e2;
-        e3 = k * e2 + one_minus_k * e3;
-        e4 = k * e3 + one_minus_k * e4;
-        e5 = k * e4 + one_minus_k * e5;
-        e6 = k * e5 + one_minus_k * e6;
+        e1 = k.mul_add(input[today], one_minus_k * e1);
+        e2 = k.mul_add(e1, one_minus_k * e2);
+        e3 = k.mul_add(e2, one_minus_k * e3);
+        e4 = k.mul_add(e3, one_minus_k * e4);
+        e5 = k.mul_add(e4, one_minus_k * e5);
+        e6 = k.mul_add(e5, one_minus_k * e6);
         today += 1;
     }
 
     // Write the first valid output at index = lookback.
-    output[lookback] = c1 * e6 + c2 * e5 + c3 * e4 + c4 * e3;
+    output[lookback] = c4.mul_add(e3, c3.mul_add(e4, c1.mul_add(e6, c2 * e5)));
     output_ema1[lookback] = e1;
     output_ema2[lookback] = e2;
     output_ema3[lookback] = e3;
@@ -252,14 +252,14 @@ pub fn t3(
 
     // Process the remaining data points.
     while today < len {
-        e1 = k * input[today] + one_minus_k * e1;
-        e2 = k * e1 + one_minus_k * e2;
-        e3 = k * e2 + one_minus_k * e3;
-        e4 = k * e3 + one_minus_k * e4;
-        e5 = k * e4 + one_minus_k * e5;
-        e6 = k * e5 + one_minus_k * e6;
+        e1 = k.mul_add(input[today], one_minus_k * e1);
+        e2 = k.mul_add(e1, one_minus_k * e2);
+        e3 = k.mul_add(e2, one_minus_k * e3);
+        e4 = k.mul_add(e3, one_minus_k * e4);
+        e5 = k.mul_add(e4, one_minus_k * e5);
+        e6 = k.mul_add(e5, one_minus_k * e6);
 
-        output[today] = c1 * e6 + c2 * e5 + c3 * e4 + c4 * e3;
+        output[today] = c4.mul_add(e3, c3.mul_add(e4, c1.mul_add(e6, c2 * e5)));
         output_ema1[today] = e1;
         output_ema2[today] = e2;
         output_ema3[today] = e3;
@@ -379,12 +379,12 @@ pub fn t3_incremental(
     let one_minus_k = 1.0 - k;
 
     // Calculate new EMA values
-    let ema1 = input_price * k + prev_ema1 * one_minus_k;
-    let ema2 = ema1 * k + prev_ema2 * one_minus_k;
-    let ema3 = ema2 * k + prev_ema3 * one_minus_k;
-    let ema4 = ema3 * k + prev_ema4 * one_minus_k;
-    let ema5 = ema4 * k + prev_ema5 * one_minus_k;
-    let ema6 = ema5 * k + prev_ema6 * one_minus_k;
+    let ema1 = input_price.mul_add(k, prev_ema1 * one_minus_k);
+    let ema2 = ema1.mul_add(k, prev_ema2 * one_minus_k);
+    let ema3 = ema2.mul_add(k, prev_ema3 * one_minus_k);
+    let ema4 = ema3.mul_add(k, prev_ema4 * one_minus_k);
+    let ema5 = ema4.mul_add(k, prev_ema5 * one_minus_k);
+    let ema6 = ema5.mul_add(k, prev_ema6 * one_minus_k);
 
     // Calculate coefficients
     let a = param_vfactor as TAFloat;
@@ -393,11 +393,11 @@ pub fn t3_incremental(
 
     let c1 = -a3;
     let c2 = 3.0 * (a2 + a3);
-    let c3 = -6.0 * a2 - 3.0 * a - 3.0 * a3;
-    let c4 = 1.0 + 3.0 * a + a3 + 3.0 * a2;
+    let c3 = 3.0f64.mul_add(-a3, (-6.0f64).mul_add(a2, -(3.0 * a)));
+    let c4 = 3.0f64.mul_add(a2, 3.0f64.mul_add(a, 1.0) + a3);
 
     // Calculate T3
-    let t3 = c1 * ema6 + c2 * ema5 + c3 * ema4 + c4 * ema3;
+    let t3 = c4.mul_add(ema3, c3.mul_add(ema4, c1.mul_add(ema6, c2 * ema5)));
 
     Ok((t3, ema1, ema2, ema3, ema4, ema5, ema6))
 }

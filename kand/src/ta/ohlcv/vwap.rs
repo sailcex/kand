@@ -208,7 +208,7 @@ pub fn vwap_incremental(
     prev_cum_vol: TAFloat,
 ) -> Result<(TAFloat, TAFloat, TAFloat), KandError> {
     let typ_price = typprice::typprice_incremental(high, low, close)?;
-    let cum_pv = prev_cum_pv + (typ_price * volume);
+    let cum_pv = typ_price.mul_add(volume, prev_cum_pv);
     let cum_vol = prev_cum_vol + volume;
     let vwap = if cum_vol == 0.0 {
         0.0

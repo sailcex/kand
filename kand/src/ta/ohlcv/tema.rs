@@ -155,7 +155,7 @@ pub fn tema(
 
     // Calculate TEMA and store it in the output array (valid only after lookback)
     for i in lookback..len {
-        output_tema[i] = 3.0 * output_ema1[i] - 3.0 * output_ema2[i] + output_ema3[i];
+        output_tema[i] = 3.0f64.mul_add(output_ema1[i], -(3.0 * output_ema2[i])) + output_ema3[i];
     }
 
     // Fill initial periods with NAN for all outputs
@@ -230,7 +230,7 @@ pub fn tema_incremental(
     let ema1 = ema::ema_incremental(input, prev_ema1, param_period, None)?;
     let ema2 = ema::ema_incremental(ema1, prev_ema2, param_period, None)?;
     let ema3 = ema::ema_incremental(ema2, prev_ema3, param_period, None)?;
-    let tema = 3.0 * ema1 - 3.0 * ema2 + ema3;
+    let tema = 3.0f64.mul_add(ema1, -(3.0 * ema2)) + ema3;
 
     Ok((tema, ema1, ema2, ema3))
 }

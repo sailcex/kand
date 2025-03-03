@@ -31,14 +31,14 @@ pub const fn lookback() -> Result<usize, KandError> {
 /// ```
 ///
 /// # Parameters
-/// * `input_open` - Array of opening prices (slice of type TAFloat)
-/// * `input_high` - Array of high prices (slice of type TAFloat)
-/// * `input_low` - Array of low prices (slice of type TAFloat)
-/// * `input_close` - Array of closing prices (slice of type TAFloat)
-/// * `output_open` - Array to store calculated HA open values (mutable slice of type TAFloat)
-/// * `output_high` - Array to store calculated HA high values (mutable slice of type TAFloat)
-/// * `output_low` - Array to store calculated HA low values (mutable slice of type TAFloat)
-/// * `output_close` - Array to store calculated HA close values (mutable slice of type TAFloat)
+/// * `input_open` - Array of opening prices (slice of type `TAFloat`)
+/// * `input_high` - Array of high prices (slice of type `TAFloat`)
+/// * `input_low` - Array of low prices (slice of type `TAFloat`)
+/// * `input_close` - Array of closing prices (slice of type `TAFloat`)
+/// * `output_open` - Array to store calculated HA open values (mutable slice of type `TAFloat`)
+/// * `output_high` - Array to store calculated HA high values (mutable slice of type `TAFloat`)
+/// * `output_low` - Array to store calculated HA low values (mutable slice of type `TAFloat`)
+/// * `output_close` - Array to store calculated HA close values (mutable slice of type `TAFloat`)
 ///
 /// # Returns
 /// * `Result<(), KandError>` - Ok(()) if calculation succeeds
@@ -162,12 +162,12 @@ pub fn ha(
 /// ```
 ///
 /// # Parameters
-/// * `curr_open` - Current candle's open price (type TAFloat)
-/// * `curr_high` - Current candle's high price (type TAFloat)
-/// * `curr_low` - Current candle's low price (type TAFloat)
-/// * `curr_close` - Current candle's close price (type TAFloat)
-/// * `prev_ha_open` - Previous Heikin-Ashi candle's open price (type TAFloat)
-/// * `prev_ha_close` - Previous Heikin-Ashi candle's close price (type TAFloat)
+/// * `curr_open` - Current candle's open price (type `TAFloat`)
+/// * `curr_high` - Current candle's high price (type `TAFloat`)
+/// * `curr_low` - Current candle's low price (type `TAFloat`)
+/// * `curr_close` - Current candle's close price (type `TAFloat`)
+/// * `prev_ha_open` - Previous Heikin-Ashi candle's open price (type `TAFloat`)
+/// * `prev_ha_close` - Previous Heikin-Ashi candle's close price (type `TAFloat`)
 ///
 /// # Returns
 /// * `Result<(TAFloat, TAFloat, TAFloat, TAFloat), KandError>` - Tuple of (`HA_Open`, `HA_High`, `HA_Low`, `HA_Close`) if successful

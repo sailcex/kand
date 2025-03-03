@@ -133,7 +133,7 @@ pub fn dema(
 
     // Calculate first EMA series
     for i in param_period..len {
-        prev_ema1 = input[i] * alpha + prev_ema1 * (1.0 - alpha);
+        prev_ema1 = input[i].mul_add(alpha, prev_ema1 * (1.0 - alpha));
         output_ema1[i] = prev_ema1;
     }
     // Initialize second EMA with SMA of first EMA
@@ -150,13 +150,13 @@ pub fn dema(
 
     // Calculate second EMA series (EMA of EMA)
     for i in param_period * 2 - 1..len {
-        prev_ema2 = output_ema1[i] * alpha + prev_ema2 * (1.0 - alpha);
+        prev_ema2 = output_ema1[i].mul_add(alpha, prev_ema2 * (1.0 - alpha));
         output_ema2[i] = prev_ema2;
     }
 
     // Calculate DEMA = 2 * EMA1 - EMA2
     for i in 0..len {
-        output_dema[i] = 2.0 * output_ema1[i] - output_ema2[i];
+        output_dema[i] = 2.0f64.mul_add(output_ema1[i], -output_ema2[i]);
     }
 
     // Fill initial values with NAN
@@ -230,9 +230,9 @@ pub fn dema_incremental(
 
     let alpha = period_to_k(param_period)?;
 
-    let new_ema1 = input_price * alpha + prev_ema1 * (1.0 - alpha);
-    let new_ema2 = new_ema1 * alpha + prev_ema2 * (1.0 - alpha);
-    let dema = 2.0 * new_ema1 - new_ema2;
+    let new_ema1 = input_price.mul_add(alpha, prev_ema1 * (1.0 - alpha));
+    let new_ema2 = new_ema1.mul_add(alpha, prev_ema2 * (1.0 - alpha));
+    let dema = 2.0f64.mul_add(new_ema1, -new_ema2);
 
     Ok((dema, new_ema1, new_ema2))
 }

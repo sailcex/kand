@@ -178,7 +178,7 @@ pub fn sar(
         let high = input_high[i];
         let low = input_low[i];
 
-        let mut sar_val = prev_sar + af * (ep - prev_sar);
+        let mut sar_val = af.mul_add(ep - prev_sar, prev_sar);
 
         if is_long {
             if i - trend_start < 2 {
@@ -310,7 +310,7 @@ pub fn sar_incremental(
     let mut af = input_af;
     let mut ep = input_ep;
 
-    let mut sar = prev_sar + af * (ep - prev_sar);
+    let mut sar = af.mul_add(ep - prev_sar, prev_sar);
 
     if is_long {
         sar = sar.min(prev_low);

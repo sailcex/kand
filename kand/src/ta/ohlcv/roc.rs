@@ -53,9 +53,9 @@ pub const fn lookback(param_period: usize) -> Result<usize, KandError> {
 /// 2. Initial values within lookback period are set to NaN
 ///
 /// # Parameters
-/// * `input_price` - Array of price values (slice of type TAFloat)
+/// * `input_price` - Array of price values (slice of type `TAFloat`)
 /// * `param_period` - Number of periods to look back (usize)
-/// * `output_roc` - Array to store calculated ROC values, must be same length as `input_price` (mutable slice of type TAFloat)
+/// * `output_roc` - Array to store calculated ROC values, must be same length as `input_price` (mutable slice of type `TAFloat`)
 ///
 /// # Returns
 /// * `Result<(), KandError>` - Ok(()) if calculation succeeds
@@ -149,8 +149,8 @@ pub fn roc(
 /// ```
 ///
 /// # Parameters
-/// * `current_price` - The most recent price value (type TAFloat)
-/// * `prev_price` - The price from n periods ago (type TAFloat)
+/// * `current_price` - The most recent price value (type `TAFloat`)
+/// * `prev_price` - The price from n periods ago (type `TAFloat`)
 ///
 /// # Returns
 /// * `Result<TAFloat, KandError>` - The calculated ROC value if successful

@@ -174,8 +174,8 @@ pub fn bbands(
         let std_dev = output_var[i].sqrt();
 
         // Calculate upper and lower bands using standard deviations
-        output_upper[i] = output_sma[i] + param_dev_up * std_dev;
-        output_lower[i] = output_sma[i] - param_dev_down * std_dev;
+        output_upper[i] = param_dev_up.mul_add(std_dev, output_sma[i]);
+        output_lower[i] = param_dev_down.mul_add(-std_dev, output_sma[i]);
     }
 
     // Fill initial values with NAN
@@ -287,8 +287,8 @@ pub fn bbands_incremental(
     )?;
 
     let std_dev = new_variance.sqrt();
-    let upper = new_sma + param_dev_up * std_dev;
-    let lower = new_sma - param_dev_down * std_dev;
+    let upper = param_dev_up.mul_add(std_dev, new_sma);
+    let lower = param_dev_down.mul_add(-std_dev, new_sma);
 
     Ok((upper, new_sma, lower, new_sma, new_sum, new_sum_sq))
 }

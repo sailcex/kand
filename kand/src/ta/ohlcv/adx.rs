@@ -182,7 +182,7 @@ pub fn adx(
     // Calculate remaining ADX values using Wilder's smoothing
     let period_t = param_period as TAFloat;
     for i in (lookback + 1)..len {
-        output_adx[i] = (output_adx[i - 1] * (period_t - 1.0) + dx_values[i]) / period_t;
+        output_adx[i] = output_adx[i - 1].mul_add(period_t - 1.0, dx_values[i]) / period_t;
     }
 
     // Fill initial values with NAN
@@ -290,7 +290,7 @@ pub fn adx_incremental(
         )?;
 
     let period_t = param_period as TAFloat;
-    let output_adx = (prev_adx * (period_t - 1.0) + dx) / period_t;
+    let output_adx = prev_adx.mul_add(period_t - 1.0, dx) / period_t;
 
     Ok((
         output_adx,

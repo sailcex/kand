@@ -289,7 +289,7 @@ pub fn cdl_marubozu_incremental(
 
     // Calculate new body average using EMA formula
     let multiplier = period_to_k(param_period)?;
-    let new_body_avg = (body - prev_body_avg) * multiplier + prev_body_avg;
+    let new_body_avg = (body - prev_body_avg).mul_add(multiplier, prev_body_avg);
 
     // Check for Marubozu pattern
     let signal =

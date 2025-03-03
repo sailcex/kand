@@ -92,7 +92,7 @@ pub fn wclprice(
     }
 
     for i in 0..len {
-        output[i] = (input_high[i] + input_low[i] + (input_close[i] * 2.0)) / 4.0;
+        output[i] = input_close[i].mul_add(2.0, input_high[i] + input_low[i]) / 4.0;
     }
 
     Ok(())
@@ -137,7 +137,7 @@ pub fn wclprice_incremental(
         }
     }
 
-    Ok((input_high + input_low + (input_close * 2.0)) / 4.0)
+    Ok(input_close.mul_add(2.0, input_high + input_low) / 4.0)
 }
 
 #[cfg(test)]
