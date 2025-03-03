@@ -2,7 +2,7 @@
 
 This document records all significant updates and changes to the Kand project.
 
-## [unreleased]
+## [0.2.0] - 2025-03-02
 
 ### 🐛 Bug Fixes
 
