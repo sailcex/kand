@@ -154,9 +154,8 @@ pub fn tema(
     )?;
 
     // Calculate TEMA and store it in the output array (valid only after lookback)
-    let three = 3.0;
     for i in lookback..len {
-        output_tema[i] = three * output_ema1[i] - three * output_ema2[i] + output_ema3[i];
+        output_tema[i] = 3.0 * output_ema1[i] - 3.0 * output_ema2[i] + output_ema3[i];
     }
 
     // Fill initial periods with NAN for all outputs
