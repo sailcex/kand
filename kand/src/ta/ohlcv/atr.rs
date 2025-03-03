@@ -141,8 +141,8 @@ pub fn atr(
     // Calculate remaining ATR values using RMA
     for i in (lookback + 1)..len {
         let tr = trange::trange_incremental(input_high[i], input_low[i], input_close[i - 1])?;
-        output_atr[i] =
-            output_atr[i - 1].mul_add((param_period - 1) as TAFloat, tr) / (param_period as TAFloat);
+        output_atr[i] = output_atr[i - 1].mul_add((param_period - 1) as TAFloat, tr)
+            / (param_period as TAFloat);
     }
 
     // Fill initial values with NAN

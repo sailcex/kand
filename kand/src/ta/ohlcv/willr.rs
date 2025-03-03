@@ -1,5 +1,8 @@
 use crate::{
-    helper::{highest_bars, lowest_bars}, KandError, TAFloat, EPSILON
+    EPSILON,
+    KandError,
+    TAFloat,
+    helper::{highest_bars, lowest_bars},
 };
 
 /// Returns the lookback period required for Williams %R calculation

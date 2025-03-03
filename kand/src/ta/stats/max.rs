@@ -1,4 +1,4 @@
-use crate::{KandError, TAFloat, EPSILON};
+use crate::{EPSILON, KandError, TAFloat};
 
 /// Calculates the lookback period required for Maximum Value calculation.
 ///

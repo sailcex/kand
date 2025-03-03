@@ -230,7 +230,10 @@ pub fn var_incremental(
     }
 
     let new_sum = prev_sum - input_old_price + input_price;
-    let new_sum_sq = input_price.mul_add(input_price, input_old_price.mul_add(-input_old_price, prev_sum_sq));
+    let new_sum_sq = input_price.mul_add(
+        input_price,
+        input_old_price.mul_add(-input_old_price, prev_sum_sq),
+    );
 
     let period_t = param_period as TAFloat;
     let mean = new_sum / period_t;
