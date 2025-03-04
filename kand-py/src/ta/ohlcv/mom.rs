@@ -61,18 +61,14 @@ pub fn mom_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> momentum = kand.mom_incremental(10.0, 6.0)
+///   >>> momentum = kand.mom_inc(10.0, 6.0)
 ///   >>> print(momentum)
 ///   4.0
 ///   ```
 #[pyfunction]
-#[pyo3(name = "mom_incremental", signature = (current_price, old_price))]
-pub fn mom_incremental_py(
-    py: Python,
-    current_price: TAFloat,
-    old_price: TAFloat,
-) -> PyResult<TAFloat> {
+#[pyo3(name = "mom_inc", signature = (current_price, old_price))]
+pub fn mom_inc_py(py: Python, current_price: TAFloat, old_price: TAFloat) -> PyResult<TAFloat> {
     // Perform the incremental momentum calculation while releasing the GIL
-    py.allow_threads(|| mom::mom_incremental(current_price, old_price))
+    py.allow_threads(|| mom::mom_inc(current_price, old_price))
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

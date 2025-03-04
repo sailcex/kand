@@ -73,17 +73,17 @@ pub fn dema_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> dema, ema1, ema2 = kand.dema_incremental(10.0, 9.5, 9.0, 3)
+///   >>> dema, ema1, ema2 = kand.dema_inc(10.0, 9.5, 9.0, 3)
 ///   ```
 #[pyfunction]
-#[pyo3(name = "dema_incremental", signature = (price, prev_ema1, prev_ema2, period))]
-pub fn dema_incremental_py(
+#[pyo3(name = "dema_inc", signature = (price, prev_ema1, prev_ema2, period))]
+pub fn dema_inc_py(
     py: Python,
     price: TAFloat,
     prev_ema1: TAFloat,
     prev_ema2: TAFloat,
     period: usize,
 ) -> PyResult<(TAFloat, TAFloat, TAFloat)> {
-    py.allow_threads(|| dema::dema_incremental(price, prev_ema1, prev_ema2, period))
+    py.allow_threads(|| dema::dema_inc(price, prev_ema1, prev_ema2, period))
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

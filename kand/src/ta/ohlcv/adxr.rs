@@ -205,9 +205,9 @@ pub fn adxr(
 ///
 /// # Example
 /// ```
-/// use kand::ohlcv::adxr::adxr_incremental;
+/// use kand::ohlcv::adxr::adxr_inc;
 ///
-/// let (adxr, adx, plus_dm, minus_dm, tr) = adxr_incremental(
+/// let (adxr, adx, plus_dm, minus_dm, tr) = adxr_inc(
 ///     24.20, // input_high
 ///     23.85, // input_low
 ///     24.07, // prev_high
@@ -222,7 +222,7 @@ pub fn adxr(
 /// )
 /// .unwrap();
 /// ```
-pub fn adxr_incremental(
+pub fn adxr_inc(
     input_high: TAFloat,
     input_low: TAFloat,
     prev_high: TAFloat,
@@ -262,7 +262,7 @@ pub fn adxr_incremental(
     }
 
     let (output_adx, output_smoothed_plus_dm, output_smoothed_minus_dm, output_smoothed_tr) =
-        adx::adx_incremental(
+        adx::adx_inc(
             input_high,
             input_low,
             prev_high,
@@ -386,7 +386,7 @@ mod tests {
         // 2. Need additional period - 1 values for i - param_period + 1 lookback
         // Total: (period * 3 - 2) - ( - period + 1) = period * 4 - 3
         for i in (param_period * 4 - 3)..input_high.len() {
-            let result = adxr_incremental(
+            let result = adxr_inc(
                 input_high[i],
                 input_low[i],
                 input_high[i - 1],

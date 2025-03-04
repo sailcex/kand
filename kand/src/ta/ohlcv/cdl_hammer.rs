@@ -167,7 +167,7 @@ pub fn cdl_hammer(
 
     // Process remaining candles
     for i in lookback..len {
-        let (signal, new_body_avg) = cdl_hammer_incremental(
+        let (signal, new_body_avg) = cdl_hammer_inc(
             input_open[i],
             input_high[i],
             input_low[i],
@@ -220,7 +220,7 @@ pub fn cdl_hammer(
 /// # Examples
 /// ```
 /// use kand::ohlcv::cdl_hammer;
-/// let (signal, body_avg) = cdl_hammer::cdl_hammer_incremental(
+/// let (signal, body_avg) = cdl_hammer::cdl_hammer_inc(
 ///     10.0, // open
 ///     11.0, // high
 ///     9.0,  // low
@@ -231,7 +231,7 @@ pub fn cdl_hammer(
 /// )
 /// .unwrap();
 /// ```
-pub fn cdl_hammer_incremental(
+pub fn cdl_hammer_inc(
     input_open: TAFloat,
     input_high: TAFloat,
     input_low: TAFloat,
@@ -363,7 +363,7 @@ mod tests {
 
         // Test each incremental step
         for i in 14..18 {
-            let (signal, new_body_avg) = cdl_hammer_incremental(
+            let (signal, new_body_avg) = cdl_hammer_inc(
                 input_open[i],
                 input_high[i],
                 input_low[i],

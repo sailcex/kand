@@ -226,7 +226,7 @@ pub fn dx(
 /// let param_period = 14;
 ///
 /// let (output_dx, output_smoothed_plus_dm, output_smoothed_minus_dm, output_smoothed_tr) =
-///     dx::dx_incremental(
+///     dx::dx_inc(
 ///         input_high,
 ///         input_low,
 ///         prev_high,
@@ -239,7 +239,7 @@ pub fn dx(
 ///     )
 ///     .unwrap();
 /// ```
-pub fn dx_incremental(
+pub fn dx_inc(
     input_high: TAFloat,
     input_low: TAFloat,
     prev_high: TAFloat,
@@ -277,7 +277,7 @@ pub fn dx_incremental(
         }
     }
 
-    let (plus_di, output_smoothed_plus_dm, output_smoothed_tr) = plus_di::plus_di_incremental(
+    let (plus_di, output_smoothed_plus_dm, output_smoothed_tr) = plus_di::plus_di_inc(
         input_high,
         input_low,
         prev_high,
@@ -288,7 +288,7 @@ pub fn dx_incremental(
         param_period,
     )?;
 
-    let (minus_di, output_smoothed_minus_dm, _) = minus_di::minus_di_incremental(
+    let (minus_di, output_smoothed_minus_dm, _) = minus_di::minus_di_inc(
         input_high,
         input_low,
         prev_high,
@@ -369,19 +369,18 @@ mod tests {
 
         // Calculate and verify incremental values
         for i in param_period + 1..input_high.len() {
-            let (result, new_smoothed_plus_dm, new_smoothed_minus_dm, new_smoothed_tr) =
-                dx_incremental(
-                    input_high[i],
-                    input_low[i],
-                    input_high[i - 1],
-                    input_low[i - 1],
-                    input_close[i - 1],
-                    output_smoothed_plus_dm[i - 1],
-                    output_smoothed_minus_dm[i - 1],
-                    output_smoothed_tr[i - 1],
-                    param_period,
-                )
-                .unwrap();
+            let (result, new_smoothed_plus_dm, new_smoothed_minus_dm, new_smoothed_tr) = dx_inc(
+                input_high[i],
+                input_low[i],
+                input_high[i - 1],
+                input_low[i - 1],
+                input_close[i - 1],
+                output_smoothed_plus_dm[i - 1],
+                output_smoothed_minus_dm[i - 1],
+                output_smoothed_tr[i - 1],
+                param_period,
+            )
+            .unwrap();
 
             // Compare with full calculation
             assert_relative_eq!(result, output_dx[i], epsilon = 0.00001);

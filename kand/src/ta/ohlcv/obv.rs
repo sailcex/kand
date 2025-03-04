@@ -148,10 +148,10 @@ pub fn obv(
 /// let volume = 150.0;
 /// let prev_obv = 100.0;
 ///
-/// let output_obv = obv::obv_incremental(curr_close, prev_close, volume, prev_obv).unwrap();
+/// let output_obv = obv::obv_inc(curr_close, prev_close, volume, prev_obv).unwrap();
 /// // output_obv = 250.0 (prev_obv + volume since price increased)
 /// ```
-pub fn obv_incremental(
+pub fn obv_inc(
     input_curr_close: TAFloat,
     prev_close: TAFloat,
     input_volume: TAFloat,
@@ -213,7 +213,7 @@ mod tests {
         let mut prev_obv = output_obv[0];
 
         for i in 1..input_close.len() {
-            let result = obv_incremental(
+            let result = obv_inc(
                 input_close[i],
                 input_close[i - 1],
                 input_volume[i],

@@ -171,10 +171,9 @@ pub fn ad(
 /// let input_volume = 200.0;
 /// let prev_ad = 25.0;
 ///
-/// let output_ad =
-///     ad::ad_incremental(input_high, input_low, input_close, input_volume, prev_ad).unwrap();
+/// let output_ad = ad::ad_inc(input_high, input_low, input_close, input_volume, prev_ad).unwrap();
 /// ```
-pub fn ad_incremental(
+pub fn ad_inc(
     input_high: TAFloat,
     input_low: TAFloat,
     input_close: TAFloat,
@@ -282,7 +281,7 @@ mod tests {
 
         // Test each incremental step
         for i in 1..input_high.len() {
-            let result = ad_incremental(
+            let result = ad_inc(
                 input_high[i],
                 input_low[i],
                 input_close[i],

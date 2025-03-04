@@ -132,7 +132,7 @@ pub fn atr(
     let mut prev_close = input_close[0];
 
     for i in 1..=lookback {
-        let tr = trange::trange_incremental(input_high[i], input_low[i], prev_close)?;
+        let tr = trange::trange_inc(input_high[i], input_low[i], prev_close)?;
         tr_sum += tr;
         prev_close = input_close[i];
     }
@@ -140,7 +140,7 @@ pub fn atr(
 
     // Calculate remaining ATR values using RMA
     for i in (lookback + 1)..len {
-        let tr = trange::trange_incremental(input_high[i], input_low[i], input_close[i - 1])?;
+        let tr = trange::trange_inc(input_high[i], input_low[i], input_close[i - 1])?;
         output_atr[i] = output_atr[i - 1].mul_add((param_period - 1) as TAFloat, tr)
             / (param_period as TAFloat);
     }
@@ -181,7 +181,7 @@ pub fn atr(
 ///
 /// # Example
 /// ```
-/// use kand::ohlcv::atr::atr_incremental;
+/// use kand::ohlcv::atr::atr_inc;
 ///
 /// let input_high = 15.0;
 /// let input_low = 11.0;
@@ -189,10 +189,9 @@ pub fn atr(
 /// let prev_atr = 3.0;
 /// let param_period = 3;
 ///
-/// let output_atr =
-///     atr_incremental(input_high, input_low, prev_close, prev_atr, param_period).unwrap();
+/// let output_atr = atr_inc(input_high, input_low, prev_close, prev_atr, param_period).unwrap();
 /// ```
-pub fn atr_incremental(
+pub fn atr_inc(
     input_high: TAFloat,
     input_low: TAFloat,
     prev_close: TAFloat,
@@ -215,7 +214,7 @@ pub fn atr_incremental(
         }
     }
 
-    let tr = trange::trange_incremental(input_high, input_low, prev_close)?;
+    let tr = trange::trange_inc(input_high, input_low, prev_close)?;
     Ok(prev_atr.mul_add((param_period - 1) as TAFloat, tr) / (param_period as TAFloat))
 }
 
@@ -284,7 +283,7 @@ mod tests {
 
         // Test each incremental step
         for i in 15..19 {
-            let result = atr_incremental(
+            let result = atr_inc(
                 input_high[i],
                 input_low[i],
                 input_close[i - 1],

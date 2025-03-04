@@ -91,11 +91,11 @@ pub fn cdl_inverted_hammer_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> signal, body_avg = kand.cdl_inverted_hammer_incremental(100.0, 102.0, 98.0, 100.1, 0.5, 14, 2.0)
+///   >>> signal, body_avg = kand.cdl_inverted_hammer_inc(100.0, 102.0, 98.0, 100.1, 0.5, 14, 2.0)
 ///   ```
 #[pyfunction]
-#[pyo3(name = "cdl_inverted_hammer_incremental", signature = (open, high, low, close, prev_body_avg, period, factor))]
-pub fn cdl_inverted_hammer_incremental_py(
+#[pyo3(name = "cdl_inverted_hammer_inc", signature = (open, high, low, close, prev_body_avg, period, factor))]
+pub fn cdl_inverted_hammer_inc_py(
     py: Python,
     open: TAFloat,
     high: TAFloat,
@@ -106,7 +106,7 @@ pub fn cdl_inverted_hammer_incremental_py(
     factor: TAFloat,
 ) -> PyResult<(TAInt, TAFloat)> {
     py.allow_threads(|| {
-        cdl_inverted_hammer::cdl_inverted_hammer_incremental(
+        cdl_inverted_hammer::cdl_inverted_hammer_inc(
             open,
             high,
             low,

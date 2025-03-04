@@ -198,9 +198,9 @@ pub fn midpoint(
 /// let period = 14;
 ///
 /// let (midpoint, new_highest, new_lowest) =
-///     midpoint::midpoint_incremental(current_price, prev_highest, prev_lowest, period).unwrap();
+///     midpoint::midpoint_inc(current_price, prev_highest, prev_lowest, period).unwrap();
 /// ```
-pub fn midpoint_incremental(
+pub fn midpoint_inc(
     input_price: TAFloat,
     prev_highest: TAFloat,
     prev_lowest: TAFloat,
@@ -277,8 +277,7 @@ mod tests {
 
         for i in 14..19 {
             let (midpoint, new_highest, new_lowest) =
-                midpoint_incremental(input_price[i], prev_highest, prev_lowest, param_period)
-                    .unwrap();
+                midpoint_inc(input_price[i], prev_highest, prev_lowest, param_period).unwrap();
 
             assert_relative_eq!(midpoint, output_midpoint[i], epsilon = 0.01);
             prev_highest = new_highest;

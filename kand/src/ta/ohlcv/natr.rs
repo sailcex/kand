@@ -180,9 +180,9 @@ pub fn natr(
 /// let prev_atr = 3.0;
 /// let period = 3;
 ///
-/// let natr = natr::natr_incremental(high, low, close, prev_close, prev_atr, period).unwrap();
+/// let natr = natr::natr_inc(high, low, close, prev_close, prev_atr, period).unwrap();
 /// ```
-pub fn natr_incremental(
+pub fn natr_inc(
     input_high: TAFloat,
     input_low: TAFloat,
     input_close: TAFloat,
@@ -211,8 +211,7 @@ pub fn natr_incremental(
         }
     }
 
-    let output_atr =
-        atr::atr_incremental(input_high, input_low, prev_close, prev_atr, param_period)?;
+    let output_atr = atr::atr_inc(input_high, input_low, prev_close, prev_atr, param_period)?;
     Ok((output_atr / input_close) * 100.0)
 }
 
@@ -285,7 +284,7 @@ mod tests {
 
         // Test incremental calculation matches
         for i in param_period + 1..input_high.len() {
-            let output_natr_incremental = natr_incremental(
+            let output_natr_inc = natr_inc(
                 input_high[i],
                 input_low[i],
                 input_close[i],
@@ -294,7 +293,7 @@ mod tests {
                 param_period,
             )
             .unwrap();
-            assert_relative_eq!(output_natr_incremental, output_natr[i], epsilon = 0.00001);
+            assert_relative_eq!(output_natr_inc, output_natr[i], epsilon = 0.00001);
         }
     }
 }

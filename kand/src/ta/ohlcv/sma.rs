@@ -165,10 +165,10 @@ pub fn sma(
 /// let old_price = 2.0;
 /// let period = 3;
 ///
-/// let next_sma = sma::sma_incremental(prev_sma, new_price, old_price, period).unwrap();
+/// let next_sma = sma::sma_inc(prev_sma, new_price, old_price, period).unwrap();
 /// assert_eq!(next_sma, 6.666666666666666);
 /// ```
-pub fn sma_incremental(
+pub fn sma_inc(
     prev_sma: TAFloat,
     input_new_price: TAFloat,
     input_old_price: TAFloat,
@@ -244,7 +244,7 @@ mod tests {
         // Test each incremental step
         for i in 14..17 {
             let result =
-                sma_incremental(prev_sma, input[i], input[i - param_period], param_period).unwrap();
+                sma_inc(prev_sma, input[i], input[i - param_period], param_period).unwrap();
             assert_relative_eq!(result, output_sma[i], epsilon = 0.00001);
             prev_sma = result;
         }

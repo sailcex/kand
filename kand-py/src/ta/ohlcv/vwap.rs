@@ -85,11 +85,11 @@ pub fn vwap_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> new_cum_pv, new_cum_vol, vwap = kand.vwap_incremental(15.0, 11.0, 14.0, 200.0, 1000.0, 150.0)
+///   >>> new_cum_pv, new_cum_vol, vwap = kand.vwap_inc(15.0, 11.0, 14.0, 200.0, 1000.0, 150.0)
 ///   ```
 #[pyfunction]
-#[pyo3(name = "vwap_incremental", signature = (high, low, close, volume, prev_cum_pv, prev_cum_vol))]
-pub fn vwap_incremental_py(
+#[pyo3(name = "vwap_inc", signature = (high, low, close, volume, prev_cum_pv, prev_cum_vol))]
+pub fn vwap_inc_py(
     high: TAFloat,
     low: TAFloat,
     close: TAFloat,
@@ -97,6 +97,6 @@ pub fn vwap_incremental_py(
     prev_cum_pv: TAFloat,
     prev_cum_vol: TAFloat,
 ) -> PyResult<(TAFloat, TAFloat, TAFloat)> {
-    vwap::vwap_incremental(high, low, close, volume, prev_cum_pv, prev_cum_vol)
+    vwap::vwap_inc(high, low, close, volume, prev_cum_pv, prev_cum_vol)
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

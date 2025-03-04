@@ -93,11 +93,11 @@ pub fn cdl_long_shadow_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> signal, body_avg = kand.cdl_long_shadow_incremental(100.0, 102.0, 98.0, 100.1, 0.5, 14, 75.0)
+///   >>> signal, body_avg = kand.cdl_long_shadow_inc(100.0, 102.0, 98.0, 100.1, 0.5, 14, 75.0)
 ///   ```
 #[pyfunction]
-#[pyo3(name = "cdl_long_shadow_incremental", signature = (open, high, low, close, prev_body_avg, period, shadow_factor))]
-pub fn cdl_long_shadow_incremental_py(
+#[pyo3(name = "cdl_long_shadow_inc", signature = (open, high, low, close, prev_body_avg, period, shadow_factor))]
+pub fn cdl_long_shadow_inc_py(
     py: Python,
     open: TAFloat,
     high: TAFloat,
@@ -108,7 +108,7 @@ pub fn cdl_long_shadow_incremental_py(
     shadow_factor: TAFloat,
 ) -> PyResult<(TAInt, TAFloat)> {
     py.allow_threads(|| {
-        cdl_long_shadow::cdl_long_shadow_incremental(
+        cdl_long_shadow::cdl_long_shadow_inc(
             open,
             high,
             low,

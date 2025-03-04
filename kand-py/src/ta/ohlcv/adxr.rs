@@ -108,7 +108,7 @@ pub fn adxr_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> adxr, adx, plus_dm, minus_dm, tr = kand.adxr_incremental(
+///   >>> adxr, adx, plus_dm, minus_dm, tr = kand.adxr_inc(
 ///   ...     24.20,  # high
 ///   ...     23.85,  # low
 ///   ...     24.07,  # prev_high
@@ -123,7 +123,7 @@ pub fn adxr_py(
 ///   ... )
 ///   ```
 #[pyfunction]
-#[pyo3(name = "adxr_incremental", signature = (
+#[pyo3(name = "adxr_inc", signature = (
     high,
     low,
     prev_high,
@@ -136,7 +136,7 @@ pub fn adxr_py(
     prev_smoothed_tr,
     period
 ))]
-pub fn adxr_incremental_py(
+pub fn adxr_inc_py(
     py: Python,
     high: TAFloat,
     low: TAFloat,
@@ -151,7 +151,7 @@ pub fn adxr_incremental_py(
     period: usize,
 ) -> PyResult<(TAFloat, TAFloat, TAFloat, TAFloat, TAFloat)> {
     py.allow_threads(|| {
-        adxr::adxr_incremental(
+        adxr::adxr_inc(
             high,
             low,
             prev_high,

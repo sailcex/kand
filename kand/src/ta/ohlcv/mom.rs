@@ -150,10 +150,10 @@ pub fn mom(
 ///
 /// let current_price = 10.0;
 /// let old_price = 6.0;
-/// let momentum = mom::mom_incremental(current_price, old_price).unwrap();
+/// let momentum = mom::mom_inc(current_price, old_price).unwrap();
 /// assert_eq!(momentum, 4.0);
 /// ```
-pub fn mom_incremental(
+pub fn mom_inc(
     input_current_price: TAFloat,
     input_old_price: TAFloat,
 ) -> Result<TAFloat, KandError> {
@@ -203,7 +203,7 @@ mod tests {
 
         // Test incremental calculation
         for i in param_period..input_prices.len() {
-            let result = mom_incremental(input_prices[i], input_prices[i - param_period]).unwrap();
+            let result = mom_inc(input_prices[i], input_prices[i - param_period]).unwrap();
             assert_relative_eq!(result, output_mom[i], epsilon = 0.00001);
         }
     }

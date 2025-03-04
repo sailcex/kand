@@ -177,9 +177,9 @@ pub fn ema(
 /// let period = 14;
 ///
 /// // Calculate next EMA with default smoothing
-/// let new_ema = ema::ema_incremental(current_price, prev_ema, period, None).unwrap();
+/// let new_ema = ema::ema_inc(current_price, prev_ema, period, None).unwrap();
 /// ```
-pub fn ema_incremental(
+pub fn ema_inc(
     input_price: TAFloat,
     prev_ema: TAFloat,
     param_period: usize,
@@ -264,7 +264,7 @@ mod tests {
 
         // Test each incremental step
         for i in 14..18 {
-            let result = ema_incremental(input_prices[i], prev_ema, param_period, None).unwrap();
+            let result = ema_inc(input_prices[i], prev_ema, param_period, None).unwrap();
             assert_relative_eq!(result, output_ema[i], epsilon = 0.00001);
             prev_ema = result;
         }

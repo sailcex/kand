@@ -121,10 +121,10 @@ pub fn medprice(
 ///
 /// let high = 10.0;
 /// let low = 8.0;
-/// let result = medprice::medprice_incremental(high, low).unwrap();
+/// let result = medprice::medprice_inc(high, low).unwrap();
 /// assert_eq!(result, 9.0);
 /// ```
-pub fn medprice_incremental(input_high: TAFloat, input_low: TAFloat) -> Result<TAFloat, KandError> {
+pub fn medprice_inc(input_high: TAFloat, input_low: TAFloat) -> Result<TAFloat, KandError> {
     #[cfg(feature = "deep-check")]
     {
         if input_high.is_nan() || input_low.is_nan() {
@@ -167,7 +167,7 @@ mod tests {
 
         // Test incremental calculation matches regular calculation
         for i in 0..input_high.len() {
-            let result = medprice_incremental(input_high[i], input_low[i]).unwrap();
+            let result = medprice_inc(input_high[i], input_low[i]).unwrap();
             assert_relative_eq!(result, output_medprice[i], epsilon = 0.0001);
         }
     }

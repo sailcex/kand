@@ -108,7 +108,7 @@ pub fn macd_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> macd_line, signal_line, histogram = kand.macd_incremental(
+///   >>> macd_line, signal_line, histogram = kand.macd_inc(
 ///   ...     100.0,  # current price
 ///   ...     95.0,   # previous fast EMA
 ///   ...     98.0,   # previous slow EMA
@@ -119,8 +119,8 @@ pub fn macd_py(
 ///   ... )
 ///   ```
 #[pyfunction]
-#[pyo3(name = "macd_incremental", signature = (price, prev_fast_ema, prev_slow_ema, prev_signal, fast_period, slow_period, signal_period))]
-pub fn macd_incremental_py(
+#[pyo3(name = "macd_inc", signature = (price, prev_fast_ema, prev_slow_ema, prev_signal, fast_period, slow_period, signal_period))]
+pub fn macd_inc_py(
     py: Python,
     price: TAFloat,
     prev_fast_ema: TAFloat,
@@ -132,7 +132,7 @@ pub fn macd_incremental_py(
 ) -> PyResult<(TAFloat, TAFloat, TAFloat)> {
     // Perform incremental MACD calculation while releasing the GIL
     py.allow_threads(|| {
-        macd::macd_incremental(
+        macd::macd_inc(
             price,
             prev_fast_ema,
             prev_slow_ema,

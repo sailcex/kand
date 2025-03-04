@@ -111,12 +111,12 @@ pub fn cci_py(
 ///   >>> old_close = 100.0
 ///   >>> period = 14
 ///   >>> tp_buffer = [100.0] * period
-///   >>> next_cci = kand.cci_incremental(prev_sma_tp, new_high, new_low, new_close,
+///   >>> next_cci = kand.cci_inc(prev_sma_tp, new_high, new_low, new_close,
 ///   ...                                  old_high, old_low, old_close, period, tp_buffer)
 ///   ```
 #[pyfunction]
-#[pyo3(name = "cci_incremental", signature = (prev_sma_tp, new_high, new_low, new_close, old_high, old_low, old_close, period, tp_buffer))]
-pub fn cci_incremental_py(
+#[pyo3(name = "cci_inc", signature = (prev_sma_tp, new_high, new_low, new_close, old_high, old_low, old_close, period, tp_buffer))]
+pub fn cci_inc_py(
     py: Python,
     prev_sma_tp: TAFloat,
     new_high: TAFloat,
@@ -130,7 +130,7 @@ pub fn cci_incremental_py(
 ) -> PyResult<TAFloat> {
     let mut buffer = tp_buffer;
     py.allow_threads(|| {
-        cci::cci_incremental(
+        cci::cci_inc(
             prev_sma_tp,
             new_high,
             new_low,

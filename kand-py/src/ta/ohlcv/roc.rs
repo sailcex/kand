@@ -61,13 +61,13 @@ pub fn roc_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> roc = kand.roc_incremental(11.5, 10.0)
+///   >>> roc = kand.roc_inc(11.5, 10.0)
 ///   >>> print(roc)
 ///   15.0
 ///   ```
 #[pyfunction]
-#[pyo3(name = "roc_incremental", signature = (current_price, prev_price))]
-pub fn roc_incremental_py(current_price: TAFloat, prev_price: TAFloat) -> PyResult<TAFloat> {
-    roc::roc_incremental(current_price, prev_price)
+#[pyo3(name = "roc_inc", signature = (current_price, prev_price))]
+pub fn roc_inc_py(current_price: TAFloat, prev_price: TAFloat) -> PyResult<TAFloat> {
+    roc::roc_inc(current_price, prev_price)
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

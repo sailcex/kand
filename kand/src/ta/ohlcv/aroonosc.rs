@@ -222,9 +222,9 @@ pub fn aroonosc(
 ///
 /// # Example
 /// ```
-/// use kand::ohlcv::aroonosc::aroonosc_incremental;
+/// use kand::ohlcv::aroonosc::aroonosc_inc;
 ///
-/// let (aroonosc, high, low, days_high, days_low) = aroonosc_incremental(
+/// let (aroonosc, high, low, days_high, days_low) = aroonosc_inc(
 ///     10.0, // current high
 ///     9.0,  // current low
 ///     11.0, // previous high
@@ -235,7 +235,7 @@ pub fn aroonosc(
 /// )
 /// .unwrap();
 /// ```
-pub fn aroonosc_incremental(
+pub fn aroonosc_inc(
     input_high: TAFloat,
     input_low: TAFloat,
     prev_high: TAFloat,
@@ -365,7 +365,7 @@ mod tests {
         let mut days_since_low = output_days_since_low[14];
 
         for i in 15..20 {
-            let (aroon_osc, new_high, new_low, new_days_high, new_days_low) = aroonosc_incremental(
+            let (aroon_osc, new_high, new_low, new_days_high, new_days_low) = aroonosc_inc(
                 input_high[i],
                 input_low[i],
                 prev_high,

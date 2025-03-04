@@ -2,7 +2,11 @@
 
 This document records all significant updates and changes to the Kand project.
 
-## [0.2.0] - 2025-03-02
+## [unreleased]
+
+### 🚀 Features
+
+- *(precision)* Add f32 floating-point precision support (#10)
 
 ### 🐛 Bug Fixes
 
@@ -10,6 +14,7 @@ This document records all significant updates and changes to the Kand project.
 - *(tema)* Resolve ambiguous numeric type errors in TEMA calculation
 - *(willr)* Resolve Clippy warnings for strict float comparisons
 - *(stats)* Resolve Clippy warnings for strict float comparisons in max/min
+- *(ci)* Fix test-rust
 
 ## [0.2.1] - 2025-03-02
 

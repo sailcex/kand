@@ -99,7 +99,7 @@ pub fn aroonosc_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> osc, high, low, days_high, days_low = kand.aroonosc_incremental(
+///   >>> osc, high, low, days_high, days_low = kand.aroonosc_inc(
 ///   ...     15.0,  # high
 ///   ...     12.0,  # low
 ///   ...     14.0,  # prev_high
@@ -110,7 +110,7 @@ pub fn aroonosc_py(
 ///   ... )
 ///   ```
 #[pyfunction]
-#[pyo3(name = "aroonosc_incremental", signature = (
+#[pyo3(name = "aroonosc_inc", signature = (
     high,
     low,
     prev_high,
@@ -119,7 +119,7 @@ pub fn aroonosc_py(
     days_since_low,
     period
 ))]
-pub fn aroonosc_incremental_py(
+pub fn aroonosc_inc_py(
     py: Python,
     high: TAFloat,
     low: TAFloat,
@@ -130,7 +130,7 @@ pub fn aroonosc_incremental_py(
     period: usize,
 ) -> PyResult<(TAFloat, TAFloat, TAFloat, usize, usize)> {
     py.allow_threads(|| {
-        aroonosc::aroonosc_incremental(
+        aroonosc::aroonosc_inc(
             high,
             low,
             prev_high,

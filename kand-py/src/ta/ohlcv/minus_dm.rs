@@ -68,7 +68,7 @@ pub fn minus_dm_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> next_minus_dm = kand.minus_dm_incremental(
+///   >>> next_minus_dm = kand.minus_dm_inc(
 ///   ...     35182.0,  # high
 ///   ...     35190.8,  # prev_high
 ///   ...     35153.6,  # low
@@ -78,8 +78,8 @@ pub fn minus_dm_py(
 ///   ... )
 ///   ```
 #[pyfunction]
-#[pyo3(name = "minus_dm_incremental", signature = (high, prev_high, low, prev_low, prev_minus_dm, period))]
-pub fn minus_dm_incremental_py(
+#[pyo3(name = "minus_dm_inc", signature = (high, prev_high, low, prev_low, prev_minus_dm, period))]
+pub fn minus_dm_inc_py(
     py: Python,
     high: TAFloat,
     prev_high: TAFloat,
@@ -90,7 +90,7 @@ pub fn minus_dm_incremental_py(
 ) -> PyResult<TAFloat> {
     // Perform the incremental -DM calculation while releasing the GIL
     py.allow_threads(|| {
-        minus_dm::minus_dm_incremental(high, prev_high, low, prev_low, prev_minus_dm, period)
+        minus_dm::minus_dm_inc(high, prev_high, low, prev_low, prev_minus_dm, period)
     })
     .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

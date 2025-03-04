@@ -66,13 +66,13 @@ pub fn typprice_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> typ_price = kand.typprice_incremental(24.20, 23.85, 23.89)
+///   >>> typ_price = kand.typprice_inc(24.20, 23.85, 23.89)
 ///   >>> print(typ_price)
 ///   23.98  # (24.20 + 23.85 + 23.89) / 3
 ///   ```
 #[pyfunction]
-#[pyo3(name = "typprice_incremental", signature = (high, low, close))]
-pub fn typprice_incremental_py(high: TAFloat, low: TAFloat, close: TAFloat) -> PyResult<TAFloat> {
-    typprice::typprice_incremental(high, low, close)
+#[pyo3(name = "typprice_inc", signature = (high, low, close))]
+pub fn typprice_inc_py(high: TAFloat, low: TAFloat, close: TAFloat) -> PyResult<TAFloat> {
+    typprice::typprice_inc(high, low, close)
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

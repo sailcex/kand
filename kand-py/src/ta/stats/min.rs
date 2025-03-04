@@ -57,11 +57,11 @@ pub fn min_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> new_min = kand.min_incremental(15.0, 12.0, 14.0, 14)
+///   >>> new_min = kand.min_inc(15.0, 12.0, 14.0, 14)
 ///   ```
 #[pyfunction]
-#[pyo3(name = "min_incremental")]
-pub fn min_incremental_py(
+#[pyo3(name = "min_inc")]
+pub fn min_inc_py(
     py: Python,
     price: TAFloat,
     prev_min: TAFloat,
@@ -69,6 +69,6 @@ pub fn min_incremental_py(
     period: usize,
 ) -> PyResult<TAFloat> {
     // Perform incremental MIN calculation while releasing the GIL
-    py.allow_threads(|| min::min_incremental(price, prev_min, prev_price, period))
+    py.allow_threads(|| min::min_inc(price, prev_min, prev_price, period))
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

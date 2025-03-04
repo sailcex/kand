@@ -159,10 +159,10 @@ pub fn sum(
 /// let new_price = 5.0;
 /// let old_price = 3.0;
 ///
-/// let new_sum = sum::sum_incremental(new_price, old_price, prev_sum).unwrap();
+/// let new_sum = sum::sum_inc(new_price, old_price, prev_sum).unwrap();
 /// assert_eq!(new_sum, 12.0); // 10.0 + 5.0 - 3.0
 /// ```
-pub fn sum_incremental(
+pub fn sum_inc(
     input_new_price: TAFloat,
     input_old_price: TAFloat,
     prev_sum: TAFloat,
@@ -221,8 +221,7 @@ mod tests {
 
         // Test each incremental step
         for i in 14..19 {
-            let result =
-                sum_incremental(input_close[i], input_close[i - param_period], prev_sum).unwrap();
+            let result = sum_inc(input_close[i], input_close[i - param_period], prev_sum).unwrap();
             assert_relative_eq!(result, output_sum[i], epsilon = 0.0001);
             prev_sum = result;
         }

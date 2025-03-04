@@ -173,7 +173,7 @@ pub fn cdl_long_shadow(
 
     // Process remaining candles
     for i in lookback..len {
-        let (signal, new_body_avg) = cdl_long_shadow_incremental(
+        let (signal, new_body_avg) = cdl_long_shadow_inc(
             input_open[i],
             input_high[i],
             input_low[i],
@@ -239,7 +239,7 @@ pub fn cdl_long_shadow(
 /// ```
 /// use kand::ohlcv::cdl_long_shadow;
 ///
-/// let (signal, body_avg) = cdl_long_shadow::cdl_long_shadow_incremental(
+/// let (signal, body_avg) = cdl_long_shadow::cdl_long_shadow_inc(
 ///     10.0, // open
 ///     11.0, // high
 ///     9.0,  // low
@@ -250,7 +250,7 @@ pub fn cdl_long_shadow(
 /// )
 /// .unwrap();
 /// ```
-pub fn cdl_long_shadow_incremental(
+pub fn cdl_long_shadow_inc(
     input_open: TAFloat,
     input_high: TAFloat,
     input_low: TAFloat,
@@ -376,7 +376,7 @@ mod tests {
 
         // Test each incremental step
         for i in 14..18 {
-            let (signal, new_body_avg) = cdl_long_shadow_incremental(
+            let (signal, new_body_avg) = cdl_long_shadow_inc(
                 input_open[i],
                 input_high[i],
                 input_low[i],

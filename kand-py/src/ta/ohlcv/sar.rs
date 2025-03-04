@@ -91,13 +91,13 @@ pub fn sar_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> sar, is_long, af, ep = kand.sar_incremental(
+///   >>> sar, is_long, af, ep = kand.sar_inc(
 ///   ...     15.0, 14.0, 14.5, 13.5, 13.0, True, 0.02, 14.5, 0.02, 0.2
 ///   ... )
 ///   ```
 #[pyfunction]
-#[pyo3(name = "sar_incremental", signature = (high, low, prev_high, prev_low, prev_sar, is_long, af, ep, acceleration, maximum))]
-pub fn sar_incremental_py(
+#[pyo3(name = "sar_inc", signature = (high, low, prev_high, prev_low, prev_sar, is_long, af, ep, acceleration, maximum))]
+pub fn sar_inc_py(
     high: TAFloat,
     low: TAFloat,
     prev_high: TAFloat,
@@ -109,7 +109,7 @@ pub fn sar_incremental_py(
     acceleration: TAFloat,
     maximum: TAFloat,
 ) -> PyResult<(TAFloat, bool, TAFloat, TAFloat)> {
-    sar::sar_incremental(
+    sar::sar_inc(
         high,
         low,
         prev_high,

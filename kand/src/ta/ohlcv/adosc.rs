@@ -217,9 +217,9 @@ pub fn adosc(
 ///
 /// # Example
 /// ```
-/// use kand::ohlcv::adosc::adosc_incremental;
+/// use kand::ohlcv::adosc::adosc_inc;
 ///
-/// let (adosc, ad, ad_fast_ema, ad_slow_ema) = adosc_incremental(
+/// let (adosc, ad, ad_fast_ema, ad_slow_ema) = adosc_inc(
 ///     10.5,  // high
 ///     9.5,   // low
 ///     10.0,  // close
@@ -232,7 +232,7 @@ pub fn adosc(
 /// )
 /// .unwrap();
 /// ```
-pub fn adosc_incremental(
+pub fn adosc_inc(
     input_high: TAFloat,
     input_low: TAFloat,
     input_close: TAFloat,
@@ -269,11 +269,9 @@ pub fn adosc_incremental(
         }
     }
 
-    let output_ad = ad::ad_incremental(input_high, input_low, input_close, input_volume, prev_ad)?;
-    let output_ad_fast_ema =
-        ema::ema_incremental(output_ad, prev_ad_fast_ema, param_fast_period, None)?;
-    let output_ad_slow_ema =
-        ema::ema_incremental(output_ad, prev_ad_slow_ema, param_slow_period, None)?;
+    let output_ad = ad::ad_inc(input_high, input_low, input_close, input_volume, prev_ad)?;
+    let output_ad_fast_ema = ema::ema_inc(output_ad, prev_ad_fast_ema, param_fast_period, None)?;
+    let output_ad_slow_ema = ema::ema_inc(output_ad, prev_ad_slow_ema, param_slow_period, None)?;
     let output_adosc = output_ad_fast_ema - output_ad_slow_ema;
 
     Ok((
@@ -398,7 +396,7 @@ mod tests {
         // Test each incremental step starting from index 10
         for i in 10..14 {
             let (output_adosc_inc, output_ad_inc, output_ad_fast_ema_inc, output_ad_slow_ema_inc) =
-                adosc_incremental(
+                adosc_inc(
                     input_high[i],
                     input_low[i],
                     input_close[i],

@@ -80,7 +80,7 @@ pub fn natr_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> natr = kand.natr_incremental(
+///   >>> natr = kand.natr_inc(
 ///   ...     15.0,  # high
 ///   ...     11.0,  # low
 ///   ...     14.0,  # close
@@ -90,8 +90,8 @@ pub fn natr_py(
 ///   ... )
 ///   ```
 #[pyfunction]
-#[pyo3(name = "natr_incremental", signature = (high, low, close, prev_close, prev_atr, period))]
-pub fn natr_incremental_py(
+#[pyo3(name = "natr_inc", signature = (high, low, close, prev_close, prev_atr, period))]
+pub fn natr_inc_py(
     py: Python,
     high: TAFloat,
     low: TAFloat,
@@ -101,6 +101,6 @@ pub fn natr_incremental_py(
     period: usize,
 ) -> PyResult<TAFloat> {
     // Perform the incremental NATR calculation while releasing the GIL
-    py.allow_threads(|| natr::natr_incremental(high, low, close, prev_close, prev_atr, period))
+    py.allow_threads(|| natr::natr_inc(high, low, close, prev_close, prev_atr, period))
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

@@ -161,15 +161,15 @@ pub fn roc(
 ///
 /// # Example
 /// ```
-/// use kand::ohlcv::roc::roc_incremental;
+/// use kand::ohlcv::roc::roc_inc;
 ///
 /// let current_price = 11.5;
 /// let prev_price = 10.0;
 ///
-/// let roc_value = roc_incremental(current_price, prev_price).unwrap();
+/// let roc_value = roc_inc(current_price, prev_price).unwrap();
 /// assert_eq!(roc_value, 15.0); // ((11.5 - 10.0) / 10.0) * 100
 /// ```
-pub fn roc_incremental(current_price: TAFloat, prev_price: TAFloat) -> Result<TAFloat, KandError> {
+pub fn roc_inc(current_price: TAFloat, prev_price: TAFloat) -> Result<TAFloat, KandError> {
     #[cfg(feature = "deep-check")]
     {
         // NaN check
@@ -224,7 +224,7 @@ mod tests {
 
         // Test incremental calculation matches regular calculation
         for i in 15..20 {
-            let result = roc_incremental(input_price[i], input_price[i - param_period]).unwrap();
+            let result = roc_inc(input_price[i], input_price[i - param_period]).unwrap();
             assert_relative_eq!(result, output_roc[i], epsilon = 0.0001);
         }
     }

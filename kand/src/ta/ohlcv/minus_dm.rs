@@ -205,7 +205,7 @@ pub fn minus_dm(
 /// let prev_minus_dm = 2.5;
 /// let period = 14;
 ///
-/// let next_minus_dm = minus_dm::minus_dm_incremental(
+/// let next_minus_dm = minus_dm::minus_dm_inc(
 ///     current_high,
 ///     prev_high,
 ///     current_low,
@@ -215,7 +215,7 @@ pub fn minus_dm(
 /// )
 /// .unwrap();
 /// ```
-pub fn minus_dm_incremental(
+pub fn minus_dm_inc(
     input_high: TAFloat,
     prev_high: TAFloat,
     input_low: TAFloat,
@@ -315,7 +315,7 @@ mod tests {
 
         // Test each incremental step
         for i in 15..19 {
-            let result = minus_dm_incremental(
+            let result = minus_dm_inc(
                 input_high[i],
                 input_high[i - 1],
                 input_low[i],

@@ -150,14 +150,14 @@ pub fn rocp(
 ///
 /// # Example
 /// ```
-/// use kand::ohlcv::rocp::rocp_incremental;
+/// use kand::ohlcv::rocp::rocp_inc;
 ///
 /// let current_price = 11.5;
 /// let prev_price = 10.0;
 ///
-/// let output_rocp = rocp_incremental(current_price, prev_price).unwrap();
+/// let output_rocp = rocp_inc(current_price, prev_price).unwrap();
 /// ```
-pub fn rocp_incremental(input: TAFloat, prev: TAFloat) -> Result<TAFloat, KandError> {
+pub fn rocp_inc(input: TAFloat, prev: TAFloat) -> Result<TAFloat, KandError> {
     #[cfg(feature = "deep-check")]
     {
         if input.is_nan() || prev.is_nan() {
@@ -211,7 +211,7 @@ mod tests {
 
         // Test incremental calculation matches regular calculation
         for i in param_period..input_price.len() {
-            let result = rocp_incremental(input_price[i], input_price[i - param_period]).unwrap();
+            let result = rocp_inc(input_price[i], input_price[i - param_period]).unwrap();
             assert_relative_eq!(result, output_rocp[i], epsilon = 0.000_000_1);
         }
     }

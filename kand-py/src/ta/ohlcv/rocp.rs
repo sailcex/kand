@@ -61,13 +61,13 @@ pub fn rocp_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> rocp = kand.rocp_incremental(11.5, 10.0)
+///   >>> rocp = kand.rocp_inc(11.5, 10.0)
 ///   >>> print(rocp)
 ///   0.15
 ///   ```
 #[pyfunction]
-#[pyo3(name = "rocp_incremental", signature = (current_price, prev_price))]
-pub fn rocp_incremental_py(current_price: TAFloat, prev_price: TAFloat) -> PyResult<TAFloat> {
-    rocp::rocp_incremental(current_price, prev_price)
+#[pyo3(name = "rocp_inc", signature = (current_price, prev_price))]
+pub fn rocp_inc_py(current_price: TAFloat, prev_price: TAFloat) -> PyResult<TAFloat> {
+    rocp::rocp_inc(current_price, prev_price)
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

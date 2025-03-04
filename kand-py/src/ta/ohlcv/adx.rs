@@ -105,7 +105,7 @@ pub fn adx_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> adx, plus_dm, minus_dm, tr = kand.adx_incremental(
+///   >>> adx, plus_dm, minus_dm, tr = kand.adx_inc(
 ///   ...     24.20,  # current high
 ///   ...     23.85,  # current low
 ///   ...     24.07,  # previous high
@@ -119,8 +119,8 @@ pub fn adx_py(
 ///   ... )
 ///   ```
 #[pyfunction]
-#[pyo3(name = "adx_incremental")]
-pub fn adx_incremental_py(
+#[pyo3(name = "adx_inc")]
+pub fn adx_inc_py(
     py: Python,
     high: TAFloat,
     low: TAFloat,
@@ -135,7 +135,7 @@ pub fn adx_incremental_py(
 ) -> PyResult<(TAFloat, TAFloat, TAFloat, TAFloat)> {
     // Perform incremental ADX calculation while releasing the GIL
     py.allow_threads(|| {
-        adx::adx_incremental(
+        adx::adx_inc(
             high,
             low,
             prev_high,

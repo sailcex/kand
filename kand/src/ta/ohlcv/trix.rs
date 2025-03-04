@@ -200,9 +200,9 @@ pub fn trix(
 /// let period = 14;
 ///
 /// let (trix, new_ema1, new_ema2, new_ema3) =
-///     trix::trix_incremental(price, prev_ema1, prev_ema2, prev_ema3, period).unwrap();
+///     trix::trix_inc(price, prev_ema1, prev_ema2, prev_ema3, period).unwrap();
 /// ```
-pub fn trix_incremental(
+pub fn trix_inc(
     input: TAFloat,
     prev_ema1: TAFloat,
     prev_ema2: TAFloat,
@@ -223,10 +223,10 @@ pub fn trix_incremental(
         }
     }
 
-    let new_ema1 = ema::ema_incremental(input, prev_ema1, param_period, None)?;
-    let new_ema2 = ema::ema_incremental(new_ema1, prev_ema2, param_period, None)?;
-    let new_ema3 = ema::ema_incremental(new_ema2, prev_ema3, param_period, None)?;
-    let trix = roc::roc_incremental(new_ema3, prev_ema3)?;
+    let new_ema1 = ema::ema_inc(input, prev_ema1, param_period, None)?;
+    let new_ema2 = ema::ema_inc(new_ema1, prev_ema2, param_period, None)?;
+    let new_ema3 = ema::ema_inc(new_ema2, prev_ema3, param_period, None)?;
+    let trix = roc::roc_inc(new_ema3, prev_ema3)?;
 
     Ok((trix, new_ema1, new_ema2, new_ema3))
 }
@@ -293,7 +293,7 @@ mod tests {
 
         for i in 11..15 {
             let (trix_val, new_ema1, new_ema2, new_ema3) =
-                trix_incremental(input[i], prev_ema1, prev_ema2, prev_ema3, param_period).unwrap();
+                trix_inc(input[i], prev_ema1, prev_ema2, prev_ema3, param_period).unwrap();
 
             assert_relative_eq!(trix_val, output[i], epsilon = 0.0001);
 

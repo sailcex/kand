@@ -80,7 +80,7 @@ pub fn stddev_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> stddev, sum, sum_sq = kand.stddev_incremental(
+///   >>> stddev, sum, sum_sq = kand.stddev_inc(
 ///   ...     10.0,   # current price
 ///   ...     100.0,  # previous sum
 ///   ...     1050.0, # previous sum of squares
@@ -89,8 +89,8 @@ pub fn stddev_py(
 ///   ... )
 ///   ```
 #[pyfunction]
-#[pyo3(name = "stddev_incremental")]
-pub fn stddev_incremental_py(
+#[pyo3(name = "stddev_inc")]
+pub fn stddev_inc_py(
     py: Python,
     price: TAFloat,
     prev_sum: TAFloat,
@@ -98,6 +98,6 @@ pub fn stddev_incremental_py(
     old_price: TAFloat,
     period: usize,
 ) -> PyResult<(TAFloat, TAFloat, TAFloat)> {
-    py.allow_threads(|| stddev::stddev_incremental(price, prev_sum, prev_sum_sq, old_price, period))
+    py.allow_threads(|| stddev::stddev_inc(price, prev_sum, prev_sum_sq, old_price, period))
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

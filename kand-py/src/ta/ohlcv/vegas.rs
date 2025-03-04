@@ -87,7 +87,7 @@ pub fn vegas_py(
 ///   >>> import kand
 ///   >>> price = 100.0
 ///   >>> prev_values = (98.0, 97.5, 96.0, 95.5)
-///   >>> ch_upper, ch_lower, b_upper, b_lower = kand.vegas_incremental(
+///   >>> ch_upper, ch_lower, b_upper, b_lower = kand.vegas_inc(
 ///   ...     price,
 ///   ...     prev_values[0],
 ///   ...     prev_values[1],
@@ -96,15 +96,15 @@ pub fn vegas_py(
 ///   ... )
 ///   ```
 #[pyfunction]
-#[pyo3(name = "vegas_incremental", signature = (price, prev_channel_upper, prev_channel_lower, prev_boundary_upper, prev_boundary_lower))]
-pub fn vegas_incremental_py(
+#[pyo3(name = "vegas_inc", signature = (price, prev_channel_upper, prev_channel_lower, prev_boundary_upper, prev_boundary_lower))]
+pub fn vegas_inc_py(
     price: TAFloat,
     prev_channel_upper: TAFloat,
     prev_channel_lower: TAFloat,
     prev_boundary_upper: TAFloat,
     prev_boundary_lower: TAFloat,
 ) -> PyResult<(TAFloat, TAFloat, TAFloat, TAFloat)> {
-    vegas::vegas_incremental(
+    vegas::vegas_inc(
         price,
         prev_channel_upper,
         prev_channel_lower,

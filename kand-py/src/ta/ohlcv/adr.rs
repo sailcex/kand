@@ -73,11 +73,11 @@ pub fn adr_py(
 ///     >>> old_high = 10.0
 ///     >>> old_low = 8.0
 ///     >>> period = 14
-///     >>> result = kand.adr_incremental(prev_adr, new_high, new_low, old_high, old_low, period)
+///     >>> result = kand.adr_inc(prev_adr, new_high, new_low, old_high, old_low, period)
 ///     ```
 #[pyfunction]
-#[pyo3(name = "adr_incremental", signature = (prev_adr, new_high, new_low, old_high, old_low, period))]
-pub fn adr_incremental_py(
+#[pyo3(name = "adr_inc", signature = (prev_adr, new_high, new_low, old_high, old_low, period))]
+pub fn adr_inc_py(
     py: Python,
     prev_adr: TAFloat,
     new_high: TAFloat,
@@ -87,8 +87,6 @@ pub fn adr_incremental_py(
     period: usize,
 ) -> PyResult<TAFloat> {
     // Perform the incremental ADR calculation while releasing the GIL
-    py.allow_threads(|| {
-        adr::adr_incremental(prev_adr, new_high, new_low, old_high, old_low, period)
-    })
-    .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
+    py.allow_threads(|| adr::adr_inc(prev_adr, new_high, new_low, old_high, old_low, period))
+        .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

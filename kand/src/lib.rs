@@ -38,7 +38,7 @@
 //! let new_price = 12.0; // New price to include
 //! let old_price = 6.0; // Oldest price to remove
 //!
-//! let next_sma = sma::sma_incremental(prev_sma, new_price, old_price, period).unwrap();
+//! let next_sma = sma::sma_inc(prev_sma, new_price, old_price, period).unwrap();
 //! // next_sma = 10.0 ((8.0 + 10.0 + 12.0) / 3)
 //! ```
 //!

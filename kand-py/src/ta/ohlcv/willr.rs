@@ -95,14 +95,14 @@ pub fn willr_py(
 /// Examples:
 ///     ```python
 ///     >>> import kand
-///     >>> willr, high, low = kand.willr_incremental(15.0, 10.0, 14.0, 11.0, 12.0, 13.0, 11.0)
+///     >>> willr, high, low = kand.willr_inc(15.0, 10.0, 14.0, 11.0, 12.0, 13.0, 11.0)
 ///     ```
 #[pyfunction]
 #[pyo3(
-    name = "willr_incremental",
+    name = "willr_inc",
     signature = (prev_highest_high, prev_lowest_low, prev_high, prev_low, close, high, low)
 )]
-pub fn willr_incremental_py(
+pub fn willr_inc_py(
     prev_highest_high: TAFloat,
     prev_lowest_low: TAFloat,
     prev_high: TAFloat,
@@ -111,7 +111,7 @@ pub fn willr_incremental_py(
     high: TAFloat,
     low: TAFloat,
 ) -> PyResult<(TAFloat, TAFloat, TAFloat)> {
-    willr::willr_incremental(
+    willr::willr_inc(
         prev_highest_high,
         prev_lowest_low,
         prev_high,

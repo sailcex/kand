@@ -96,7 +96,7 @@ pub fn plus_di_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> plus_di, smoothed_plus_dm, smoothed_tr = kand.plus_di_incremental(
+///   >>> plus_di, smoothed_plus_dm, smoothed_tr = kand.plus_di_inc(
 ///   ...     10.5,  # high
 ///   ...     9.5,   # low
 ///   ...     10.0,  # prev_high
@@ -108,8 +108,8 @@ pub fn plus_di_py(
 ///   ... )
 ///   ```
 #[pyfunction]
-#[pyo3(name = "plus_di_incremental", signature = (high, low, prev_high, prev_low, prev_close, prev_smoothed_plus_dm, prev_smoothed_tr, period))]
-pub fn plus_di_incremental_py(
+#[pyo3(name = "plus_di_inc", signature = (high, low, prev_high, prev_low, prev_close, prev_smoothed_plus_dm, prev_smoothed_tr, period))]
+pub fn plus_di_inc_py(
     high: TAFloat,
     low: TAFloat,
     prev_high: TAFloat,
@@ -119,7 +119,7 @@ pub fn plus_di_incremental_py(
     prev_smoothed_tr: TAFloat,
     period: usize,
 ) -> PyResult<(TAFloat, TAFloat, TAFloat)> {
-    plus_di::plus_di_incremental(
+    plus_di::plus_di_inc(
         high,
         low,
         prev_high,

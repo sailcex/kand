@@ -57,13 +57,13 @@ pub fn wma_py(
 ///     ```python
 ///     >>> import kand
 ///     >>> window = [5.0, 4.0, 3.0]  # newest to oldest
-///     >>> wma = kand.wma_incremental(window, 3)
+///     >>> wma = kand.wma_inc(window, 3)
 ///     >>> print(wma)
 ///     4.333333333333333
 ///     ```
 #[pyfunction]
-#[pyo3(name = "wma_incremental", signature = (input_window, period))]
-pub fn wma_incremental_py(input_window: Vec<TAFloat>, period: usize) -> PyResult<TAFloat> {
-    wma::wma_incremental(&input_window, period)
+#[pyo3(name = "wma_inc", signature = (input_window, period))]
+pub fn wma_inc_py(input_window: Vec<TAFloat>, period: usize) -> PyResult<TAFloat> {
+    wma::wma_inc(&input_window, period)
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

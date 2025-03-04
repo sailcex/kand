@@ -112,12 +112,12 @@ pub fn dx_py(
 ///     >>> prev_smoothed_minus_dm = 0.3
 ///     >>> prev_smoothed_tr = 1.2
 ///     >>> period = 14
-///     >>> dx, plus_dm, minus_dm, tr = kand.dx_incremental(
+///     >>> dx, plus_dm, minus_dm, tr = kand.dx_inc(
 ///     ...     high, low, prev_high, prev_low, prev_close,
 ///     ...     prev_smoothed_plus_dm, prev_smoothed_minus_dm,
 ///     ...     prev_smoothed_tr, period)
 #[pyfunction]
-#[pyo3(name = "dx_incremental", signature = (
+#[pyo3(name = "dx_inc", signature = (
     input_high,
     input_low,
     prev_high,
@@ -128,7 +128,7 @@ pub fn dx_py(
     prev_smoothed_tr,
     param_period
 ))]
-pub fn dx_incremental_py(
+pub fn dx_inc_py(
     py: Python,
     input_high: TAFloat,
     input_low: TAFloat,
@@ -142,7 +142,7 @@ pub fn dx_incremental_py(
 ) -> PyResult<(TAFloat, TAFloat, TAFloat, TAFloat)> {
     // Perform the incremental DX calculation while releasing the GIL
     py.allow_threads(|| {
-        dx::dx_incremental(
+        dx::dx_inc(
             input_high,
             input_low,
             prev_high,

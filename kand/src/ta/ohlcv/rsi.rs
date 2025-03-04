@@ -233,7 +233,7 @@ pub fn rsi(
 /// ```
 /// use kand::ohlcv::rsi;
 ///
-/// let (rsi_value, avg_gain, avg_loss) = rsi::rsi_incremental(
+/// let (rsi_value, avg_gain, avg_loss) = rsi::rsi_inc(
 ///     45.42, // current price
 ///     45.10, // previous price
 ///     0.24,  // previous average gain
@@ -242,7 +242,7 @@ pub fn rsi(
 /// )
 /// .unwrap();
 /// ```
-pub fn rsi_incremental(
+pub fn rsi_inc(
     input_curr_price: TAFloat,
     prev_price: TAFloat,
     prev_avg_gain: TAFloat,
@@ -338,7 +338,7 @@ mod tests {
 
         // Test each incremental step
         for i in param_period + 1..input_prices.len() {
-            let (result, new_avg_gain, new_avg_loss) = rsi_incremental(
+            let (result, new_avg_gain, new_avg_loss) = rsi_inc(
                 input_prices[i],
                 prev_price,
                 prev_avg_gain,

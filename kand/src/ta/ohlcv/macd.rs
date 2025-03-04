@@ -229,7 +229,7 @@ pub fn macd(
 /// ```
 /// use kand::ohlcv::macd;
 ///
-/// let (macd, signal, hist) = macd::macd_incremental(
+/// let (macd, signal, hist) = macd::macd_inc(
 ///     100.0, // current price
 ///     95.0,  // previous fast EMA
 ///     98.0,  // previous slow EMA
@@ -240,7 +240,7 @@ pub fn macd(
 /// )
 /// .unwrap();
 /// ```
-pub fn macd_incremental(
+pub fn macd_inc(
     input_price: TAFloat,
     prev_fast_ema: TAFloat,
     prev_slow_ema: TAFloat,
@@ -272,10 +272,10 @@ pub fn macd_incremental(
         }
     }
 
-    let fast_ema = ema::ema_incremental(input_price, prev_fast_ema, param_fast_period, None)?;
-    let slow_ema = ema::ema_incremental(input_price, prev_slow_ema, param_slow_period, None)?;
+    let fast_ema = ema::ema_inc(input_price, prev_fast_ema, param_fast_period, None)?;
+    let slow_ema = ema::ema_inc(input_price, prev_slow_ema, param_slow_period, None)?;
     let macd = fast_ema - slow_ema;
-    let signal = ema::ema_incremental(macd, prev_signal, param_signal_period, None)?;
+    let signal = ema::ema_inc(macd, prev_signal, param_signal_period, None)?;
     let histogram = macd - signal;
 
     Ok((macd, signal, histogram))

@@ -69,18 +69,18 @@ pub fn obv_py(
 ///   >>> prev_close = 10.0
 ///   >>> volume = 150.0
 ///   >>> prev_obv = 100.0
-///   >>> result = kand.obv_incremental(curr_close, prev_close, volume, prev_obv)
+///   >>> result = kand.obv_inc(curr_close, prev_close, volume, prev_obv)
 ///   >>> print(result)
 ///   250.0
 ///   ```
 #[pyfunction]
-#[pyo3(name = "obv_incremental", signature = (curr_close, prev_close, volume, prev_obv))]
-pub fn obv_incremental_py(
+#[pyo3(name = "obv_inc", signature = (curr_close, prev_close, volume, prev_obv))]
+pub fn obv_inc_py(
     curr_close: TAFloat,
     prev_close: TAFloat,
     volume: TAFloat,
     prev_obv: TAFloat,
 ) -> PyResult<TAFloat> {
-    obv::obv_incremental(curr_close, prev_close, volume, prev_obv)
+    obv::obv_inc(curr_close, prev_close, volume, prev_obv)
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

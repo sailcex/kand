@@ -116,7 +116,7 @@ pub fn supertrend_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> trend, supertrend, atr, upper, lower = kand.supertrend_incremental(
+///   >>> trend, supertrend, atr, upper, lower = kand.supertrend_inc(
 ///   ...     15.0,   # Current high
 ///   ...     11.0,   # Current low
 ///   ...     14.0,   # Current close
@@ -130,7 +130,7 @@ pub fn supertrend_py(
 ///   ... )
 ///   ```
 #[pyfunction]
-#[pyo3(name = "supertrend_incremental", signature = (
+#[pyo3(name = "supertrend_inc", signature = (
     high,
     low,
     close,
@@ -142,7 +142,7 @@ pub fn supertrend_py(
     period,
     multiplier
 ))]
-pub fn supertrend_incremental_py(
+pub fn supertrend_inc_py(
     high: TAFloat,
     low: TAFloat,
     close: TAFloat,
@@ -154,7 +154,7 @@ pub fn supertrend_incremental_py(
     period: usize,
     multiplier: TAFloat,
 ) -> PyResult<(TAInt, TAFloat, TAFloat, TAFloat, TAFloat)> {
-    supertrend::supertrend_incremental(
+    supertrend::supertrend_inc(
         high, low, close, prev_close, prev_atr, prev_trend, prev_upper, prev_lower, period,
         multiplier,
     )

@@ -153,7 +153,7 @@ pub fn stddev(
 /// # Example
 /// ```
 /// use kand::stats::stddev;
-/// let (stddev, new_sum, new_sum_sq) = stddev::stddev_incremental(
+/// let (stddev, new_sum, new_sum_sq) = stddev::stddev_inc(
 ///     10.0,   // new price
 ///     100.0,  // previous sum
 ///     1050.0, // previous sum of squares
@@ -162,14 +162,14 @@ pub fn stddev(
 /// )
 /// .unwrap();
 /// ```
-pub fn stddev_incremental(
+pub fn stddev_inc(
     input_price: TAFloat,
     prev_sum: TAFloat,
     prev_sum_sq: TAFloat,
     input_old_price: TAFloat,
     param_period: usize,
 ) -> Result<(TAFloat, TAFloat, TAFloat), KandError> {
-    let (var, new_sum, new_sum_sq) = var::var_incremental(
+    let (var, new_sum, new_sum_sq) = var::var_inc(
         input_price,
         prev_sum,
         prev_sum_sq,
@@ -239,7 +239,7 @@ mod tests {
 
         // Test each incremental step
         for i in 14..19 {
-            let (stddev, new_sum, new_sum_sq) = stddev_incremental(
+            let (stddev, new_sum, new_sum_sq) = stddev_inc(
                 input_close[i],
                 prev_sum,
                 prev_sum_sq,

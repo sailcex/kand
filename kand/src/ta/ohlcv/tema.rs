@@ -195,7 +195,7 @@ pub fn tema(
 ///
 /// # Example
 /// ```
-/// use kand::ohlcv::tema::tema_incremental;
+/// use kand::ohlcv::tema::tema_inc;
 ///
 /// let new_price = 10.0;
 /// let prev_ema1 = 9.0;
@@ -204,9 +204,9 @@ pub fn tema(
 /// let period = 3;
 ///
 /// let (tema, ema1, ema2, ema3) =
-///     tema_incremental(new_price, prev_ema1, prev_ema2, prev_ema3, period).unwrap();
+///     tema_inc(new_price, prev_ema1, prev_ema2, prev_ema3, period).unwrap();
 /// ```
-pub fn tema_incremental(
+pub fn tema_inc(
     input: TAFloat,
     prev_ema1: TAFloat,
     prev_ema2: TAFloat,
@@ -227,9 +227,9 @@ pub fn tema_incremental(
         }
     }
 
-    let ema1 = ema::ema_incremental(input, prev_ema1, param_period, None)?;
-    let ema2 = ema::ema_incremental(ema1, prev_ema2, param_period, None)?;
-    let ema3 = ema::ema_incremental(ema2, prev_ema3, param_period, None)?;
+    let ema1 = ema::ema_inc(input, prev_ema1, param_period, None)?;
+    let ema2 = ema::ema_inc(ema1, prev_ema2, param_period, None)?;
+    let ema3 = ema::ema_inc(ema2, prev_ema3, param_period, None)?;
     let tema = 3.0f64.mul_add(ema1, -(3.0 * ema2)) + ema3;
 
     Ok((tema, ema1, ema2, ema3))
@@ -298,7 +298,7 @@ mod tests {
 
         for i in 11..15 {
             let (tema_val, new_ema1, new_ema2, new_ema3) =
-                tema_incremental(input[i], prev_ema1, prev_ema2, prev_ema3, param_period).unwrap();
+                tema_inc(input[i], prev_ema1, prev_ema2, prev_ema3, param_period).unwrap();
 
             assert_relative_eq!(tema_val, output_tema[i], epsilon = 0.0001);
             assert_relative_eq!(new_ema1, ema1[i], epsilon = 0.0001);

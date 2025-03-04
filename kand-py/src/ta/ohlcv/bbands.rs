@@ -114,7 +114,7 @@ pub fn bbands_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> upper, middle, lower, sma, sum, sum_sq = kand.bbands_incremental(
+///   >>> upper, middle, lower, sma, sum, sum_sq = kand.bbands_inc(
 ///   ...     10.0,   # price
 ///   ...     9.5,    # prev_sma
 ///   ...     28.5,   # prev_sum
@@ -126,7 +126,7 @@ pub fn bbands_py(
 ///   ... )
 ///   ```
 #[pyfunction]
-#[pyo3(name = "bbands_incremental", signature = (
+#[pyo3(name = "bbands_inc", signature = (
     price,
     prev_sma,
     prev_sum,
@@ -136,7 +136,7 @@ pub fn bbands_py(
     dev_up,
     dev_down
 ))]
-pub fn bbands_incremental_py(
+pub fn bbands_inc_py(
     py: Python,
     price: TAFloat,
     prev_sma: TAFloat,
@@ -148,7 +148,7 @@ pub fn bbands_incremental_py(
     dev_down: TAFloat,
 ) -> PyResult<(TAFloat, TAFloat, TAFloat, TAFloat, TAFloat, TAFloat)> {
     py.allow_threads(|| {
-        bbands::bbands_incremental(
+        bbands::bbands_inc(
             price,
             prev_sma,
             prev_sum,

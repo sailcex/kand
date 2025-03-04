@@ -77,11 +77,11 @@ pub fn cdl_gravestone_doji_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> signal = kand.cdl_gravestone_doji_incremental(100.0, 102.0, 98.0, 100.1, 5.0)
+///   >>> signal = kand.cdl_gravestone_doji_inc(100.0, 102.0, 98.0, 100.1, 5.0)
 ///   ```
 #[pyfunction]
-#[pyo3(name = "cdl_gravestone_doji_incremental", signature = (open, high, low, close, body_percent))]
-pub fn cdl_gravestone_doji_incremental_py(
+#[pyo3(name = "cdl_gravestone_doji_inc", signature = (open, high, low, close, body_percent))]
+pub fn cdl_gravestone_doji_inc_py(
     py: Python,
     open: TAFloat,
     high: TAFloat,
@@ -90,7 +90,7 @@ pub fn cdl_gravestone_doji_incremental_py(
     body_percent: TAFloat,
 ) -> PyResult<TAInt> {
     py.allow_threads(|| {
-        cdl_gravestone_doji::cdl_gravestone_doji_incremental(open, high, low, close, body_percent)
+        cdl_gravestone_doji::cdl_gravestone_doji_inc(open, high, low, close, body_percent)
     })
     .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

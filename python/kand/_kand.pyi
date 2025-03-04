@@ -35,7 +35,7 @@ def ad(high, low, close, volume):
     """
     ...
 
-def ad_incremental(high, low, close, volume, prev_ad):
+def ad_inc(high, low, close, volume, prev_ad):
     """
     Computes the latest Accumulation/Distribution (A/D) value incrementally.
 
@@ -60,7 +60,7 @@ def ad_incremental(high, low, close, volume, prev_ad):
         >>> close = 13.0
         >>> volume = 200.0
         >>> prev_ad = 25.0
-        >>> result = kand.ad_incremental(high, low, close, volume, prev_ad)
+        >>> result = kand.ad_inc(high, low, close, volume, prev_ad)
         >>> print(result)
         125.0
         ```
@@ -103,7 +103,7 @@ def adosc(high, low, close, volume, fast_period, slow_period):
     """
     ...
 
-def adosc_incremental(high, low, close, volume, prev_ad, prev_fast_ema, prev_slow_ema, fast_period, slow_period):
+def adosc_inc(high, low, close, volume, prev_ad, prev_fast_ema, prev_slow_ema, fast_period, slow_period):
     """
     Calculate latest A/D Oscillator value incrementally
 
@@ -127,7 +127,7 @@ def adosc_incremental(high, low, close, volume, prev_ad, prev_fast_ema, prev_slo
     Examples:
         ```python
         >>> import kand
-        >>> adosc, ad, fast_ema, slow_ema = kand.adosc_incremental(
+        >>> adosc, ad, fast_ema, slow_ema = kand.adosc_inc(
         ...     10.5,  # high
         ...     9.5,   # low
         ...     10.0,  # close
@@ -175,7 +175,7 @@ def adx(high, low, close, period):
     """
     ...
 
-def adx_incremental(high, low, prev_high, prev_low, prev_close, prev_adx, prev_smoothed_plus_dm, prev_smoothed_minus_dm, prev_smoothed_tr, period):
+def adx_inc(high, low, prev_high, prev_low, prev_close, prev_adx, prev_smoothed_plus_dm, prev_smoothed_minus_dm, prev_smoothed_tr, period):
     """
     Calculate the latest ADX value incrementally
 
@@ -202,7 +202,7 @@ def adx_incremental(high, low, prev_high, prev_low, prev_close, prev_adx, prev_s
     Examples:
       ```python
       >>> import kand
-      >>> adx, plus_dm, minus_dm, tr = kand.adx_incremental(
+      >>> adx, plus_dm, minus_dm, tr = kand.adx_inc(
       ...     24.20,  # current high
       ...     23.85,  # current low
       ...     24.07,  # previous high
@@ -252,7 +252,7 @@ def adxr(high, low, close, period):
     """
     ...
 
-def adxr_incremental(high, low, prev_high, prev_low, prev_close, prev_adx, prev_adx_period_ago, prev_smoothed_plus_dm, prev_smoothed_minus_dm, prev_smoothed_tr, period):
+def adxr_inc(high, low, prev_high, prev_low, prev_close, prev_adx, prev_adx_period_ago, prev_smoothed_plus_dm, prev_smoothed_minus_dm, prev_smoothed_tr, period):
     """
     Calculate the latest ADXR value incrementally
 
@@ -281,7 +281,7 @@ def adxr_incremental(high, low, prev_high, prev_low, prev_close, prev_adx, prev_
     Examples:
       ```python
       >>> import kand
-      >>> adxr, adx, plus_dm, minus_dm, tr = kand.adxr_incremental(
+      >>> adxr, adx, plus_dm, minus_dm, tr = kand.adxr_inc(
       ...     24.20,  # high
       ...     23.85,  # low
       ...     24.07,  # prev_high
@@ -331,7 +331,7 @@ def aroon(high, low, period):
     """
     ...
 
-def aroon_incremental(high, low, prev_high, prev_low, days_since_high, days_since_low, period):
+def aroon_inc(high, low, prev_high, prev_low, days_since_high, days_since_low, period):
     """
     Calculate the next Aroon values incrementally.
 
@@ -357,7 +357,7 @@ def aroon_incremental(high, low, prev_high, prev_low, days_since_high, days_sinc
     Examples:
       ```python
       >>> import kand
-      >>> aroon_up, aroon_down, new_high, new_low, days_high, days_low = kand.aroon_incremental(
+      >>> aroon_up, aroon_down, new_high, new_low, days_high, days_low = kand.aroon_inc(
       ...     15.0,  # high
       ...     12.0,  # low
       ...     14.0,  # prev_high
@@ -402,7 +402,7 @@ def aroonosc(high, low, period):
     """
     ...
 
-def aroonosc_incremental(high, low, prev_high, prev_low, days_since_high, days_since_low, period):
+def aroonosc_inc(high, low, prev_high, prev_low, days_since_high, days_since_low, period):
     """
     Calculate the next Aroon Oscillator value incrementally.
 
@@ -427,7 +427,7 @@ def aroonosc_incremental(high, low, prev_high, prev_low, days_since_high, days_s
     Examples:
       ```python
       >>> import kand
-      >>> osc, high, low, days_high, days_low = kand.aroonosc_incremental(
+      >>> osc, high, low, days_high, days_low = kand.aroonosc_inc(
       ...     15.0,  # high
       ...     12.0,  # low
       ...     14.0,  # prev_high
@@ -469,7 +469,7 @@ def atr(high, low, close, period):
     """
     ...
 
-def atr_incremental(high, low, prev_close, prev_atr, period):
+def atr_inc(high, low, prev_close, prev_atr, period):
     """
     Calculate the next ATR value incrementally.
 
@@ -487,7 +487,7 @@ def atr_incremental(high, low, prev_close, prev_atr, period):
     Examples:
       ```python
       >>> import kand
-      >>> atr = kand.atr_incremental(
+      >>> atr = kand.atr_inc(
       ...     15.0,  # high
       ...     11.0,  # low
       ...     12.0,  # prev_close
@@ -534,7 +534,7 @@ def bbands(price, period, dev_up, dev_down):
     """
     ...
 
-def bbands_incremental(price, prev_sma, prev_sum, prev_sum_sq, old_price, period, dev_up, dev_down):
+def bbands_inc(price, prev_sma, prev_sum, prev_sum_sq, old_price, period, dev_up, dev_down):
     """
     Calculate the next Bollinger Bands values incrementally.
 
@@ -561,7 +561,7 @@ def bbands_incremental(price, prev_sma, prev_sum, prev_sum_sq, old_price, period
     Examples:
       ```python
       >>> import kand
-      >>> upper, middle, lower, sma, sum, sum_sq = kand.bbands_incremental(
+      >>> upper, middle, lower, sma, sum, sum_sq = kand.bbands_inc(
       ...     10.0,   # price
       ...     9.5,    # prev_sma
       ...     28.5,   # prev_sum
@@ -605,7 +605,7 @@ def bop(open, high, low, close):
     """
     ...
 
-def bop_incremental(open, high, low, close):
+def bop_inc(open, high, low, close):
     """
     Calculate a single Balance of Power (BOP) value for the latest price data.
 
@@ -621,7 +621,7 @@ def bop_incremental(open, high, low, close):
     Examples:
       ```python
       >>> import kand
-      >>> bop = kand.bop_incremental(10.0, 12.0, 8.0, 11.0)
+      >>> bop = kand.bop_inc(10.0, 12.0, 8.0, 11.0)
       ```
     """
     ...
@@ -661,7 +661,7 @@ def cci(high, low, close, period):
     """
     ...
 
-def cci_incremental(prev_sma_tp, new_high, new_low, new_close, old_high, old_low, old_close, period, tp_buffer):
+def cci_inc(prev_sma_tp, new_high, new_low, new_close, old_high, old_low, old_close, period, tp_buffer):
     """
     Calculates the next CCI value incrementally.
 
@@ -692,7 +692,7 @@ def cci_incremental(prev_sma_tp, new_high, new_low, new_close, old_high, old_low
       >>> old_close = 100.0
       >>> period = 14
       >>> tp_buffer = [100.0] * period
-      >>> next_cci = kand.cci_incremental(prev_sma_tp, new_high, new_low, new_close,
+      >>> next_cci = kand.cci_inc(prev_sma_tp, new_high, new_low, new_close,
       ...                                  old_high, old_low, old_close, period, tp_buffer)
       ```
     """
@@ -726,7 +726,7 @@ def cdl_doji(open, high, low, close, body_percent, shadow_equal_percent):
     """
     ...
 
-def cdl_doji_incremental(open, high, low, close, body_percent, shadow_equal_percent):
+def cdl_doji_inc(open, high, low, close, body_percent, shadow_equal_percent):
     """
     Detects a Doji pattern in a single candlestick.
 
@@ -745,7 +745,7 @@ def cdl_doji_incremental(open, high, low, close, body_percent, shadow_equal_perc
     Examples:
       ```python
       >>> import kand
-      >>> signal = kand.cdl_doji_incremental(10.0, 11.0, 9.8, 10.3, 5.0, 100.0)
+      >>> signal = kand.cdl_doji_inc(10.0, 11.0, 9.8, 10.3, 5.0, 100.0)
       ```
     """
     ...
@@ -779,7 +779,7 @@ def cdl_dragonfly_doji(open, high, low, close, body_percent):
     """
     ...
 
-def cdl_dragonfly_doji_incremental(open, high, low, close, body_percent):
+def cdl_dragonfly_doji_inc(open, high, low, close, body_percent):
     """
     Detects a Dragonfly Doji pattern in a single candlestick.
 
@@ -799,7 +799,7 @@ def cdl_dragonfly_doji_incremental(open, high, low, close, body_percent):
     Examples:
       ```python
       >>> import kand
-      >>> signal = kand.cdl_dragonfly_doji_incremental(100.0, 102.0, 98.0, 100.1, 5.0)
+      >>> signal = kand.cdl_dragonfly_doji_inc(100.0, 102.0, 98.0, 100.1, 5.0)
       ```
     """
     ...
@@ -833,7 +833,7 @@ def cdl_gravestone_doji(open, high, low, close, body_percent):
     """
     ...
 
-def cdl_gravestone_doji_incremental(open, high, low, close, body_percent):
+def cdl_gravestone_doji_inc(open, high, low, close, body_percent):
     """
     Detects a Gravestone Doji pattern in a single candlestick.
 
@@ -853,7 +853,7 @@ def cdl_gravestone_doji_incremental(open, high, low, close, body_percent):
     Examples:
       ```python
       >>> import kand
-      >>> signal = kand.cdl_gravestone_doji_incremental(100.0, 102.0, 98.0, 100.1, 5.0)
+      >>> signal = kand.cdl_gravestone_doji_inc(100.0, 102.0, 98.0, 100.1, 5.0)
       ```
     """
     ...
@@ -890,7 +890,7 @@ def cdl_hammer(open, high, low, close, period, factor):
     """
     ...
 
-def cdl_hammer_incremental(open, high, low, close, prev_body_avg, period, factor):
+def cdl_hammer_inc(open, high, low, close, prev_body_avg, period, factor):
     """
     Detects a Hammer pattern in a single candlestick.
 
@@ -914,7 +914,7 @@ def cdl_hammer_incremental(open, high, low, close, prev_body_avg, period, factor
     Examples:
       ```python
       >>> import kand
-      >>> signal, body_avg = kand.cdl_hammer_incremental(100.0, 102.0, 98.0, 100.1, 0.5, 14, 2.0)
+      >>> signal, body_avg = kand.cdl_hammer_inc(100.0, 102.0, 98.0, 100.1, 0.5, 14, 2.0)
       ```
     """
     ...
@@ -951,7 +951,7 @@ def cdl_inverted_hammer(open, high, low, close, period, factor):
     """
     ...
 
-def cdl_inverted_hammer_incremental(open, high, low, close, prev_body_avg, period, factor):
+def cdl_inverted_hammer_inc(open, high, low, close, prev_body_avg, period, factor):
     """
     Detects an Inverted Hammer pattern in a single candlestick.
 
@@ -975,7 +975,7 @@ def cdl_inverted_hammer_incremental(open, high, low, close, prev_body_avg, perio
     Examples:
       ```python
       >>> import kand
-      >>> signal, body_avg = kand.cdl_inverted_hammer_incremental(100.0, 102.0, 98.0, 100.1, 0.5, 14, 2.0)
+      >>> signal, body_avg = kand.cdl_inverted_hammer_inc(100.0, 102.0, 98.0, 100.1, 0.5, 14, 2.0)
       ```
     """
     ...
@@ -1013,7 +1013,7 @@ def cdl_long_shadow(open, high, low, close, period, shadow_factor):
     """
     ...
 
-def cdl_long_shadow_incremental(open, high, low, close, prev_body_avg, period, shadow_factor):
+def cdl_long_shadow_inc(open, high, low, close, prev_body_avg, period, shadow_factor):
     """
     Detects a Long Shadow pattern in a single candlestick.
 
@@ -1038,7 +1038,7 @@ def cdl_long_shadow_incremental(open, high, low, close, prev_body_avg, period, s
     Examples:
       ```python
       >>> import kand
-      >>> signal, body_avg = kand.cdl_long_shadow_incremental(100.0, 102.0, 98.0, 100.1, 0.5, 14, 75.0)
+      >>> signal, body_avg = kand.cdl_long_shadow_inc(100.0, 102.0, 98.0, 100.1, 0.5, 14, 75.0)
       ```
     """
     ...
@@ -1076,7 +1076,7 @@ def cdl_marubozu(open, high, low, close, period, shadow_percent):
     """
     ...
 
-def cdl_marubozu_incremental(open, high, low, close, prev_body_avg, period, shadow_percent):
+def cdl_marubozu_inc(open, high, low, close, prev_body_avg, period, shadow_percent):
     """
     Detects a Marubozu pattern in a single candlestick.
 
@@ -1101,7 +1101,7 @@ def cdl_marubozu_incremental(open, high, low, close, prev_body_avg, period, shad
     Examples:
       ```python
       >>> import kand
-      >>> signal, body_avg = kand.cdl_marubozu_incremental(100.0, 102.0, 98.0, 100.1, 0.5, 14, 5.0)
+      >>> signal, body_avg = kand.cdl_marubozu_inc(100.0, 102.0, 98.0, 100.1, 0.5, 14, 5.0)
       ```
     """
     ...
@@ -1131,7 +1131,7 @@ def dema(input_price, period):
     """
     ...
 
-def dema_incremental(price, prev_ema1, prev_ema2, period):
+def dema_inc(price, prev_ema1, prev_ema2, period):
     """
     Calculates the next DEMA value incrementally.
 
@@ -1148,7 +1148,7 @@ def dema_incremental(price, prev_ema1, prev_ema2, period):
     Examples:
       ```python
       >>> import kand
-      >>> dema, ema1, ema2 = kand.dema_incremental(10.0, 9.5, 9.0, 3)
+      >>> dema, ema1, ema2 = kand.dema_inc(10.0, 9.5, 9.0, 3)
       ```
     """
     ...
@@ -1185,7 +1185,7 @@ def dx(high, low, close, period):
     """
     ...
 
-def dx_incremental(input_high, input_low, prev_high, prev_low, prev_close, prev_smoothed_plus_dm, prev_smoothed_minus_dm, prev_smoothed_tr, param_period):
+def dx_inc(input_high, input_low, prev_high, prev_low, prev_close, prev_smoothed_plus_dm, prev_smoothed_minus_dm, prev_smoothed_tr, param_period):
     """
     Calculates the latest DX value incrementally.
 
@@ -1220,7 +1220,7 @@ def dx_incremental(input_high, input_low, prev_high, prev_low, prev_close, prev_
         >>> prev_smoothed_minus_dm = 0.3
         >>> prev_smoothed_tr = 1.2
         >>> period = 14
-        >>> dx, plus_dm, minus_dm, tr = kand.dx_incremental(
+        >>> dx, plus_dm, minus_dm, tr = kand.dx_inc(
         ...     high, low, prev_high, prev_low, prev_close,
         ...     prev_smoothed_plus_dm, prev_smoothed_minus_dm,
         ...     prev_smoothed_tr, period)
@@ -1255,7 +1255,7 @@ def ecl(high, low, close):
     """
     ...
 
-def ecl_incremental(prev_high, prev_low, prev_close):
+def ecl_inc(prev_high, prev_low, prev_close):
     """
     Computes the latest Expanded Camarilla Levels (ECL) values incrementally.
 
@@ -1274,7 +1274,7 @@ def ecl_incremental(prev_high, prev_low, prev_close):
     Examples:
       ```python
       >>> import kand
-      >>> h5,h4,h3,h2,h1,l1,l2,l3,l4,l5 = kand.ecl_incremental(24.20, 23.85, 23.89)
+      >>> h5,h4,h3,h2,h1,l1,l2,l3,l4,l5 = kand.ecl_inc(24.20, 23.85, 23.89)
       ```
     """
     ...
@@ -1309,7 +1309,7 @@ def ema(data, period, k=None):
     """
     ...
 
-def ema_incremental(price, prev_ema, period, k=None):
+def ema_inc(price, prev_ema, period, k=None):
     """
     Computes the latest EMA value incrementally.
 
@@ -1332,7 +1332,7 @@ def ema_incremental(price, prev_ema, period, k=None):
       >>> current_price = 15.0
       >>> prev_ema = 14.5
       >>> period = 14
-      >>> new_ema = kand.ema_incremental(current_price, prev_ema, period)
+      >>> new_ema = kand.ema_inc(current_price, prev_ema, period)
       ```
     """
     ...
@@ -1372,7 +1372,7 @@ def macd(data, fast_period, slow_period, signal_period):
     """
     ...
 
-def macd_incremental(price, prev_fast_ema, prev_slow_ema, prev_signal, fast_period, slow_period, signal_period):
+def macd_inc(price, prev_fast_ema, prev_slow_ema, prev_signal, fast_period, slow_period, signal_period):
     """
     Computes the latest MACD values incrementally from previous state.
 
@@ -1398,7 +1398,7 @@ def macd_incremental(price, prev_fast_ema, prev_slow_ema, prev_signal, fast_peri
     Examples:
       ```python
       >>> import kand
-      >>> macd_line, signal_line, histogram = kand.macd_incremental(
+      >>> macd_line, signal_line, histogram = kand.macd_inc(
       ...     100.0,  # current price
       ...     95.0,   # previous fast EMA
       ...     98.0,   # previous slow EMA
@@ -1432,7 +1432,7 @@ def max(prices, period):
     """
     ...
 
-def max_incremental(price, prev_max, old_price, period):
+def max_inc(price, prev_max, old_price, period):
     """
     Calculate the latest Maximum Value incrementally
 
@@ -1449,7 +1449,7 @@ def max_incremental(price, prev_max, old_price, period):
     Examples:
       ```python
       >>> import kand
-      >>> new_max = kand.max_incremental(10.5, 11.0, 9.0, 14)
+      >>> new_max = kand.max_inc(10.5, 11.0, 9.0, 14)
       ```
     """
     ...
@@ -1481,7 +1481,7 @@ def medprice(high, low):
     """
     ...
 
-def medprice_incremental(high, low):
+def medprice_inc(high, low):
     """
     Calculates a single Median Price value incrementally.
 
@@ -1496,7 +1496,7 @@ def medprice_incremental(high, low):
     Examples:
       ```python
       >>> import kand
-      >>> result = kand.medprice_incremental(10.0, 8.0)
+      >>> result = kand.medprice_inc(10.0, 8.0)
       >>> print(result)
       9.0
       ```
@@ -1566,7 +1566,7 @@ def midpoint(data, period):
     """
     ...
 
-def midpoint_incremental(price, prev_highest, prev_lowest, period):
+def midpoint_inc(price, prev_highest, prev_lowest, period):
     """
     Calculates the next Midpoint value incrementally.
 
@@ -1588,7 +1588,7 @@ def midpoint_incremental(price, prev_highest, prev_lowest, period):
     Examples:
       ```python
       >>> import kand
-      >>> midpoint, new_highest, new_lowest = kand.midpoint_incremental(
+      >>> midpoint, new_highest, new_lowest = kand.midpoint_inc(
       ...     15.0,  # current price
       ...     16.0,  # previous highest
       ...     14.0,  # previous lowest
@@ -1628,7 +1628,7 @@ def midprice(high, low, period):
     """
     ...
 
-def midprice_incremental(high, low, prev_highest, prev_lowest, period):
+def midprice_inc(high, low, prev_highest, prev_lowest, period):
     """
     Calculates the next Midpoint Price value incrementally.
 
@@ -1652,7 +1652,7 @@ def midprice_incremental(high, low, prev_highest, prev_lowest, period):
     Examples:
       ```python
       >>> import kand
-      >>> midprice, new_highest, new_lowest = kand.midprice_incremental(
+      >>> midprice, new_highest, new_lowest = kand.midprice_inc(
       ...     10.5,  # current high
       ...     9.8,   # current low
       ...     10.2,  # previous highest high
@@ -1686,7 +1686,7 @@ def min(prices, period):
     """
     ...
 
-def min_incremental(price, prev_min, prev_price, period):
+def min_inc(price, prev_min, prev_price, period):
     """
     Calculate the latest MIN value incrementally
 
@@ -1703,7 +1703,7 @@ def min_incremental(price, prev_min, prev_price, period):
     Examples:
       ```python
       >>> import kand
-      >>> new_min = kand.min_incremental(15.0, 12.0, 14.0, 14)
+      >>> new_min = kand.min_inc(15.0, 12.0, 14.0, 14)
       ```
     """
     ...
@@ -1795,7 +1795,7 @@ def mom(data, period):
     """
     ...
 
-def mom_incremental(current_price, old_price):
+def mom_inc(current_price, old_price):
     """
     Calculates the next Momentum (MOM) value incrementally.
 
@@ -1813,7 +1813,7 @@ def mom_incremental(current_price, old_price):
     Examples:
       ```python
       >>> import kand
-      >>> momentum = kand.mom_incremental(10.0, 6.0)
+      >>> momentum = kand.mom_inc(10.0, 6.0)
       >>> print(momentum)
       4.0
       ```
@@ -1849,7 +1849,7 @@ def natr(high, low, close, period):
     """
     ...
 
-def natr_incremental(high, low, close, prev_close, prev_atr, period):
+def natr_inc(high, low, close, prev_close, prev_atr, period):
     """
     Calculates the next NATR value incrementally.
 
@@ -1871,7 +1871,7 @@ def natr_incremental(high, low, close, prev_close, prev_atr, period):
     Examples:
       ```python
       >>> import kand
-      >>> natr = kand.natr_incremental(
+      >>> natr = kand.natr_inc(
       ...     15.0,  # high
       ...     11.0,  # low
       ...     14.0,  # close
@@ -1911,7 +1911,7 @@ def obv(close, volume):
     """
     ...
 
-def obv_incremental(curr_close, prev_close, volume, prev_obv):
+def obv_inc(curr_close, prev_close, volume, prev_obv):
     """
     Calculates the next OBV value incrementally.
 
@@ -1934,7 +1934,7 @@ def obv_incremental(curr_close, prev_close, volume, prev_obv):
       >>> prev_close = 10.0
       >>> volume = 150.0
       >>> prev_obv = 100.0
-      >>> result = kand.obv_incremental(curr_close, prev_close, volume, prev_obv)
+      >>> result = kand.obv_inc(curr_close, prev_close, volume, prev_obv)
       >>> print(result)
       250.0
       ```
@@ -1973,7 +1973,7 @@ def plus_di(high, low, close, period):
     """
     ...
 
-def plus_di_incremental(high, low, prev_high, prev_low, prev_close, prev_smoothed_plus_dm, prev_smoothed_tr, period):
+def plus_di_inc(high, low, prev_high, prev_low, prev_close, prev_smoothed_plus_dm, prev_smoothed_tr, period):
     """
     Calculates the next +DI value incrementally using previous smoothed values.
 
@@ -1996,7 +1996,7 @@ def plus_di_incremental(high, low, prev_high, prev_low, prev_close, prev_smoothe
     Examples:
       ```python
       >>> import kand
-      >>> plus_di, smoothed_plus_dm, smoothed_tr = kand.plus_di_incremental(
+      >>> plus_di, smoothed_plus_dm, smoothed_tr = kand.plus_di_inc(
       ...     10.5,  # high
       ...     9.5,   # low
       ...     10.0,  # prev_high
@@ -2037,7 +2037,7 @@ def plus_dm(high, low, period):
     """
     ...
 
-def plus_dm_incremental(high, prev_high, low, prev_low, prev_plus_dm, period):
+def plus_dm_inc(high, prev_high, low, prev_low, prev_plus_dm, period):
     """
     Calculates the next Plus DM value incrementally using previous values.
 
@@ -2058,7 +2058,7 @@ def plus_dm_incremental(high, prev_high, low, prev_low, prev_plus_dm, period):
     Examples:
       ```python
       >>> import kand
-      >>> new_plus_dm = kand.plus_dm_incremental(
+      >>> new_plus_dm = kand.plus_dm_inc(
       ...     10.5,  # high
       ...     10.0,  # prev_high
       ...     9.8,   # low
@@ -2098,7 +2098,7 @@ def rma(data, period):
     """
     ...
 
-def rma_incremental(current_price, prev_rma, period):
+def rma_inc(current_price, prev_rma, period):
     """
     Calculates the next RMA value incrementally.
 
@@ -2116,7 +2116,7 @@ def rma_incremental(current_price, prev_rma, period):
     Examples:
       ```python
       >>> import kand
-      >>> new_rma = kand.rma_incremental(10.0, 9.5, 14)
+      >>> new_rma = kand.rma_inc(10.0, 9.5, 14)
       ```
     """
     ...
@@ -2148,7 +2148,7 @@ def roc(data, period):
     """
     ...
 
-def roc_incremental(current_price, prev_price):
+def roc_inc(current_price, prev_price):
     """
     Calculates a single ROC value incrementally.
 
@@ -2165,7 +2165,7 @@ def roc_incremental(current_price, prev_price):
     Examples:
       ```python
       >>> import kand
-      >>> roc = kand.roc_incremental(11.5, 10.0)
+      >>> roc = kand.roc_inc(11.5, 10.0)
       >>> print(roc)
       15.0
       ```
@@ -2199,7 +2199,7 @@ def rocp(data, period):
     """
     ...
 
-def rocp_incremental(current_price, prev_price):
+def rocp_inc(current_price, prev_price):
     """
     Calculates a single ROCP value incrementally.
 
@@ -2216,7 +2216,7 @@ def rocp_incremental(current_price, prev_price):
     Examples:
       ```python
       >>> import kand
-      >>> rocp = kand.rocp_incremental(11.5, 10.0)
+      >>> rocp = kand.rocp_inc(11.5, 10.0)
       >>> print(rocp)
       0.15
       ```
@@ -2278,7 +2278,7 @@ def rocr100(data, period):
     """
     ...
 
-def rocr100_incremental(current_price, prev_price):
+def rocr100_inc(current_price, prev_price):
     """
     Calculates a single ROCR100 value incrementally.
 
@@ -2295,14 +2295,14 @@ def rocr100_incremental(current_price, prev_price):
     Examples:
       ```python
       >>> import kand
-      >>> rocr100 = kand.rocr100_incremental(11.5, 10.0)
+      >>> rocr100 = kand.rocr100_inc(11.5, 10.0)
       >>> print(rocr100)
       115.0
       ```
     """
     ...
 
-def rocr_incremental(current_price, prev_price):
+def rocr_inc(current_price, prev_price):
     """
     Calculates a single ROCR value incrementally.
 
@@ -2319,7 +2319,7 @@ def rocr_incremental(current_price, prev_price):
     Examples:
       ```python
       >>> import kand
-      >>> rocr = kand.rocr_incremental(11.5, 10.0)
+      >>> rocr = kand.rocr_inc(11.5, 10.0)
       >>> print(rocr)
       1.15
       ```
@@ -2354,7 +2354,7 @@ def rsi(prices, period):
     """
     ...
 
-def rsi_incremental(current_price, prev_price, prev_avg_gain, prev_avg_loss, period):
+def rsi_inc(current_price, prev_price, prev_avg_gain, prev_avg_loss, period):
     """
     Calculates a single RSI value incrementally.
 
@@ -2374,7 +2374,7 @@ def rsi_incremental(current_price, prev_price, prev_avg_gain, prev_avg_loss, per
     Examples:
       ```python
       >>> import kand
-      >>> rsi, avg_gain, avg_loss = kand.rsi_incremental(45.42, 45.10, 0.24, 0.14, 14)
+      >>> rsi, avg_gain, avg_loss = kand.rsi_inc(45.42, 45.10, 0.24, 0.14, 14)
       ```
     """
     ...
@@ -2408,7 +2408,7 @@ def sar(high, low, acceleration, maximum):
     """
     ...
 
-def sar_incremental(high, low, prev_high, prev_low, prev_sar, is_long, af, ep, acceleration, maximum):
+def sar_inc(high, low, prev_high, prev_low, prev_sar, is_long, af, ep, acceleration, maximum):
     """
     Incrementally updates the Parabolic SAR with new price data.
 
@@ -2430,7 +2430,7 @@ def sar_incremental(high, low, prev_high, prev_low, prev_sar, is_long, af, ep, a
     Examples:
       ```python
       >>> import kand
-      >>> sar, is_long, af, ep = kand.sar_incremental(
+      >>> sar, is_long, af, ep = kand.sar_inc(
       ...     15.0, 14.0, 14.5, 13.5, 13.0, True, 0.02, 14.5, 0.02, 0.2
       ... )
       ```
@@ -2465,7 +2465,7 @@ def sma(data, period):
     """
     ...
 
-def sma_incremental(prev_sma, new_price, old_price, period):
+def sma_inc(prev_sma, new_price, old_price, period):
     """
     Incrementally calculates the next SMA value.
 
@@ -2488,7 +2488,7 @@ def sma_incremental(prev_sma, new_price, old_price, period):
         >>> new_price = 10.0
         >>> old_price = 2.0
         >>> period = 3
-        >>> next_sma = kand.sma_incremental(prev_sma, new_price, old_price, period)
+        >>> next_sma = kand.sma_inc(prev_sma, new_price, old_price, period)
         >>> print(next_sma)
         6.666666666666666
         ```
@@ -2523,7 +2523,7 @@ def stddev(input, period):
     """
     ...
 
-def stddev_incremental(price, prev_sum, prev_sum_sq, old_price, period):
+def stddev_inc(price, prev_sum, prev_sum_sq, old_price, period):
     """
     Calculate the latest Standard Deviation value incrementally
 
@@ -2544,7 +2544,7 @@ def stddev_incremental(price, prev_sum, prev_sum_sq, old_price, period):
     Examples:
       ```python
       >>> import kand
-      >>> stddev, sum, sum_sq = kand.stddev_incremental(
+      >>> stddev, sum, sum_sq = kand.stddev_inc(
       ...     10.0,   # current price
       ...     100.0,  # previous sum
       ...     1050.0, # previous sum of squares
@@ -2614,7 +2614,7 @@ def sum(input, period):
     """
     ...
 
-def sum_incremental(new_price, old_price, prev_sum):
+def sum_inc(new_price, old_price, prev_sum):
     """
     Calculate the latest sum value incrementally
 
@@ -2630,7 +2630,7 @@ def sum_incremental(new_price, old_price, prev_sum):
     Examples:
       ```python
       >>> import kand
-      >>> new_sum = kand.sum_incremental(
+      >>> new_sum = kand.sum_inc(
       ...     5.0,    # new price
       ...     3.0,    # old price
       ...     10.0,   # previous sum
@@ -2674,7 +2674,7 @@ def supertrend(high, low, close, period, multiplier):
     """
     ...
 
-def supertrend_incremental(high, low, close, prev_close, prev_atr, prev_trend, prev_upper, prev_lower, period, multiplier):
+def supertrend_inc(high, low, close, prev_close, prev_atr, prev_trend, prev_upper, prev_lower, period, multiplier):
     """
     Calculates a single Supertrend value incrementally.
 
@@ -2704,7 +2704,7 @@ def supertrend_incremental(high, low, close, prev_close, prev_atr, prev_trend, p
     Examples:
       ```python
       >>> import kand
-      >>> trend, supertrend, atr, upper, lower = kand.supertrend_incremental(
+      >>> trend, supertrend, atr, upper, lower = kand.supertrend_inc(
       ...     15.0,   # Current high
       ...     11.0,   # Current low
       ...     14.0,   # Current close
@@ -2753,7 +2753,7 @@ def t3(data, period, vfactor):
     """
     ...
 
-def t3_incremental(price, prev_ema1, prev_ema2, prev_ema3, prev_ema4, prev_ema5, prev_ema6, period, vfactor):
+def t3_inc(price, prev_ema1, prev_ema2, prev_ema3, prev_ema4, prev_ema5, prev_ema6, period, vfactor):
     """
     Incrementally calculates the next T3 value.
 
@@ -2784,7 +2784,7 @@ def t3_incremental(price, prev_ema1, prev_ema2, prev_ema3, prev_ema4, prev_ema5,
     Examples:
         ```python
         >>> import kand
-        >>> t3, e1, e2, e3, e4, e5, e6 = kand.t3_incremental(
+        >>> t3, e1, e2, e3, e4, e5, e6 = kand.t3_inc(
         ...     100.0,  # New price
         ...     95.0,   # Previous EMA1
         ...     94.0,   # Previous EMA2
@@ -2828,7 +2828,7 @@ def tema(prices, period):
     """
     ...
 
-def tema_incremental(new_price, prev_ema1, prev_ema2, prev_ema3, period):
+def tema_inc(new_price, prev_ema1, prev_ema2, prev_ema3, period):
     """
     Calculate the next TEMA value incrementally.
 
@@ -2849,7 +2849,7 @@ def tema_incremental(new_price, prev_ema1, prev_ema2, prev_ema3, period):
     Examples:
       ```python
       >>> import kand
-      >>> tema, ema1, ema2, ema3 = kand.tema_incremental(
+      >>> tema, ema1, ema2, ema3 = kand.tema_inc(
       ...     10.0,  # new_price
       ...     9.0,   # prev_ema1
       ...     8.0,   # prev_ema2
@@ -2889,7 +2889,7 @@ def trange(high, low, close):
     """
     ...
 
-def trange_incremental(high, low, prev_close):
+def trange_inc(high, low, prev_close):
     """
     Calculates a single True Range value for the most recent period.
 
@@ -2904,7 +2904,7 @@ def trange_incremental(high, low, prev_close):
     Examples:
       ```python
       >>> import kand
-      >>> tr = kand.trange_incremental(12.0, 9.0, 11.0)
+      >>> tr = kand.trange_inc(12.0, 9.0, 11.0)
       >>> print(tr)
       3.0  # max(3, 1, 2)
       ```
@@ -2939,7 +2939,7 @@ def trima(prices, period):
     """
     ...
 
-def trima_incremental(prev_sma1, prev_sma2, new_price, old_price, old_sma1, period):
+def trima_inc(prev_sma1, prev_sma2, new_price, old_price, old_sma1, period):
     """
     Calculate the next TRIMA value incrementally.
 
@@ -2959,7 +2959,7 @@ def trima_incremental(prev_sma1, prev_sma2, new_price, old_price, old_sma1, peri
     Examples:
       ```python
       >>> import kand
-      >>> trima, sma1 = kand.trima_incremental(
+      >>> trima, sma1 = kand.trima_inc(
       ...     35.5,  # prev_sma1
       ...     35.2,  # prev_sma2
       ...     36.0,  # new_price
@@ -3000,7 +3000,7 @@ def trix(prices, period):
     """
     ...
 
-def trix_incremental(price, prev_ema1, prev_ema2, prev_ema3, period):
+def trix_inc(price, prev_ema1, prev_ema2, prev_ema3, period):
     """
     Calculates a single new TRIX value incrementally.
 
@@ -3021,7 +3021,7 @@ def trix_incremental(price, prev_ema1, prev_ema2, prev_ema3, period):
     Examples:
       ```python
       >>> import kand
-      >>> trix, ema1, ema2, ema3 = kand.trix_incremental(
+      >>> trix, ema1, ema2, ema3 = kand.trix_inc(
       ...     100.0,  # price
       ...     98.0,   # prev_ema1
       ...     97.0,   # prev_ema2
@@ -3061,7 +3061,7 @@ def typprice(high, low, close):
     """
     ...
 
-def typprice_incremental(high, low, close):
+def typprice_inc(high, low, close):
     """
     Calculates a single Typical Price value incrementally.
 
@@ -3076,7 +3076,7 @@ def typprice_incremental(high, low, close):
     Examples:
       ```python
       >>> import kand
-      >>> typ_price = kand.typprice_incremental(24.20, 23.85, 23.89)
+      >>> typ_price = kand.typprice_inc(24.20, 23.85, 23.89)
       >>> print(typ_price)
       23.98  # (24.20 + 23.85 + 23.89) / 3
       ```
@@ -3110,7 +3110,7 @@ def var(prices, period):
     """
     ...
 
-def var_incremental(price, prev_sum, prev_sum_sq, old_price, period):
+def var_inc(price, prev_sum, prev_sum_sq, old_price, period):
     """
     Calculate the latest Variance value incrementally
 
@@ -3131,7 +3131,7 @@ def var_incremental(price, prev_sum, prev_sum_sq, old_price, period):
     Examples:
       ```python
       >>> import kand
-      >>> var, sum, sum_sq = kand.var_incremental(
+      >>> var, sum, sum_sq = kand.var_inc(
       ...     10.0,  # current price
       ...     25.0,  # previous sum
       ...     220.0, # previous sum of squares
@@ -3169,7 +3169,7 @@ def vegas(prices):
     """
     ...
 
-def vegas_incremental(price, prev_channel_upper, prev_channel_lower, prev_boundary_upper, prev_boundary_lower):
+def vegas_inc(price, prev_channel_upper, prev_channel_lower, prev_boundary_upper, prev_boundary_lower):
     """
     Incrementally calculates the next VEGAS values.
 
@@ -3192,7 +3192,7 @@ def vegas_incremental(price, prev_channel_upper, prev_channel_lower, prev_bounda
       >>> import kand
       >>> price = 100.0
       >>> prev_values = (98.0, 97.5, 96.0, 95.5)
-      >>> ch_upper, ch_lower, b_upper, b_lower = kand.vegas_incremental(
+      >>> ch_upper, ch_lower, b_upper, b_lower = kand.vegas_inc(
       ...     price,
       ...     prev_values[0],
       ...     prev_values[1],
@@ -3232,7 +3232,7 @@ def vwap(high, low, close, volume):
     """
     ...
 
-def vwap_incremental(high, low, close, volume, prev_cum_pv, prev_cum_vol):
+def vwap_inc(high, low, close, volume, prev_cum_pv, prev_cum_vol):
     """
     Calculates a single VWAP value from the latest price and volume data.
 
@@ -3250,7 +3250,7 @@ def vwap_incremental(high, low, close, volume, prev_cum_pv, prev_cum_vol):
     Examples:
       ```python
       >>> import kand
-      >>> new_cum_pv, new_cum_vol, vwap = kand.vwap_incremental(15.0, 11.0, 14.0, 200.0, 1000.0, 150.0)
+      >>> new_cum_pv, new_cum_vol, vwap = kand.vwap_inc(15.0, 11.0, 14.0, 200.0, 1000.0, 150.0)
       ```
     """
     ...
@@ -3283,7 +3283,7 @@ def wclprice(high, low, close):
     """
     ...
 
-def wclprice_incremental(high, low, close):
+def wclprice_inc(high, low, close):
     """
     Calculates a single Weighted Close Price (WCLPRICE) value from the latest price data.
 
@@ -3298,7 +3298,7 @@ def wclprice_incremental(high, low, close):
     Examples:
       ```python
       >>> import kand
-      >>> wclprice = kand.wclprice_incremental(15.0, 11.0, 14.0)
+      >>> wclprice = kand.wclprice_inc(15.0, 11.0, 14.0)
       ```
     """
     ...
@@ -3336,7 +3336,7 @@ def willr(high, low, close, period):
     """
     ...
 
-def willr_incremental(prev_highest_high, prev_lowest_low, prev_high, prev_low, close, high, low):
+def willr_inc(prev_highest_high, prev_lowest_low, prev_high, prev_low, close, high, low):
     """
     Incrementally calculates Williams %R for the latest data point.
 
@@ -3361,7 +3361,7 @@ def willr_incremental(prev_highest_high, prev_lowest_low, prev_high, prev_low, c
     Examples:
         ```python
         >>> import kand
-        >>> willr, high, low = kand.willr_incremental(15.0, 10.0, 14.0, 11.0, 12.0, 13.0, 11.0)
+        >>> willr, high, low = kand.willr_inc(15.0, 10.0, 14.0, 11.0, 12.0, 13.0, 11.0)
         ```
     """
     ...
@@ -3393,7 +3393,7 @@ def wma(data, period):
     """
     ...
 
-def wma_incremental(input_window, period):
+def wma_inc(input_window, period):
     """
     Incrementally calculates the next WMA value.
 
@@ -3411,7 +3411,7 @@ def wma_incremental(input_window, period):
         ```python
         >>> import kand
         >>> window = [5.0, 4.0, 3.0]  # newest to oldest
-        >>> wma = kand.wma_incremental(window, 3)
+        >>> wma = kand.wma_inc(window, 3)
         >>> print(wma)
         4.333333333333333
         ```

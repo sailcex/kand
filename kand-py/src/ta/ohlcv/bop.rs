@@ -71,17 +71,17 @@ pub fn bop_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> bop = kand.bop_incremental(10.0, 12.0, 8.0, 11.0)
+///   >>> bop = kand.bop_inc(10.0, 12.0, 8.0, 11.0)
 ///   ```
 #[pyfunction]
-#[pyo3(name = "bop_incremental", signature = (open, high, low, close))]
-pub fn bop_incremental_py(
+#[pyo3(name = "bop_inc", signature = (open, high, low, close))]
+pub fn bop_inc_py(
     py: Python,
     open: TAFloat,
     high: TAFloat,
     low: TAFloat,
     close: TAFloat,
 ) -> PyResult<TAFloat> {
-    py.allow_threads(|| bop::bop_incremental(open, high, low, close))
+    py.allow_threads(|| bop::bop_inc(open, high, low, close))
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

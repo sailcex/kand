@@ -117,15 +117,15 @@ pub fn wclprice(
 ///
 /// # Example
 /// ```
-/// use kand::ohlcv::wclprice::wclprice_incremental;
+/// use kand::ohlcv::wclprice::wclprice_inc;
 ///
 /// let high = 15.0;
 /// let low = 11.0;
 /// let close = 14.0;
 ///
-/// let wclprice = wclprice_incremental(high, low, close).unwrap();
+/// let wclprice = wclprice_inc(high, low, close).unwrap();
 /// ```
-pub fn wclprice_incremental(
+pub fn wclprice_inc(
     input_high: TAFloat,
     input_low: TAFloat,
     input_close: TAFloat,
@@ -179,7 +179,7 @@ mod tests {
 
         // Test incremental calculation matches regular calculation
         for i in 0..input_high.len() {
-            let result = wclprice_incremental(input_high[i], input_low[i], input_close[i]).unwrap();
+            let result = wclprice_inc(input_high[i], input_low[i], input_close[i]).unwrap();
             assert_relative_eq!(result, output[i], epsilon = 0.0001);
         }
     }

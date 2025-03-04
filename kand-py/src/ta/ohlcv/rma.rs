@@ -63,15 +63,11 @@ pub fn rma_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> new_rma = kand.rma_incremental(10.0, 9.5, 14)
+///   >>> new_rma = kand.rma_inc(10.0, 9.5, 14)
 ///   ```
 #[pyfunction]
-#[pyo3(name = "rma_incremental", signature = (current_price, prev_rma, period))]
-pub fn rma_incremental_py(
-    current_price: TAFloat,
-    prev_rma: TAFloat,
-    period: usize,
-) -> PyResult<TAFloat> {
-    rma::rma_incremental(current_price, prev_rma, period)
+#[pyo3(name = "rma_inc", signature = (current_price, prev_rma, period))]
+pub fn rma_inc_py(current_price: TAFloat, prev_rma: TAFloat, period: usize) -> PyResult<TAFloat> {
+    rma::rma_inc(current_price, prev_rma, period)
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

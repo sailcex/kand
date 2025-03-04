@@ -230,7 +230,7 @@ pub fn bbands(
 /// # Example
 /// ```
 /// use kand::ta::ohlcv::bbands;
-/// let (upper, middle, lower, sma, sum, sum_sq) = bbands::bbands_incremental(
+/// let (upper, middle, lower, sma, sum, sum_sq) = bbands::bbands_inc(
 ///     10.0,   // new price
 ///     9.5,    // previous SMA
 ///     28.5,   // previous sum
@@ -242,7 +242,7 @@ pub fn bbands(
 /// )
 /// .unwrap();
 /// ```
-pub fn bbands_incremental(
+pub fn bbands_inc(
     input_price: TAFloat,
     prev_sma: TAFloat,
     prev_sum: TAFloat,
@@ -275,10 +275,10 @@ pub fn bbands_incremental(
     }
 
     // Calculate new SMA using incremental SMA
-    let new_sma = sma::sma_incremental(prev_sma, input_price, input_old_price, param_period)?;
+    let new_sma = sma::sma_inc(prev_sma, input_price, input_old_price, param_period)?;
 
     // Calculate new variance using incremental variance
-    let (new_variance, new_sum, new_sum_sq) = var::var_incremental(
+    let (new_variance, new_sum, new_sum_sq) = var::var_inc(
         input_price,
         prev_sum,
         prev_sum_sq,
@@ -444,7 +444,7 @@ mod tests {
         let mut prev_sum_sq = output_sum_sq[19];
 
         for i in 20..45 {
-            let (upper, middle, lower, new_sma, new_sum, new_sum_sq) = bbands_incremental(
+            let (upper, middle, lower, new_sma, new_sum, new_sum_sq) = bbands_inc(
                 input_price[i],
                 prev_sma,
                 prev_sum,

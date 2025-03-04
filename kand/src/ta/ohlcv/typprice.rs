@@ -122,10 +122,10 @@ pub fn typprice(
 /// let low = 23.85;
 /// let close = 23.89;
 ///
-/// let typ_price = typprice::typprice_incremental(high, low, close).unwrap();
+/// let typ_price = typprice::typprice_inc(high, low, close).unwrap();
 /// // typ_price ≈ 23.98
 /// ```
-pub fn typprice_incremental(
+pub fn typprice_inc(
     input_high: TAFloat,
     input_low: TAFloat,
     input_close: TAFloat,
@@ -180,7 +180,7 @@ mod tests {
 
         // Test each incremental step matches regular calculation
         for i in 0..input_high.len() {
-            let result = typprice_incremental(input_high[i], input_low[i], input_close[i]).unwrap();
+            let result = typprice_inc(input_high[i], input_low[i], input_close[i]).unwrap();
             assert_relative_eq!(result, output_typprice[i], epsilon = 0.0001);
         }
     }

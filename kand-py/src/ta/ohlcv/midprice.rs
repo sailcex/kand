@@ -88,7 +88,7 @@ pub fn midprice_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> midprice, new_highest, new_lowest = kand.midprice_incremental(
+///   >>> midprice, new_highest, new_lowest = kand.midprice_inc(
 ///   ...     10.5,  # current high
 ///   ...     9.8,   # current low
 ///   ...     10.2,  # previous highest high
@@ -97,8 +97,8 @@ pub fn midprice_py(
 ///   ... )
 ///   ```
 #[pyfunction]
-#[pyo3(name = "midprice_incremental", signature = (high, low, prev_highest, prev_lowest, period))]
-pub fn midprice_incremental_py(
+#[pyo3(name = "midprice_inc", signature = (high, low, prev_highest, prev_lowest, period))]
+pub fn midprice_inc_py(
     py: Python,
     high: TAFloat,
     low: TAFloat,
@@ -106,8 +106,6 @@ pub fn midprice_incremental_py(
     prev_lowest: TAFloat,
     period: usize,
 ) -> PyResult<(TAFloat, TAFloat, TAFloat)> {
-    py.allow_threads(|| {
-        midprice::midprice_incremental(high, low, prev_highest, prev_lowest, period)
-    })
-    .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
+    py.allow_threads(|| midprice::midprice_inc(high, low, prev_highest, prev_lowest, period))
+        .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

@@ -142,10 +142,10 @@ pub fn rocr(
 /// let current_price = 15.0;
 /// let historical_price = 12.0;
 ///
-/// let rocr_value = rocr::rocr_incremental(current_price, historical_price).unwrap();
+/// let rocr_value = rocr::rocr_inc(current_price, historical_price).unwrap();
 /// // rocr_value will be 1.25 (15.0 / 12.0)
 /// ```
-pub fn rocr_incremental(input: TAFloat, prev: TAFloat) -> Result<TAFloat, KandError> {
+pub fn rocr_inc(input: TAFloat, prev: TAFloat) -> Result<TAFloat, KandError> {
     #[cfg(feature = "deep-check")]
     {
         if input.is_nan() || prev.is_nan() {
@@ -199,7 +199,7 @@ mod tests {
 
         // Test incremental calculation matches regular calculation
         for i in param_period..input.len() {
-            let result = rocr_incremental(input[i], input[i - param_period]).unwrap();
+            let result = rocr_inc(input[i], input[i - param_period]).unwrap();
             assert_relative_eq!(result, output_rocr[i], epsilon = 0.0001);
         }
     }

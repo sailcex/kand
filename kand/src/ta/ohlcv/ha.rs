@@ -129,7 +129,7 @@ pub fn ha(
 
     // Calculate remaining candles
     for i in lookback..len {
-        let (o, h, l, c) = ha_incremental(
+        let (o, h, l, c) = ha_inc(
             input_open[i],
             input_high[i],
             input_low[i],
@@ -177,9 +177,9 @@ pub fn ha(
 ///
 /// # Example
 /// ```
-/// use kand::ohlcv::ha::ha_incremental;
+/// use kand::ohlcv::ha::ha_inc;
 ///
-/// let (ha_open, ha_high, ha_low, ha_close) = ha_incremental(
+/// let (ha_open, ha_high, ha_low, ha_close) = ha_inc(
 ///     11.2,    // Current open
 ///     11.8,    // Current high
 ///     10.8,    // Current low
@@ -189,7 +189,7 @@ pub fn ha(
 /// )
 /// .unwrap();
 /// ```
-pub fn ha_incremental(
+pub fn ha_inc(
     curr_open: TAFloat,
     curr_high: TAFloat,
     curr_low: TAFloat,
@@ -263,7 +263,7 @@ mod tests {
 
         // Test incremental calculation matches regular calculation
         for i in 1..5 {
-            let (ha_open, ha_high, ha_low, ha_close) = ha_incremental(
+            let (ha_open, ha_high, ha_low, ha_close) = ha_inc(
                 input_open[i],
                 input_high[i],
                 input_low[i],

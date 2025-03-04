@@ -189,7 +189,7 @@ pub fn willr(
 ///
 /// # Example
 /// ```
-/// use kand::ohlcv::willr::willr_incremental;
+/// use kand::ohlcv::willr::willr_inc;
 ///
 /// let prev_highest_high = 15.0;
 /// let prev_lowest_low = 10.0;
@@ -199,7 +199,7 @@ pub fn willr(
 /// let input_high = 13.0;
 /// let input_low = 11.0;
 ///
-/// let (willr, new_highest_high, new_lowest_low) = willr_incremental(
+/// let (willr, new_highest_high, new_lowest_low) = willr_inc(
 ///     prev_highest_high,
 ///     prev_lowest_low,
 ///     prev_high,
@@ -210,7 +210,7 @@ pub fn willr(
 /// )
 /// .unwrap();
 /// ```
-pub fn willr_incremental(
+pub fn willr_inc(
     prev_highest_high: TAFloat,
     prev_lowest_low: TAFloat,
     prev_high: TAFloat,
@@ -333,7 +333,7 @@ mod tests {
         let mut prev_lowest_low = output_lowest_low[13];
 
         for i in 14..19 {
-            let (result, highest_high, lowest_low) = willr_incremental(
+            let (result, highest_high, lowest_low) = willr_inc(
                 prev_highest_high,
                 prev_lowest_low,
                 input_high[i - 1],

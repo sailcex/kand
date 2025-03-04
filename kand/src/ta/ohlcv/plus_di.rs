@@ -167,7 +167,7 @@ pub fn plus_di(
 
         plus_dm_sum += plus_dm1;
 
-        let tr1 = trange::trange_incremental(input_high[i], input_low[i], prev_close)?;
+        let tr1 = trange::trange_inc(input_high[i], input_low[i], prev_close)?;
         tr_sum += tr1;
 
         prev_high = input_high[i];
@@ -194,7 +194,7 @@ pub fn plus_di(
             0.0
         };
 
-        let tr1 = trange::trange_incremental(input_high[i], input_low[i], input_close[i - 1])?;
+        let tr1 = trange::trange_inc(input_high[i], input_low[i], input_close[i - 1])?;
 
         // Apply Wilder's smoothing
         curr_smoothed_plus_dm =
@@ -266,7 +266,7 @@ pub fn plus_di(
 /// ```
 /// use kand::ohlcv::plus_di;
 ///
-/// let (plus_di, smoothed_plus_dm, smoothed_tr) = plus_di::plus_di_incremental(
+/// let (plus_di, smoothed_plus_dm, smoothed_tr) = plus_di::plus_di_inc(
 ///     10.5, // high
 ///     9.5,  // low
 ///     10.0, // prev_high
@@ -278,7 +278,7 @@ pub fn plus_di(
 /// )
 /// .unwrap();
 /// ```
-pub fn plus_di_incremental(
+pub fn plus_di_inc(
     input_high: TAFloat,
     input_low: TAFloat,
     prev_high: TAFloat,
@@ -320,7 +320,7 @@ pub fn plus_di_incremental(
         0.0
     };
 
-    let tr = trange::trange_incremental(input_high, input_low, prev_close)?;
+    let tr = trange::trange_inc(input_high, input_low, prev_close)?;
     let period_t = param_period as TAFloat;
 
     let output_smoothed_plus_dm =
@@ -402,7 +402,7 @@ mod tests {
 
         // Test each incremental step
         for i in 15..19 {
-            let (plus_di, new_smoothed_plus_dm, new_smoothed_tr) = plus_di_incremental(
+            let (plus_di, new_smoothed_plus_dm, new_smoothed_tr) = plus_di_inc(
                 input_high[i],
                 input_low[i],
                 input_high[i - 1],

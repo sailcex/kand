@@ -102,7 +102,7 @@ pub fn minus_di_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> minus_di, smoothed_minus_dm, smoothed_tr = kand.minus_di_incremental(
+///   >>> minus_di, smoothed_minus_dm, smoothed_tr = kand.minus_di_inc(
 ///   ...     36.2,  # high
 ///   ...     35.2,  # low
 ///   ...     35.8,  # prev_high
@@ -114,8 +114,8 @@ pub fn minus_di_py(
 ///   ... )
 ///   ```
 #[pyfunction]
-#[pyo3(name = "minus_di_incremental", signature = (high, low, prev_high, prev_low, prev_close, prev_smoothed_minus_dm, prev_smoothed_tr, period))]
-pub fn minus_di_incremental_py(
+#[pyo3(name = "minus_di_inc", signature = (high, low, prev_high, prev_low, prev_close, prev_smoothed_minus_dm, prev_smoothed_tr, period))]
+pub fn minus_di_inc_py(
     py: Python,
     high: TAFloat,
     low: TAFloat,
@@ -128,7 +128,7 @@ pub fn minus_di_incremental_py(
 ) -> PyResult<(TAFloat, TAFloat, TAFloat)> {
     // Perform the incremental -DI calculation while releasing the GIL
     py.allow_threads(|| {
-        minus_di::minus_di_incremental(
+        minus_di::minus_di_inc(
             high,
             low,
             prev_high,

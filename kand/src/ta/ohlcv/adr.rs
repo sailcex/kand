@@ -148,10 +148,9 @@ pub fn adr(
 /// let old_low = 8.0;
 /// let period = 14;
 ///
-/// let next_adr =
-///     adr::adr_incremental(prev_adr, new_high, new_low, old_high, old_low, period).unwrap();
+/// let next_adr = adr::adr_inc(prev_adr, new_high, new_low, old_high, old_low, period).unwrap();
 /// ```
-pub fn adr_incremental(
+pub fn adr_inc(
     prev_adr: TAFloat,
     input_new_high: TAFloat,
     input_new_low: TAFloat,
@@ -182,5 +181,5 @@ pub fn adr_incremental(
     let new_range = input_new_high - input_new_low;
     let old_range = input_old_high - input_old_low;
 
-    sma::sma_incremental(prev_adr, new_range, old_range, param_period)
+    sma::sma_inc(prev_adr, new_range, old_range, param_period)
 }

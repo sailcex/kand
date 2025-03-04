@@ -65,17 +65,13 @@ pub fn trange_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> tr = kand.trange_incremental(12.0, 9.0, 11.0)
+///   >>> tr = kand.trange_inc(12.0, 9.0, 11.0)
 ///   >>> print(tr)
 ///   3.0  # max(3, 1, 2)
 ///   ```
 #[pyfunction]
-#[pyo3(name = "trange_incremental", signature = (high, low, prev_close))]
-pub fn trange_incremental_py(
-    high: TAFloat,
-    low: TAFloat,
-    prev_close: TAFloat,
-) -> PyResult<TAFloat> {
-    trange::trange_incremental(high, low, prev_close)
+#[pyo3(name = "trange_inc", signature = (high, low, prev_close))]
+pub fn trange_inc_py(high: TAFloat, low: TAFloat, prev_close: TAFloat) -> PyResult<TAFloat> {
+    trange::trange_inc(high, low, prev_close)
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

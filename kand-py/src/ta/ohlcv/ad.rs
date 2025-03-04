@@ -86,13 +86,13 @@ pub fn ad_py(
 ///     >>> close = 13.0
 ///     >>> volume = 200.0
 ///     >>> prev_ad = 25.0
-///     >>> result = kand.ad_incremental(high, low, close, volume, prev_ad)
+///     >>> result = kand.ad_inc(high, low, close, volume, prev_ad)
 ///     >>> print(result)
 ///     125.0
 ///     ```
 #[pyfunction]
-#[pyo3(name = "ad_incremental", signature = (high, low, close, volume, prev_ad))]
-pub fn ad_incremental_py(
+#[pyo3(name = "ad_inc", signature = (high, low, close, volume, prev_ad))]
+pub fn ad_inc_py(
     py: Python,
     high: TAFloat,
     low: TAFloat,
@@ -101,6 +101,6 @@ pub fn ad_incremental_py(
     prev_ad: TAFloat,
 ) -> PyResult<TAFloat> {
     // Perform the incremental A/D calculation while releasing the GIL
-    py.allow_threads(|| ad::ad_incremental(high, low, close, volume, prev_ad))
+    py.allow_threads(|| ad::ad_inc(high, low, close, volume, prev_ad))
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

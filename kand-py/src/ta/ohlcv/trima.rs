@@ -72,7 +72,7 @@ pub fn trima_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> trima, sma1 = kand.trima_incremental(
+///   >>> trima, sma1 = kand.trima_inc(
 ///   ...     35.5,  # prev_sma1
 ///   ...     35.2,  # prev_sma2
 ///   ...     36.0,  # new_price
@@ -82,8 +82,8 @@ pub fn trima_py(
 ///   ... )
 ///   ```
 #[pyfunction]
-#[pyo3(name = "trima_incremental", signature = (prev_sma1, prev_sma2, new_price, old_price, old_sma1, period))]
-pub fn trima_incremental_py(
+#[pyo3(name = "trima_inc", signature = (prev_sma1, prev_sma2, new_price, old_price, old_sma1, period))]
+pub fn trima_inc_py(
     prev_sma1: TAFloat,
     prev_sma2: TAFloat,
     new_price: TAFloat,
@@ -91,6 +91,6 @@ pub fn trima_incremental_py(
     old_sma1: TAFloat,
     period: usize,
 ) -> PyResult<(TAFloat, TAFloat)> {
-    trima::trima_incremental(prev_sma1, prev_sma2, new_price, old_price, old_sma1, period)
+    trima::trima_inc(prev_sma1, prev_sma2, new_price, old_price, old_sma1, period)
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

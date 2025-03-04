@@ -173,7 +173,7 @@ pub fn cdl_marubozu(
 
     // Process each candle
     for i in param_period..len {
-        let (signal, new_body_avg) = cdl_marubozu_incremental(
+        let (signal, new_body_avg) = cdl_marubozu_inc(
             input_open[i],
             input_high[i],
             input_low[i],
@@ -238,7 +238,7 @@ pub fn cdl_marubozu(
 /// ```
 /// use kand::ohlcv::cdl_marubozu;
 ///
-/// let (signal, new_avg) = cdl_marubozu::cdl_marubozu_incremental(
+/// let (signal, new_avg) = cdl_marubozu::cdl_marubozu_inc(
 ///     10.0, // open
 ///     10.5, // high
 ///     9.8,  // low
@@ -249,7 +249,7 @@ pub fn cdl_marubozu(
 /// )
 /// .unwrap();
 /// ```
-pub fn cdl_marubozu_incremental(
+pub fn cdl_marubozu_inc(
     input_open: TAFloat,
     input_high: TAFloat,
     input_low: TAFloat,
@@ -386,7 +386,7 @@ mod tests {
 
         // Test each incremental step
         for i in 14..18 {
-            let (signal, new_body_avg) = cdl_marubozu_incremental(
+            let (signal, new_body_avg) = cdl_marubozu_inc(
                 input_open[i],
                 input_high[i],
                 input_low[i],

@@ -238,7 +238,7 @@ pub fn cci(
 /// let period = 14;
 /// let mut tp_buffer = vec![100.0; period];
 ///
-/// let next_cci = cci::cci_incremental(
+/// let next_cci = cci::cci_inc(
 ///     prev_sma_tp,
 ///     new_high,
 ///     new_low,
@@ -251,7 +251,7 @@ pub fn cci(
 /// )
 /// .unwrap();
 /// ```
-pub fn cci_incremental(
+pub fn cci_inc(
     prev_sma_tp: TAFloat,
     input_new_high: TAFloat,
     input_new_low: TAFloat,
@@ -290,7 +290,7 @@ pub fn cci_incremental(
     let old_tp = (input_old_high + input_old_low + input_old_close) / 3.0;
 
     // Calculate new SMA of typical prices
-    let sma_tp = sma::sma_incremental(prev_sma_tp, new_tp, old_tp, param_period)?;
+    let sma_tp = sma::sma_inc(prev_sma_tp, new_tp, old_tp, param_period)?;
 
     // Update circular buffer - remove oldest and add newest TP
     if tp_buffer.len() == param_period {
@@ -394,7 +394,7 @@ mod tests {
         // Calculate and verify incremental values
         for i in param_period..input_high.len() {
             // Calculate incremental CCI
-            let result = cci_incremental(
+            let result = cci_inc(
                 output_tp_sma[i - 1],
                 input_high[i],
                 input_low[i],

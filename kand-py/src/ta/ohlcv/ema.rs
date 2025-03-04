@@ -71,11 +71,11 @@ pub fn ema_py(
 ///   >>> current_price = 15.0
 ///   >>> prev_ema = 14.5
 ///   >>> period = 14
-///   >>> new_ema = kand.ema_incremental(current_price, prev_ema, period)
+///   >>> new_ema = kand.ema_inc(current_price, prev_ema, period)
 ///   ```
 #[pyfunction]
-#[pyo3(name = "ema_incremental", signature = (price, prev_ema, period, k=None))]
-pub fn ema_incremental_py(
+#[pyo3(name = "ema_inc", signature = (price, prev_ema, period, k=None))]
+pub fn ema_inc_py(
     py: Python,
     price: TAFloat,
     prev_ema: TAFloat,
@@ -83,7 +83,7 @@ pub fn ema_incremental_py(
     k: Option<TAFloat>,
 ) -> PyResult<TAFloat> {
     py.allow_threads(|| {
-        ema::ema_incremental(price, prev_ema, period, k)
+        ema::ema_inc(price, prev_ema, period, k)
             .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
     })
 }

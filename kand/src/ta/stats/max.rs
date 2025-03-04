@@ -156,10 +156,10 @@ pub fn max(
 /// let old_price = 9.0;
 /// let period = 14;
 ///
-/// let new_max = max::max_incremental(new_price, prev_max, old_price, period).unwrap();
+/// let new_max = max::max_inc(new_price, prev_max, old_price, period).unwrap();
 /// assert_eq!(new_max, 11.0);
 /// ```
-pub fn max_incremental(
+pub fn max_inc(
     input_price: TAFloat,
     prev_max: TAFloat,
     input_old_price: TAFloat,
@@ -233,7 +233,7 @@ mod tests {
 
         // Test each incremental step
         for i in 14..19 {
-            let result = max_incremental(
+            let result = max_inc(
                 input_close[i],
                 prev_max,
                 input_close[i - param_period],

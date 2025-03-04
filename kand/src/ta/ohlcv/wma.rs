@@ -160,13 +160,10 @@ pub fn wma(
 /// use kand::ohlcv::wma;
 ///
 /// let window = vec![5.0, 4.0, 3.0]; // newest to oldest
-/// let wma = wma::wma_incremental(&window, 3).unwrap();
+/// let wma = wma::wma_inc(&window, 3).unwrap();
 /// // wma = (5.0*3 + 4.0*2 + 3.0*1)/(3+2+1) = 4.333...
 /// ```
-pub fn wma_incremental(
-    input_window: &[TAFloat],
-    param_period: usize,
-) -> Result<TAFloat, KandError> {
+pub fn wma_inc(input_window: &[TAFloat], param_period: usize) -> Result<TAFloat, KandError> {
     #[cfg(feature = "check")]
     {
         if param_period < 2 {
@@ -250,7 +247,7 @@ mod tests {
                 .rev()
                 .copied()
                 .collect();
-            let result = wma_incremental(&window, param_period).unwrap();
+            let result = wma_inc(&window, param_period).unwrap();
             assert_relative_eq!(result, output[i], epsilon = 0.0001);
         }
     }

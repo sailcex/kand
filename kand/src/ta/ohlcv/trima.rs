@@ -210,10 +210,9 @@ pub fn trima(
 /// let period = 5;
 ///
 /// let (new_sma1, new_trima) =
-///     trima::trima_incremental(prev_sma1, prev_sma2, new_price, old_price, old_sma1, period)
-///         .unwrap();
+///     trima::trima_inc(prev_sma1, prev_sma2, new_price, old_price, old_sma1, period).unwrap();
 /// ```
-pub fn trima_incremental(
+pub fn trima_inc(
     prev_sma1: TAFloat,
     prev_sma2: TAFloat,
     input_new_price: TAFloat,
@@ -389,7 +388,7 @@ mod tests {
         for i in 44..input.len() {
             let old_price = input[i - n];
             let old_sma1 = output_sma1[i - m];
-            let (new_sma1, new_sma2) = trima_incremental(
+            let (new_sma1, new_sma2) = trima_inc(
                 prev_sma1,
                 prev_sma2,
                 input[i],

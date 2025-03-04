@@ -158,9 +158,9 @@ pub fn rma(
 /// let current_price = 10.0;
 /// let prev_rma = 9.5;
 /// let period = 14;
-/// let new_rma = rma::rma_incremental(current_price, prev_rma, period).unwrap();
+/// let new_rma = rma::rma_inc(current_price, prev_rma, period).unwrap();
 /// ```
-pub fn rma_incremental(
+pub fn rma_inc(
     input_current: TAFloat,
     prev_rma: TAFloat,
     param_period: usize,

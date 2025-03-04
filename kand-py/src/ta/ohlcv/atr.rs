@@ -78,7 +78,7 @@ pub fn atr_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> atr = kand.atr_incremental(
+///   >>> atr = kand.atr_inc(
 ///   ...     15.0,  # high
 ///   ...     11.0,  # low
 ///   ...     12.0,  # prev_close
@@ -87,8 +87,8 @@ pub fn atr_py(
 ///   ... )
 ///   ```
 #[pyfunction]
-#[pyo3(name = "atr_incremental", signature = (high, low, prev_close, prev_atr, period))]
-pub fn atr_incremental_py(
+#[pyo3(name = "atr_inc", signature = (high, low, prev_close, prev_atr, period))]
+pub fn atr_inc_py(
     py: Python,
     high: TAFloat,
     low: TAFloat,
@@ -96,6 +96,6 @@ pub fn atr_incremental_py(
     prev_atr: TAFloat,
     period: usize,
 ) -> PyResult<TAFloat> {
-    py.allow_threads(|| atr::atr_incremental(high, low, prev_close, prev_atr, period))
+    py.allow_threads(|| atr::atr_inc(high, low, prev_close, prev_atr, period))
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

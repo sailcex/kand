@@ -259,7 +259,7 @@ pub fn sar(
 /// ```
 /// use kand::ohlcv::sar;
 ///
-/// let (new_sar, new_is_long, new_af, new_ep) = sar::sar_incremental(
+/// let (new_sar, new_is_long, new_af, new_ep) = sar::sar_inc(
 ///     15.0, // current high
 ///     14.0, // current low
 ///     14.5, // previous high
@@ -273,7 +273,7 @@ pub fn sar(
 /// )
 /// .unwrap();
 /// ```
-pub fn sar_incremental(
+pub fn sar_inc(
     input_high: TAFloat,
     input_low: TAFloat,
     prev_high: TAFloat,
@@ -416,7 +416,7 @@ mod tests {
         let mut ep = output_ep[1]; // Use the previously calculated EP instead of input_high[1]
 
         for i in 2..6 {
-            let (sar_value, new_is_long, new_af, new_ep) = sar_incremental(
+            let (sar_value, new_is_long, new_af, new_ep) = sar_inc(
                 input_high[i],
                 input_low[i],
                 input_high[i - 1],

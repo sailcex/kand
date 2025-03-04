@@ -193,7 +193,7 @@ pub fn var(
 /// # Example
 /// ```
 /// use kand::stats::var;
-/// let (var_value, new_sum, new_sum_sq) = var::var_incremental(
+/// let (var_value, new_sum, new_sum_sq) = var::var_inc(
 ///     10.0,  // new price
 ///     25.0,  // previous sum
 ///     220.0, // previous sum of squares
@@ -202,7 +202,7 @@ pub fn var(
 /// )
 /// .unwrap();
 /// ```
-pub fn var_incremental(
+pub fn var_inc(
     input_price: TAFloat,
     prev_sum: TAFloat,
     prev_sum_sq: TAFloat,
@@ -301,7 +301,7 @@ mod tests {
 
         // Test each incremental step
         for i in 14..19 {
-            let (var, new_sum, new_sum_sq) = var_incremental(
+            let (var, new_sum, new_sum_sq) = var_inc(
                 input_close[i],
                 prev_sum,
                 prev_sum_sq,

@@ -68,18 +68,18 @@ pub fn sma_py(
 ///     >>> new_price = 10.0
 ///     >>> old_price = 2.0
 ///     >>> period = 3
-///     >>> next_sma = kand.sma_incremental(prev_sma, new_price, old_price, period)
+///     >>> next_sma = kand.sma_inc(prev_sma, new_price, old_price, period)
 ///     >>> print(next_sma)
 ///     6.666666666666666
 ///     ```
 #[pyfunction]
-#[pyo3(name = "sma_incremental", signature = (prev_sma, new_price, old_price, period))]
-pub fn sma_incremental_py(
+#[pyo3(name = "sma_inc", signature = (prev_sma, new_price, old_price, period))]
+pub fn sma_inc_py(
     prev_sma: TAFloat,
     new_price: TAFloat,
     old_price: TAFloat,
     period: usize,
 ) -> PyResult<TAFloat> {
-    sma::sma_incremental(prev_sma, new_price, old_price, period)
+    sma::sma_inc(prev_sma, new_price, old_price, period)
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

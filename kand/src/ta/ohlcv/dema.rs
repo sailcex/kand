@@ -199,7 +199,7 @@ pub fn dema(
 /// # Example
 /// ```
 /// use kand::ohlcv::dema;
-/// let (dema_value, new_ema1, new_ema2) = dema::dema_incremental(
+/// let (dema_value, new_ema1, new_ema2) = dema::dema_inc(
 ///     10.0, // current price
 ///     9.5,  // previous EMA1
 ///     9.0,  // previous EMA2
@@ -207,7 +207,7 @@ pub fn dema(
 /// )
 /// .unwrap();
 /// ```
-pub fn dema_incremental(
+pub fn dema_inc(
     input_price: TAFloat,
     prev_ema1: TAFloat,
     prev_ema2: TAFloat,
@@ -296,7 +296,7 @@ mod tests {
         // Test each incremental step
         for i in 10..15 {
             let (dema_val, new_ema1, new_ema2) =
-                dema_incremental(input[i], prev_ema1, prev_ema2, param_period).unwrap();
+                dema_inc(input[i], prev_ema1, prev_ema2, param_period).unwrap();
 
             assert_relative_eq!(dema_val, output_dema[i], epsilon = 0.0001);
             assert_relative_eq!(new_ema1, output_ema1[i], epsilon = 0.0001);

@@ -199,9 +199,9 @@ pub fn plus_dm(
 /// let period = 14;
 ///
 /// let new_plus_dm =
-///     plus_dm::plus_dm_incremental(high, prev_high, low, prev_low, prev_plus_dm, period).unwrap();
+///     plus_dm::plus_dm_inc(high, prev_high, low, prev_low, prev_plus_dm, period).unwrap();
 /// ```
-pub fn plus_dm_incremental(
+pub fn plus_dm_inc(
     input_high: TAFloat,
     prev_high: TAFloat,
     input_low: TAFloat,
@@ -303,7 +303,7 @@ mod tests {
 
         // Test each incremental step
         for i in 15..19 {
-            let result = plus_dm_incremental(
+            let result = plus_dm_inc(
                 input_high[i],
                 input_high[i - 1],
                 input_low[i],

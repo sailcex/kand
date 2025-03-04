@@ -126,7 +126,7 @@ pub fn cdl_dragonfly_doji(
 
     // Process each candle
     for i in 0..len {
-        output_signals[i] = cdl_dragonfly_doji_incremental(
+        output_signals[i] = cdl_dragonfly_doji_inc(
             input_open[i],
             input_high[i],
             input_low[i],
@@ -171,7 +171,7 @@ pub fn cdl_dragonfly_doji(
 /// ```
 /// use kand::ohlcv::cdl_dragonfly_doji;
 ///
-/// let signal = cdl_dragonfly_doji::cdl_dragonfly_doji_incremental(
+/// let signal = cdl_dragonfly_doji::cdl_dragonfly_doji_inc(
 ///     100.0, // input_open
 ///     102.0, // input_high
 ///     98.0,  // input_low
@@ -180,7 +180,7 @@ pub fn cdl_dragonfly_doji(
 /// )
 /// .unwrap();
 /// ```
-pub fn cdl_dragonfly_doji_incremental(
+pub fn cdl_dragonfly_doji_inc(
     input_open: TAFloat,
     input_high: TAFloat,
     input_low: TAFloat,
@@ -280,7 +280,7 @@ mod tests {
 
         // Test incremental calculation matches regular calculation
         for i in 0..18 {
-            let signal: i64 = cdl_dragonfly_doji_incremental(
+            let signal: i64 = cdl_dragonfly_doji_inc(
                 input_open[i],
                 input_high[i],
                 input_low[i],

@@ -116,7 +116,7 @@ pub fn cdl_gravestone_doji(
 
     // Process each candle
     for i in 0..len {
-        output_signals[i] = cdl_gravestone_doji_incremental(
+        output_signals[i] = cdl_gravestone_doji_inc(
             input_open[i],
             input_high[i],
             input_low[i],
@@ -164,7 +164,7 @@ pub fn cdl_gravestone_doji(
 /// ```
 /// use kand::ohlcv::cdl_gravestone_doji;
 ///
-/// let signal = cdl_gravestone_doji::cdl_gravestone_doji_incremental(
+/// let signal = cdl_gravestone_doji::cdl_gravestone_doji_inc(
 ///     100.0, // open
 ///     102.0, // high
 ///     99.8,  // low
@@ -173,7 +173,7 @@ pub fn cdl_gravestone_doji(
 /// )
 /// .unwrap();
 /// ```
-pub fn cdl_gravestone_doji_incremental(
+pub fn cdl_gravestone_doji_inc(
     input_open: TAFloat,
     input_high: TAFloat,
     input_low: TAFloat,
@@ -252,7 +252,7 @@ mod tests {
 
         // Test incremental calculation matches regular calculation
         for i in 0..18 {
-            let output_signal: i64 = cdl_gravestone_doji_incremental(
+            let output_signal: i64 = cdl_gravestone_doji_inc(
                 input_open[i],
                 input_high[i],
                 input_low[i],

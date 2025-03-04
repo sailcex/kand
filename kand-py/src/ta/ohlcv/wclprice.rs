@@ -61,11 +61,11 @@ pub fn wclprice_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> wclprice = kand.wclprice_incremental(15.0, 11.0, 14.0)
+///   >>> wclprice = kand.wclprice_inc(15.0, 11.0, 14.0)
 ///   ```
 #[pyfunction]
-#[pyo3(name = "wclprice_incremental", signature = (high, low, close))]
-pub fn wclprice_incremental_py(high: TAFloat, low: TAFloat, close: TAFloat) -> PyResult<TAFloat> {
-    wclprice::wclprice_incremental(high, low, close)
+#[pyo3(name = "wclprice_inc", signature = (high, low, close))]
+pub fn wclprice_inc_py(high: TAFloat, low: TAFloat, close: TAFloat) -> PyResult<TAFloat> {
+    wclprice::wclprice_inc(high, low, close)
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

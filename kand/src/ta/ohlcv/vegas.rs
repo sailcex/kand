@@ -162,7 +162,7 @@ pub fn vegas(
 /// let current_price = 100.0;
 /// let prev_values = (98.0, 97.5, 96.0, 95.5);
 ///
-/// let new_values = vegas::vegas_incremental(
+/// let new_values = vegas::vegas_inc(
 ///     current_price,
 ///     prev_values.0,
 ///     prev_values.1,
@@ -171,7 +171,7 @@ pub fn vegas(
 /// )
 /// .unwrap();
 /// ```
-pub fn vegas_incremental(
+pub fn vegas_inc(
     input_price: TAFloat,
     prev_channel_upper: TAFloat,
     prev_channel_lower: TAFloat,
@@ -191,10 +191,10 @@ pub fn vegas_incremental(
         }
     }
 
-    let channel_upper = ema::ema_incremental(input_price, prev_channel_upper, 144, None)?;
-    let channel_lower = ema::ema_incremental(input_price, prev_channel_lower, 169, None)?;
-    let boundary_upper = ema::ema_incremental(input_price, prev_boundary_upper, 576, None)?;
-    let boundary_lower = ema::ema_incremental(input_price, prev_boundary_lower, 676, None)?;
+    let channel_upper = ema::ema_inc(input_price, prev_channel_upper, 144, None)?;
+    let channel_lower = ema::ema_inc(input_price, prev_channel_lower, 169, None)?;
+    let boundary_upper = ema::ema_inc(input_price, prev_boundary_upper, 576, None)?;
+    let boundary_lower = ema::ema_inc(input_price, prev_boundary_lower, 676, None)?;
 
     Ok((channel_upper, channel_lower, boundary_upper, boundary_lower))
 }

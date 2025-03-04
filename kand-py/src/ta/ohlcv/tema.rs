@@ -85,7 +85,7 @@ pub fn tema_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> tema, ema1, ema2, ema3 = kand.tema_incremental(
+///   >>> tema, ema1, ema2, ema3 = kand.tema_inc(
 ///   ...     10.0,  # new_price
 ///   ...     9.0,   # prev_ema1
 ///   ...     8.0,   # prev_ema2
@@ -94,14 +94,14 @@ pub fn tema_py(
 ///   ... )
 ///   ```
 #[pyfunction]
-#[pyo3(name = "tema_incremental", signature = (new_price, prev_ema1, prev_ema2, prev_ema3, period))]
-pub fn tema_incremental_py(
+#[pyo3(name = "tema_inc", signature = (new_price, prev_ema1, prev_ema2, prev_ema3, period))]
+pub fn tema_inc_py(
     new_price: TAFloat,
     prev_ema1: TAFloat,
     prev_ema2: TAFloat,
     prev_ema3: TAFloat,
     period: usize,
 ) -> PyResult<(TAFloat, TAFloat, TAFloat, TAFloat)> {
-    tema::tema_incremental(new_price, prev_ema1, prev_ema2, prev_ema3, period)
+    tema::tema_inc(new_price, prev_ema1, prev_ema2, prev_ema3, period)
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

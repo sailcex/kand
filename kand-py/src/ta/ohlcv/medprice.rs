@@ -55,13 +55,13 @@ pub fn medprice_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> result = kand.medprice_incremental(10.0, 8.0)
+///   >>> result = kand.medprice_inc(10.0, 8.0)
 ///   >>> print(result)
 ///   9.0
 ///   ```
 #[pyfunction]
-#[pyo3(name = "medprice_incremental")]
-pub fn medprice_incremental_py(py: Python, high: TAFloat, low: TAFloat) -> PyResult<TAFloat> {
-    py.allow_threads(|| medprice::medprice_incremental(high, low))
+#[pyo3(name = "medprice_inc")]
+pub fn medprice_inc_py(py: Python, high: TAFloat, low: TAFloat) -> PyResult<TAFloat> {
+    py.allow_threads(|| medprice::medprice_inc(high, low))
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

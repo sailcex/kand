@@ -105,7 +105,7 @@ pub fn aroon_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> aroon_up, aroon_down, new_high, new_low, days_high, days_low = kand.aroon_incremental(
+///   >>> aroon_up, aroon_down, new_high, new_low, days_high, days_low = kand.aroon_inc(
 ///   ...     15.0,  # high
 ///   ...     12.0,  # low
 ///   ...     14.0,  # prev_high
@@ -116,7 +116,7 @@ pub fn aroon_py(
 ///   ... )
 ///   ```
 #[pyfunction]
-#[pyo3(name = "aroon_incremental", signature = (
+#[pyo3(name = "aroon_inc", signature = (
     high,
     low,
     prev_high,
@@ -125,7 +125,7 @@ pub fn aroon_py(
     days_since_low,
     period
 ))]
-pub fn aroon_incremental_py(
+pub fn aroon_inc_py(
     py: Python,
     high: TAFloat,
     low: TAFloat,
@@ -136,7 +136,7 @@ pub fn aroon_incremental_py(
     period: usize,
 ) -> PyResult<(TAFloat, TAFloat, TAFloat, TAFloat, usize, usize)> {
     py.allow_threads(|| {
-        aroon::aroon_incremental(
+        aroon::aroon_inc(
             high,
             low,
             prev_high,

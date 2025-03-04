@@ -240,7 +240,7 @@ pub fn aroon(
 /// ```
 /// use kand::ohlcv::aroon;
 ///
-/// let (aroon_up, aroon_down, new_high, new_low, days_high, days_low) = aroon::aroon_incremental(
+/// let (aroon_up, aroon_down, new_high, new_low, days_high, days_low) = aroon::aroon_inc(
 ///     15.0, // Current high
 ///     12.0, // Current low
 ///     14.0, // Previous high
@@ -251,7 +251,7 @@ pub fn aroon(
 /// )
 /// .unwrap();
 /// ```
-pub fn aroon_incremental(
+pub fn aroon_inc(
     input_high: TAFloat,
     input_low: TAFloat,
     prev_high: TAFloat,
@@ -445,7 +445,7 @@ mod tests {
         let mut days_since_low = output_days_since_low[14];
 
         for i in 15..20 {
-            let result = aroon_incremental(
+            let result = aroon_inc(
                 input_high[i],
                 input_low[i],
                 prev_high,

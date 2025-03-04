@@ -113,7 +113,7 @@ pub fn t3_py(
 /// Examples:
 ///     ```python
 ///     >>> import kand
-///     >>> t3, e1, e2, e3, e4, e5, e6 = kand.t3_incremental(
+///     >>> t3, e1, e2, e3, e4, e5, e6 = kand.t3_inc(
 ///     ...     100.0,  # New price
 ///     ...     95.0,   # Previous EMA1
 ///     ...     94.0,   # Previous EMA2
@@ -126,8 +126,8 @@ pub fn t3_py(
 ///     ... )
 ///     ```
 #[pyfunction]
-#[pyo3(name = "t3_incremental", signature = (price, prev_ema1, prev_ema2, prev_ema3, prev_ema4, prev_ema5, prev_ema6, period, vfactor))]
-pub fn t3_incremental_py(
+#[pyo3(name = "t3_inc", signature = (price, prev_ema1, prev_ema2, prev_ema3, prev_ema4, prev_ema5, prev_ema6, period, vfactor))]
+pub fn t3_inc_py(
     price: TAFloat,
     prev_ema1: TAFloat,
     prev_ema2: TAFloat,
@@ -146,7 +146,7 @@ pub fn t3_incremental_py(
     TAFloat,
     TAFloat,
 )> {
-    t3::t3_incremental(
+    t3::t3_inc(
         price, prev_ema1, prev_ema2, prev_ema3, prev_ema4, prev_ema5, prev_ema6, period, vfactor,
     )
     .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))

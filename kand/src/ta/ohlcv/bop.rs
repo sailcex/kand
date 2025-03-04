@@ -154,16 +154,16 @@ pub fn bop(
 ///
 /// # Example
 /// ```
-/// use kand::ohlcv::bop::bop_incremental;
+/// use kand::ohlcv::bop::bop_inc;
 ///
 /// let input_open = 10.0;
 /// let input_high = 12.0;
 /// let input_low = 8.0;
 /// let input_close = 11.0;
 ///
-/// let output_bop = bop_incremental(input_open, input_high, input_low, input_close).unwrap();
+/// let output_bop = bop_inc(input_open, input_high, input_low, input_close).unwrap();
 /// ```
-pub fn bop_incremental(
+pub fn bop_inc(
     input_open: TAFloat,
     input_high: TAFloat,
     input_low: TAFloat,
@@ -255,8 +255,7 @@ mod tests {
         // Test incremental calculation matches regular calculation
         for i in 0..input_open.len() {
             let result =
-                bop_incremental(input_open[i], input_high[i], input_low[i], input_close[i])
-                    .unwrap();
+                bop_inc(input_open[i], input_high[i], input_low[i], input_close[i]).unwrap();
             assert_relative_eq!(result, output_bop[i], epsilon = 0.0001);
         }
     }

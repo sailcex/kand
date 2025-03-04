@@ -137,7 +137,7 @@ pub fn vwap(
     let mut cum_vol = 0.0;
 
     for i in 0..len {
-        let (new_cum_pv, new_cum_vol, vwap) = vwap_incremental(
+        let (new_cum_pv, new_cum_vol, vwap) = vwap_inc(
             input_high[i],
             input_low[i],
             input_close[i],
@@ -197,9 +197,9 @@ pub fn vwap(
 /// let prev_cum_pv = 1000.0;
 /// let prev_cum_vol = 150.0;
 /// let (new_cum_pv, new_cum_vol, new_vwap) =
-///     vwap::vwap_incremental(high, low, close, volume, prev_cum_pv, prev_cum_vol).unwrap();
+///     vwap::vwap_inc(high, low, close, volume, prev_cum_pv, prev_cum_vol).unwrap();
 /// ```
-pub fn vwap_incremental(
+pub fn vwap_inc(
     high: TAFloat,
     low: TAFloat,
     close: TAFloat,
@@ -207,7 +207,7 @@ pub fn vwap_incremental(
     prev_cum_pv: TAFloat,
     prev_cum_vol: TAFloat,
 ) -> Result<(TAFloat, TAFloat, TAFloat), KandError> {
-    let typ_price = typprice::typprice_incremental(high, low, close)?;
+    let typ_price = typprice::typprice_inc(high, low, close)?;
     let cum_pv = typ_price.mul_add(volume, prev_cum_pv);
     let cum_vol = prev_cum_vol + volume;
     let vwap = if cum_vol == 0.0 {
@@ -285,7 +285,7 @@ mod tests {
         let mut prev_cum_vol = 0.0;
 
         for i in 0..input_high.len() {
-            let (new_cum_pv, new_cum_vol, vwap) = vwap_incremental(
+            let (new_cum_pv, new_cum_vol, vwap) = vwap_inc(
                 input_high[i],
                 input_low[i],
                 input_close[i],

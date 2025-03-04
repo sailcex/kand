@@ -223,9 +223,9 @@ pub fn adx(
 ///
 /// # Example
 /// ```
-/// use kand::ohlcv::adx::adx_incremental;
+/// use kand::ohlcv::adx::adx_inc;
 ///
-/// let (adx, plus_dm, minus_dm, tr) = adx_incremental(
+/// let (adx, plus_dm, minus_dm, tr) = adx_inc(
 ///     24.20, // current high
 ///     23.85, // current low
 ///     24.07, // previous high
@@ -239,7 +239,7 @@ pub fn adx(
 /// )
 /// .unwrap();
 /// ```
-pub fn adx_incremental(
+pub fn adx_inc(
     input_high: TAFloat,
     input_low: TAFloat,
     prev_high: TAFloat,
@@ -276,18 +276,17 @@ pub fn adx_incremental(
         }
     }
 
-    let (dx, output_smoothed_plus_dm, output_smoothed_minus_dm, output_smoothed_tr) =
-        dx::dx_incremental(
-            input_high,
-            input_low,
-            prev_high,
-            prev_low,
-            prev_close,
-            prev_smoothed_plus_dm,
-            prev_smoothed_minus_dm,
-            prev_smoothed_tr,
-            param_period,
-        )?;
+    let (dx, output_smoothed_plus_dm, output_smoothed_minus_dm, output_smoothed_tr) = dx::dx_inc(
+        input_high,
+        input_low,
+        prev_high,
+        prev_low,
+        prev_close,
+        prev_smoothed_plus_dm,
+        prev_smoothed_minus_dm,
+        prev_smoothed_tr,
+        param_period,
+    )?;
 
     let period_t = param_period as TAFloat;
     let output_adx = prev_adx.mul_add(period_t - 1.0, dx) / period_t;
@@ -394,20 +393,19 @@ mod tests {
 
         // Calculate and verify incremental values starting from index 28
         for i in 28..input_high.len() {
-            let (result, new_smoothed_plus_dm, new_smoothed_minus_dm, new_smoothed_tr) =
-                adx_incremental(
-                    input_high[i],
-                    input_low[i],
-                    input_high[i - 1],
-                    input_low[i - 1],
-                    input_close[i - 1],
-                    output_adx[i - 1],
-                    output_smoothed_plus_dm[i - 1],
-                    output_smoothed_minus_dm[i - 1],
-                    output_smoothed_tr[i - 1],
-                    param_period,
-                )
-                .unwrap();
+            let (result, new_smoothed_plus_dm, new_smoothed_minus_dm, new_smoothed_tr) = adx_inc(
+                input_high[i],
+                input_low[i],
+                input_high[i - 1],
+                input_low[i - 1],
+                input_close[i - 1],
+                output_adx[i - 1],
+                output_smoothed_plus_dm[i - 1],
+                output_smoothed_minus_dm[i - 1],
+                output_smoothed_tr[i - 1],
+                param_period,
+            )
+            .unwrap();
 
             // Compare with full calculation
             assert_relative_eq!(result, output_adx[i], epsilon = 0.00001);

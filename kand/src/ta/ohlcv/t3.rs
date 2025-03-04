@@ -318,7 +318,7 @@ pub fn t3(
 /// ```
 /// use kand::ohlcv::t3;
 ///
-/// let (t3_value, ema1, ema2, ema3, ema4, ema5, ema6) = t3::t3_incremental(
+/// let (t3_value, ema1, ema2, ema3, ema4, ema5, ema6) = t3::t3_inc(
 ///     100.0, // New price
 ///     95.0,  // Previous EMA1
 ///     94.0,  // Previous EMA2
@@ -332,7 +332,7 @@ pub fn t3(
 /// .unwrap();
 /// ```
 #[allow(clippy::too_many_arguments, clippy::type_complexity)]
-pub fn t3_incremental(
+pub fn t3_inc(
     input_price: TAFloat,
     prev_ema1: TAFloat,
     prev_ema2: TAFloat,
@@ -476,7 +476,7 @@ mod tests {
 
         // Test each incremental step matches the full calculation
         for i in 25..input.len() {
-            let (t3, ema1, ema2, ema3, ema4, ema5, ema6) = t3_incremental(
+            let (t3, ema1, ema2, ema3, ema4, ema5, ema6) = t3_inc(
                 input[i],
                 prev_ema1,
                 prev_ema2,

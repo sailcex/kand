@@ -163,10 +163,10 @@ pub fn min(
 /// let dropping_price = 14.0;
 /// let period = 14;
 ///
-/// let new_min = min::min_incremental(new_price, prev_min, dropping_price, period).unwrap();
+/// let new_min = min::min_inc(new_price, prev_min, dropping_price, period).unwrap();
 /// assert_eq!(new_min, 12.0);
 /// ```
-pub fn min_incremental(
+pub fn min_inc(
     input_price: TAFloat,
     prev_min: TAFloat,
     prev_price: TAFloat,
@@ -243,7 +243,7 @@ mod tests {
 
         // Test each incremental step
         for i in 14..19 {
-            let result = min_incremental(
+            let result = min_inc(
                 input_close[i],
                 prev_min,
                 input_close[i - param_period],

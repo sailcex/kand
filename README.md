@@ -86,7 +86,7 @@ ema_values = ema(prices, period=3)
 # Incremental EMA update for streaming data
 prev_ema = 13.5
 new_price = 15.0
-new_ema = ema_incremental(new_price, prev_ema, period=3)
+new_ema = ema_inc(new_price, prev_ema, period=3)
 ```
 
 **Key Features:**
@@ -118,7 +118,7 @@ ema::ema(&prices, 3, None, &mut ema_values)?;
 // Constant-time incremental EMA update
 let prev_ema = 13.5;
 let new_price = 15.0;
-let new_ema = ema::ema_incremental(new_price, prev_ema, 3, None)?;
+let new_ema = ema::ema_inc(new_price, prev_ema, 3, None)?;
 ```
 
 **Key Features:**

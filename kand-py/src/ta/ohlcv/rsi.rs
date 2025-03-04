@@ -83,18 +83,18 @@ pub fn rsi_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> rsi, avg_gain, avg_loss = kand.rsi_incremental(45.42, 45.10, 0.24, 0.14, 14)
+///   >>> rsi, avg_gain, avg_loss = kand.rsi_inc(45.42, 45.10, 0.24, 0.14, 14)
 ///   ```
 #[pyfunction]
-#[pyo3(name = "rsi_incremental", signature = (current_price, prev_price, prev_avg_gain, prev_avg_loss, period))]
-pub fn rsi_incremental_py(
+#[pyo3(name = "rsi_inc", signature = (current_price, prev_price, prev_avg_gain, prev_avg_loss, period))]
+pub fn rsi_inc_py(
     current_price: TAFloat,
     prev_price: TAFloat,
     prev_avg_gain: TAFloat,
     prev_avg_loss: TAFloat,
     period: usize,
 ) -> PyResult<(TAFloat, TAFloat, TAFloat)> {
-    rsi::rsi_incremental(
+    rsi::rsi_inc(
         current_price,
         prev_price,
         prev_avg_gain,

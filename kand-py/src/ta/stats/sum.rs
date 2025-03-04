@@ -57,21 +57,21 @@ pub fn sum_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> new_sum = kand.sum_incremental(
+///   >>> new_sum = kand.sum_inc(
 ///   ...     5.0,    # new price
 ///   ...     3.0,    # old price
 ///   ...     10.0,   # previous sum
 ///   ... )
 ///   ```
 #[pyfunction]
-#[pyo3(name = "sum_incremental")]
-pub fn sum_incremental_py(
+#[pyo3(name = "sum_inc")]
+pub fn sum_inc_py(
     py: Python,
     new_price: TAFloat,
     old_price: TAFloat,
     prev_sum: TAFloat,
 ) -> PyResult<TAFloat> {
     // Perform incremental sum calculation while releasing the GIL
-    py.allow_threads(|| sum::sum_incremental(new_price, old_price, prev_sum))
+    py.allow_threads(|| sum::sum_inc(new_price, old_price, prev_sum))
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

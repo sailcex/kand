@@ -169,7 +169,7 @@ pub fn midprice(
 /// ```
 /// use kand::ohlcv::midprice;
 ///
-/// let (midprice, highest, lowest) = midprice::midprice_incremental(
+/// let (midprice, highest, lowest) = midprice::midprice_inc(
 ///     10.5, // current high
 ///     9.8,  // current low
 ///     10.2, // previous highest high
@@ -178,7 +178,7 @@ pub fn midprice(
 /// )
 /// .unwrap();
 /// ```
-pub fn midprice_incremental(
+pub fn midprice_inc(
     input_high: TAFloat,
     input_low: TAFloat,
     prev_highest_high: TAFloat,
@@ -265,7 +265,7 @@ mod tests {
         let mut prev_lowest_low = output_lowest_low[13];
 
         for i in 14..19 {
-            let (midprice, new_highest_high, new_lowest_low) = midprice_incremental(
+            let (midprice, new_highest_high, new_lowest_low) = midprice_inc(
                 input_high[i],
                 input_low[i],
                 prev_highest_high,

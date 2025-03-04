@@ -135,7 +135,7 @@ pub fn cdl_doji(
 
     // Process each candle
     for i in 0..len {
-        output_signals[i] = cdl_doji_incremental(
+        output_signals[i] = cdl_doji_inc(
             input_open[i],
             input_high[i],
             input_low[i],
@@ -182,7 +182,7 @@ pub fn cdl_doji(
 /// * `KandError::InvalidParameter` - If any parameter is invalid (e.g. <= 0)
 /// * `KandError::NaNDetected` - If any input value is NaN (when `deep-check` enabled)
 /// * `KandError::ConversionError` - If numeric conversion fails
-pub fn cdl_doji_incremental(
+pub fn cdl_doji_inc(
     input_open: TAFloat,
     input_high: TAFloat,
     input_low: TAFloat,
@@ -316,7 +316,7 @@ mod tests {
 
         // Test incremental calculation matches regular calculation
         for i in 0..input_open.len() {
-            let signal = cdl_doji_incremental(
+            let signal = cdl_doji_inc(
                 input_open[i],
                 input_high[i],
                 input_low[i],

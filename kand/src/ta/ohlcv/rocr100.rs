@@ -148,10 +148,10 @@ pub fn rocr100(
 /// let price_10_periods_ago = 12.0;
 ///
 /// // Calculate ROCR100 for current period
-/// let rocr100_value = rocr100::rocr100_incremental(current_price, price_10_periods_ago).unwrap();
+/// let rocr100_value = rocr100::rocr100_inc(current_price, price_10_periods_ago).unwrap();
 /// // Result shows current price is 125% of price 10 periods ago
 /// ```
-pub fn rocr100_incremental(input: TAFloat, prev: TAFloat) -> Result<TAFloat, KandError> {
+pub fn rocr100_inc(input: TAFloat, prev: TAFloat) -> Result<TAFloat, KandError> {
     #[cfg(feature = "deep-check")]
     {
         if input.is_nan() || prev.is_nan() {
@@ -205,8 +205,7 @@ mod tests {
 
         // Test incremental calculation matches regular calculation
         for i in 11..input_price.len() {
-            let result =
-                rocr100_incremental(input_price[i], input_price[i - param_period]).unwrap();
+            let result = rocr100_inc(input_price[i], input_price[i - param_period]).unwrap();
             assert_relative_eq!(result, output_rocr100[i], epsilon = 0.0001);
         }
     }

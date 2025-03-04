@@ -110,11 +110,11 @@ pub fn ecl_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> h5,h4,h3,h2,h1,l1,l2,l3,l4,l5 = kand.ecl_incremental(24.20, 23.85, 23.89)
+///   >>> h5,h4,h3,h2,h1,l1,l2,l3,l4,l5 = kand.ecl_inc(24.20, 23.85, 23.89)
 ///   ```
 #[pyfunction]
-#[pyo3(name = "ecl_incremental", signature = (prev_high, prev_low, prev_close))]
-pub fn ecl_incremental_py(
+#[pyo3(name = "ecl_inc", signature = (prev_high, prev_low, prev_close))]
+pub fn ecl_inc_py(
     py: Python,
     prev_high: TAFloat,
     prev_low: TAFloat,
@@ -132,7 +132,7 @@ pub fn ecl_incremental_py(
     TAFloat,
 )> {
     py.allow_threads(|| {
-        ecl::ecl_incremental(prev_high, prev_low, prev_close)
+        ecl::ecl_inc(prev_high, prev_low, prev_close)
             .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
     })
 }

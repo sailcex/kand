@@ -77,11 +77,11 @@ pub fn cdl_doji_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> signal = kand.cdl_doji_incremental(10.0, 11.0, 9.8, 10.3, 5.0, 100.0)
+///   >>> signal = kand.cdl_doji_inc(10.0, 11.0, 9.8, 10.3, 5.0, 100.0)
 ///   ```
 #[pyfunction]
-#[pyo3(name = "cdl_doji_incremental", signature = (open, high, low, close, body_percent, shadow_equal_percent))]
-pub fn cdl_doji_incremental_py(
+#[pyo3(name = "cdl_doji_inc", signature = (open, high, low, close, body_percent, shadow_equal_percent))]
+pub fn cdl_doji_inc_py(
     py: Python,
     open: TAFloat,
     high: TAFloat,
@@ -91,7 +91,7 @@ pub fn cdl_doji_incremental_py(
     shadow_equal_percent: TAFloat,
 ) -> PyResult<TAInt> {
     py.allow_threads(|| {
-        cdl_doji::cdl_doji_incremental(open, high, low, close, body_percent, shadow_equal_percent)
+        cdl_doji::cdl_doji_inc(open, high, low, close, body_percent, shadow_equal_percent)
     })
     .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

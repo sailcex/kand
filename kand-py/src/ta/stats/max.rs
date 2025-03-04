@@ -55,11 +55,11 @@ pub fn max_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> new_max = kand.max_incremental(10.5, 11.0, 9.0, 14)
+///   >>> new_max = kand.max_inc(10.5, 11.0, 9.0, 14)
 ///   ```
 #[pyfunction]
-#[pyo3(name = "max_incremental")]
-pub fn max_incremental_py(
+#[pyo3(name = "max_inc")]
+pub fn max_inc_py(
     py: Python,
     price: TAFloat,
     prev_max: TAFloat,
@@ -67,6 +67,6 @@ pub fn max_incremental_py(
     period: usize,
 ) -> PyResult<TAFloat> {
     // Perform incremental MAX calculation while releasing the GIL
-    py.allow_threads(|| max::max_incremental(price, prev_max, old_price, period))
+    py.allow_threads(|| max::max_inc(price, prev_max, old_price, period))
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

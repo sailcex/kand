@@ -79,7 +79,7 @@ pub fn var_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> var, sum, sum_sq = kand.var_incremental(
+///   >>> var, sum, sum_sq = kand.var_inc(
 ///   ...     10.0,  # current price
 ///   ...     25.0,  # previous sum
 ///   ...     220.0, # previous sum of squares
@@ -88,8 +88,8 @@ pub fn var_py(
 ///   ... )
 ///   ```
 #[pyfunction]
-#[pyo3(name = "var_incremental")]
-pub fn var_incremental_py(
+#[pyo3(name = "var_inc")]
+pub fn var_inc_py(
     py: Python,
     price: TAFloat,
     prev_sum: TAFloat,
@@ -97,6 +97,6 @@ pub fn var_incremental_py(
     old_price: TAFloat,
     period: usize,
 ) -> PyResult<(TAFloat, TAFloat, TAFloat)> {
-    py.allow_threads(|| var::var_incremental(price, prev_sum, prev_sum_sq, old_price, period))
+    py.allow_threads(|| var::var_inc(price, prev_sum, prev_sum_sq, old_price, period))
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

@@ -261,7 +261,7 @@ pub fn supertrend(
 /// * `KandError::InvalidParameter` - Invalid `param_period` (<2)
 /// * `KandError::NaNDetected` - NaN values in input (with `deep-check` feature)
 /// * `KandError::ConversionError` - Numeric conversion error
-pub fn supertrend_incremental(
+pub fn supertrend_inc(
     input_high: TAFloat,
     input_low: TAFloat,
     input_close: TAFloat,
@@ -295,8 +295,7 @@ pub fn supertrend_incremental(
         }
     }
 
-    let output_atr =
-        atr::atr_incremental(input_high, input_low, prev_close, prev_atr, param_period)?;
+    let output_atr = atr::atr_inc(input_high, input_low, prev_close, prev_atr, param_period)?;
 
     let hl2 = (input_high + input_low) / 2.0;
     let basic_upper = param_multiplier.mul_add(output_atr, hl2);
@@ -435,7 +434,7 @@ mod tests {
         let prev_upper = output_upper[len - 2];
         let prev_lower = output_lower[len - 2];
 
-        let (trend, supertrend, _, _, _) = supertrend_incremental(
+        let (trend, supertrend, _, _, _) = supertrend_inc(
             input_high[len - 1],
             input_low[len - 1],
             input_close[len - 1],

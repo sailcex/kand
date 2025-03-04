@@ -67,7 +67,7 @@ pub fn plus_dm_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> new_plus_dm = kand.plus_dm_incremental(
+///   >>> new_plus_dm = kand.plus_dm_inc(
 ///   ...     10.5,  # high
 ///   ...     10.0,  # prev_high
 ///   ...     9.8,   # low
@@ -77,8 +77,8 @@ pub fn plus_dm_py(
 ///   ... )
 ///   ```
 #[pyfunction]
-#[pyo3(name = "plus_dm_incremental", signature = (high, prev_high, low, prev_low, prev_plus_dm, period))]
-pub fn plus_dm_incremental_py(
+#[pyo3(name = "plus_dm_inc", signature = (high, prev_high, low, prev_low, prev_plus_dm, period))]
+pub fn plus_dm_inc_py(
     high: TAFloat,
     prev_high: TAFloat,
     low: TAFloat,
@@ -86,6 +86,6 @@ pub fn plus_dm_incremental_py(
     prev_plus_dm: TAFloat,
     period: usize,
 ) -> PyResult<TAFloat> {
-    plus_dm::plus_dm_incremental(high, prev_high, low, prev_low, prev_plus_dm, period)
+    plus_dm::plus_dm_inc(high, prev_high, low, prev_low, prev_plus_dm, period)
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

@@ -223,7 +223,7 @@ pub fn ecl(
 /// # Example
 /// ```
 /// use kand::ohlcv::ecl;
-/// let (h5, h4, h3, h2, h1, l1, l2, l3, l4, l5) = ecl::ecl_incremental(
+/// let (h5, h4, h3, h2, h1, l1, l2, l3, l4, l5) = ecl::ecl_inc(
 ///     24.20, // prev_high
 ///     23.85, // prev_low
 ///     23.89, // prev_close
@@ -231,7 +231,7 @@ pub fn ecl(
 /// .unwrap();
 /// ```
 #[allow(clippy::similar_names)]
-pub fn ecl_incremental(
+pub fn ecl_inc(
     prev_high: TAFloat,
     prev_low: TAFloat,
     prev_close: TAFloat,
@@ -338,7 +338,7 @@ mod tests {
         // Test incremental calculation matches
         let i = input_high.len() - 1;
         let (h5_inc, h4_inc, h3_inc, h2_inc, h1_inc, l1_inc, l2_inc, l3_inc, l4_inc, l5_inc) =
-            ecl_incremental(input_high[i - 1], input_low[i - 1], input_close[i - 1]).unwrap();
+            ecl_inc(input_high[i - 1], input_low[i - 1], input_close[i - 1]).unwrap();
 
         assert_relative_eq!(h5_inc, output_h5[i], epsilon = TAFloat::EPSILON);
         assert_relative_eq!(h4_inc, output_h4[i], epsilon = TAFloat::EPSILON);

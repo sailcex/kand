@@ -110,7 +110,7 @@ pub fn adosc_py(
 /// Examples:
 ///     ```python
 ///     >>> import kand
-///     >>> adosc, ad, fast_ema, slow_ema = kand.adosc_incremental(
+///     >>> adosc, ad, fast_ema, slow_ema = kand.adosc_inc(
 ///     ...     10.5,  # high
 ///     ...     9.5,   # low
 ///     ...     10.0,  # close
@@ -123,8 +123,8 @@ pub fn adosc_py(
 ///     ... )
 ///     ```
 #[pyfunction]
-#[pyo3(name = "adosc_incremental", signature = (high, low, close, volume, prev_ad, prev_fast_ema, prev_slow_ema, fast_period, slow_period))]
-pub fn adosc_incremental_py(
+#[pyo3(name = "adosc_inc", signature = (high, low, close, volume, prev_ad, prev_fast_ema, prev_slow_ema, fast_period, slow_period))]
+pub fn adosc_inc_py(
     py: Python,
     high: TAFloat,
     low: TAFloat,
@@ -138,7 +138,7 @@ pub fn adosc_incremental_py(
 ) -> PyResult<(TAFloat, TAFloat, TAFloat, TAFloat)> {
     // Perform the incremental ADOSC calculation while releasing the GIL
     py.allow_threads(|| {
-        adosc::adosc_incremental(
+        adosc::adosc_inc(
             high,
             low,
             close,

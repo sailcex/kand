@@ -81,7 +81,7 @@ pub fn midpoint_py(
 /// Examples:
 ///   ```python
 ///   >>> import kand
-///   >>> midpoint, new_highest, new_lowest = kand.midpoint_incremental(
+///   >>> midpoint, new_highest, new_lowest = kand.midpoint_inc(
 ///   ...     15.0,  # current price
 ///   ...     16.0,  # previous highest
 ///   ...     14.0,  # previous lowest
@@ -89,14 +89,14 @@ pub fn midpoint_py(
 ///   ... )
 ///   ```
 #[pyfunction]
-#[pyo3(name = "midpoint_incremental", signature = (price, prev_highest, prev_lowest, period))]
-pub fn midpoint_incremental_py(
+#[pyo3(name = "midpoint_inc", signature = (price, prev_highest, prev_lowest, period))]
+pub fn midpoint_inc_py(
     py: Python,
     price: TAFloat,
     prev_highest: TAFloat,
     prev_lowest: TAFloat,
     period: usize,
 ) -> PyResult<(TAFloat, TAFloat, TAFloat)> {
-    py.allow_threads(|| midpoint::midpoint_incremental(price, prev_highest, prev_lowest, period))
+    py.allow_threads(|| midpoint::midpoint_inc(price, prev_highest, prev_lowest, period))
         .map_err(|e| PyErr::new::<pyo3::exceptions::PyValueError, _>(e.to_string()))
 }

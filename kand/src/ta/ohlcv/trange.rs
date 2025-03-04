@@ -161,10 +161,10 @@ pub fn trange(
 /// ```
 /// use kand::ohlcv::trange;
 ///
-/// let tr = trange::trange_incremental(12.0, 9.0, 11.0).unwrap();
+/// let tr = trange::trange_inc(12.0, 9.0, 11.0).unwrap();
 /// assert_eq!(tr, 3.0); // max(3, 1, 2)
 /// ```
-pub fn trange_incremental(
+pub fn trange_inc(
     input_high: TAFloat,
     input_low: TAFloat,
     prev_close: TAFloat,
@@ -207,8 +207,7 @@ mod tests {
 
         // Test each incremental step matches regular calculation
         for i in 1..5 {
-            let result =
-                trange_incremental(input_high[i], input_low[i], input_close[i - 1]).unwrap();
+            let result = trange_inc(input_high[i], input_low[i], input_close[i - 1]).unwrap();
             assert_relative_eq!(result, output_trange[i], epsilon = 0.00001);
         }
     }
