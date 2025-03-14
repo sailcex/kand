@@ -4,6 +4,13 @@ This document records all significant updates and changes to the Kand project.
 
 ## [unreleased]
 
+### 🐛 Bug Fixes
+
+- *(ci)* Fix publish-rust
+- *(.editorconfig)* Fix path
+
+## [0.2.2] - 2025-03-04
+
 ### 🚀 Features
 
 - *(precision)* Add f32 floating-point precision support (#10)
@@ -15,6 +22,10 @@ This document records all significant updates and changes to the Kand project.
 - *(willr)* Resolve Clippy warnings for strict float comparisons
 - *(stats)* Resolve Clippy warnings for strict float comparisons in max/min
 - *(ci)* Fix test-rust
+
+### 🚜 Refactor
+
+- Use _inc instead of _incremental
 
 ## [0.2.1] - 2025-03-02
 
