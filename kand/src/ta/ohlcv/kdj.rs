@@ -138,7 +138,7 @@ pub fn kdj(
         let lowest  = input_low[i - lowest_idx];
 
         // 计算 RSV
-        let rsv = (input_close[i] - lowest) / (highest - lowest) * 100.0;
+        let rsv = if highest == lowest { 0.0 } else { (input_close[i] - lowest) / (highest - lowest) * 100.0 };
 
         if i == lookback {
             // 初始 K, D, J
